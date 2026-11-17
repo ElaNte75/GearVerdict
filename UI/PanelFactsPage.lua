@@ -60,6 +60,17 @@ local sections = {
         { title = "Specialization", tag = "checked",
           text = "Forever has no specializations, so you choose one yourself on the Specialization page." },
     } },
+    { title = "Talent hint on level-up", entries = {
+        { title = "Next talent suggestion", tag = "unverified",
+          text = "Optional (Options page). At each level from 10 to 60 it names the next talent from the Icy Veins "
+            .. "leveling guide for your chosen specialization. It reads your real talents and steers you back to "
+            .. "the guide if you took others. Built but not seen working yet in Forever: the game may not report "
+            .. "talents or the new point at level-up. Then it suggests by level only; /gv talent shows which way "
+            .. "it worked." },
+        { title = "Guide coverage", tag = "gap",
+          text = "The guides end at level 60. Levels 61-63, no chosen specialization, or talents already spent "
+            .. "elsewhere (no respec) cannot be corrected." },
+    } },
     { title = "Report a problem", entries = {
         { text = "If a result looks wrong to you, tell the developer what you expected and which items were compared. "
             .. "Every odd case helps to decide which weights to change." },

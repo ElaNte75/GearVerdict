@@ -40,6 +40,7 @@ frame:SetScript("OnEvent", function(_, event, arg, success)
         end
         initialized = true
         addon.MinimapIcon:Initialize()
+        if addon.TalentHint then addon.TalentHint:Initialize() end
         if IsLoggedIn() then addon.Tooltips:Initialize() end
         if OpenAllBags then hooksecurefunc("OpenAllBags", function() refresh("OpenAllBags") end) end
         if ToggleBackpack then hooksecurefunc("ToggleBackpack", function() refresh("ToggleBackpack") end) end
@@ -76,6 +77,12 @@ SlashCmdList.GEARVERDICT = function(message)
         GearVerdictDB.capsEnabled = not GearVerdictDB.capsEnabled
         addon:Print("Experimental gear-only caps: " .. (GearVerdictDB.capsEnabled and "ON" or "OFF"))
         addon:Refresh()
+    elseif command == "talent" or command:match("^talent%s+%d+$") then
+        if not addon.TalentHint then
+            addon:Print("Talent hint files are not loaded yet. Please exit and restart the game.")
+            return
+        end
+        addon.TalentHint:Preview(tonumber(command:match("%d+")))
     else
         if not addon.ControlPanel or not addon.PanelWeightsPage or not addon.WeightTransferDialog then
             addon:Print("New window files are not loaded yet. Please exit and restart the game.")
