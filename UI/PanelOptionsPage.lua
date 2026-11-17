@@ -115,24 +115,7 @@ function page:Create(parent)
         "How many weight points the new item adds over the one it replaces. The same scale for every slot.")
     local percent = self:Choice(frame, "Percent  (example: +43.2%)", points, widgets.GAP_NEXT_CHECK, "valueMode", "percent",
         "How much better than the item it replaces, in percent. Empty slots and items worth 0 points still show points.")
-    local note = widgets:Note(frame, "Changes apply right away to your bags, quest rewards and tooltips.", percent, 10)
-
-    local talentLine, talentLabel = widgets:Section(frame, "Level-up hint", note, widgets.GAP_SECTION - 4)
-    widgets:Help(frame, talentLabel, "Level-up hint",
-        "When you reach a new level (10-60), a message in the middle of the screen and in chat tells you which "
-        .. "talent to take next, following the Icy Veins leveling guide for your chosen specialization. "
-        .. "If you took other talents, it steers you back onto the guide.")
-    self.talentCheck = widgets:Check(frame, "Suggest next talent on level-up", talentLine, widgets.GAP_AFTER_LINE - 4,
-        function(_, checked)
-            options().talentHint = checked or nil
-            self:Update()
-        end)
-    local previewButton = widgets:Button(frame, "Preview", 70, function()
-        if addon.TalentHint then addon.TalentHint:Preview() else addon:Print("Talent hint files are not loaded; restart the game.") end
-    end)
-    previewButton:SetPoint("LEFT", self.talentCheck.Text, "RIGHT", 14, 0)
-    widgets:Tooltip(previewButton, "Preview", "Shows the suggestion for your current level now, and which way it was found "
-        .. "(reading your talents or by level only). Works even when the option is off. Same as /gv talent.")
+    widgets:Note(frame, "Changes apply right away to your bags, quest rewards and tooltips.", percent, 10)
     return frame
 end
 
@@ -145,9 +128,5 @@ function page:Update()
         addon.PanelWidgets:UpdateCheck(check)
     end
     self.swatch:SetColorTexture(color.r, color.g, color.b, 1)
-    if self.talentCheck then
-        self.talentCheck:SetChecked(options().talentHint and true or false)
-        addon.PanelWidgets:UpdateCheck(self.talentCheck)
-    end
     addon.UpgradeIndicators:Preview(self.previewIcon)
 end

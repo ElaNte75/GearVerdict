@@ -11,7 +11,7 @@ hint.WAIT_SECONDS = 6
 hint.OFF_PATH_TEXT = "You are off the guide path; following it from here."
 
 local function enabled()
-    return GearVerdictDB and GearVerdictDB.options and GearVerdictDB.options.talentHint and true or false
+    return addon.TalentAdvisor and addon.TalentAdvisor:Enabled() or false
 end
 
 function hint:CreateBanner()
@@ -120,14 +120,15 @@ function hint:Report(result)
     local lines = {}
     local mode = result.mode == "talents" and "reading your real talents"
         or result.mode == "level" and "by level only (fallback: your talents could not be used)" or "none"
-    lines[#lines + 1] = ("Talent hint preview for level %d. Mode: %s."):format(result.level or 0, mode)
+    lines[#lines + 1] = ("Talent hint preview for level %d (%s guide). Mode: %s."):format(result.level or 0,
+        addon.TalentAdvisor:GuideName(result.guide) or "?", mode)
     local read = result.read
     if read then
-        lines[#lines + 1] = ("Read: %d talents, %d points spent, unspent points: %s, guide talents found by name: %d.")
+        lines[#lines + 1] = ("Read: %d talents, %d points spent, unspent points: %s, guide talents found in your tree: %d.")
             :format(read.talents, read.spent, read.unspent == nil and "unknown" or tostring(read.unspent),
                 result.matched or 0)
     else
-        lines[#lines + 1] = "Read: nothing (the talent functions are missing or empty)."
+        lines[#lines + 1] = "Read: nothing (your talent tree could not be read)."
     end
     if result.status == "ok" then
         lines[#lines + 1] = result.text

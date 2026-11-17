@@ -62,11 +62,15 @@ local sections = {
     } },
     { title = "Talent hint on level-up", entries = {
         { title = "Next talent suggestion", tag = "unverified",
-          text = "Optional (Options page). At each level from 10 to 60 it names the next talent from the Icy Veins "
-            .. "leveling guide for your chosen specialization. It reads your real talents and steers you back to "
-            .. "the guide if you took others. Built but not seen working yet in Forever: the game may not report "
-            .. "talents or the new point at level-up. Then it suggests by level only; /gv talent shows which way "
-            .. "it worked." },
+          text = "Optional (Leveling page, off by default). At each level from 10 to 60 it names the next talent from "
+            .. "the chosen guide (Wowhead or Icy Veins) for your chosen specialization. It reads your real talent tree "
+            .. "and steers you back to the guide if you took others. Reading the tree was tested in Forever with a "
+            .. "test logger; the hint itself is not seen working at a level-up yet. If the tree cannot be read it "
+            .. "suggests by level only; the Preview button shows which way it worked." },
+        { title = "Wowhead talent orders", tag = "unverified",
+          text = "The first build's Talent Order on each Wowhead talent page. Rogue, Warlock, Balance and Restoration "
+            .. "Druid have none there, so Wowhead's leveling guide order is used for them. Feral Cat uses the DPS page, "
+            .. "Feral Bear the tank page." },
         { title = "Guide coverage", tag = "gap",
           text = "The guides end at level 60. Levels 61-63, no chosen specialization, or talents already spent "
             .. "elsewhere (no respec) cannot be corrected." },

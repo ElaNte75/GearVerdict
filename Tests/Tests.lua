@@ -1,9 +1,9 @@
 local addon = {}
-local where = { MinimapIcon = "UI", BagArrows = "Display", BagnonAdapter = "Display", Bootstrap = "Core", Comparison = "Engine", ControlPanel = "UI", Core = "Core", Eligibility = "Engine", ItemData = "Engine", PanelInterfacePage = "UI", PanelFactsPage = "UI", PanelOptionsPage = "UI", PanelSpecPage = "UI", PanelStatPriority = "UI", PanelWeightsPage = "UI", PanelWidgets = "UI", Presets = "Data", QuestArrows = "Display", RingPlacement = "Display", Scoring = "Engine", SpecDetection = "Data", StatNormalization = "Engine", Tooltips = "Display", UpgradeIndicators = "Display", WeightString = "Data", WeightTransferDialog = "UI", Weights = "Data", TalentOrders = "Data", TalentAdvisor = "Engine", TalentHint = "Display", Warrior = "Data/Presets", Paladin = "Data/Presets", Hunter = "Data/Presets", Rogue = "Data/Presets", Priest = "Data/Presets", Shaman = "Data/Presets", Mage = "Data/Presets", Warlock = "Data/Presets", Druid = "Data/Presets" }
+local where = { MinimapIcon = "UI", BagArrows = "Display", BagnonAdapter = "Display", Bootstrap = "Core", Comparison = "Engine", ControlPanel = "UI", Core = "Core", Eligibility = "Engine", ItemData = "Engine", PanelInterfacePage = "UI", PanelFactsPage = "UI", PanelOptionsPage = "UI", PanelSpecPage = "UI", PanelStatPriority = "UI", PanelWeightsPage = "UI", PanelWidgets = "UI", Presets = "Data", QuestArrows = "Display", RingPlacement = "Display", Scoring = "Engine", SpecDetection = "Data", StatNormalization = "Engine", Tooltips = "Display", UpgradeIndicators = "Display", WeightString = "Data", WeightTransferDialog = "UI", Weights = "Data", TalentOrders = "Data", TalentOrdersWowhead = "Data", PanelLevelingPage = "UI", TalentAdvisor = "Engine", TalentHint = "Display", Warrior = "Data/Presets", Paladin = "Data/Presets", Hunter = "Data/Presets", Rogue = "Data/Presets", Priest = "Data/Presets", Shaman = "Data/Presets", Mage = "Data/Presets", Warlock = "Data/Presets", Druid = "Data/Presets" }
 local function path(name) return where[name] .. "/" .. name .. ".lua" end
-local files = { "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "Weights", "WeightString", "TalentOrders", "TalentAdvisor", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "Comparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestArrows", "PanelWidgets", "ControlPanel", "PanelStatPriority", "PanelSpecPage", "PanelOptionsPage", "PanelWeightsPage", "PanelInterfacePage", "PanelFactsPage", "WeightTransferDialog", "MinimapIcon", "Core" }
+local files = { "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentAdvisor", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "Comparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestArrows", "PanelWidgets", "ControlPanel", "PanelStatPriority", "PanelSpecPage", "PanelOptionsPage", "PanelLevelingPage", "PanelWeightsPage", "PanelInterfacePage", "PanelFactsPage", "WeightTransferDialog", "MinimapIcon", "Core" }
 for _, name in ipairs(files) do assert(loadfile(path(name))) end
-for _, name in ipairs({ "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "Weights", "WeightString", "TalentOrders", "TalentAdvisor", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "Comparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestArrows", "PanelStatPriority" }) do
+for _, name in ipairs({ "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentAdvisor", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "Comparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestArrows", "PanelStatPriority" }) do
     assert(loadfile(path(name)))("GearVerdict", addon)
 end
 local tests = 0
@@ -616,107 +616,195 @@ check(SP:CapsText(P.bySpec[263]):find("16%% %(160%) for spells") and SP:CapsText
     and SP:CapsText(P.bySpec[257]) == nil, "Caps line fits the spec")
 -- Talent hint on level-up (data, steering, display)
 local TA, TH = addon.TalentAdvisor, addon.TalentHint
-local orders = addon.TalentOrders
-local specCount = 0
-for _, list in pairs(addon.SpecDetection.classSpecs) do
-    for _, spec in ipairs(list) do
-        specCount = specCount + 1
-        local steps = TA:Steps(spec.id)
-        check(steps and #steps == 51, "Guide has 51 points for spec " .. spec.id)
-        local ranks, lastLevel = {}, 9
-        for _, step in ipairs(steps) do
-            check(step.level == lastLevel + 1, "Guide levels continuous for spec " .. spec.id)
-            lastLevel = step.level
-            check(step.rank == (ranks[step.talent] or 0) + 1 and step.rank <= step.max,
-                "Guide ranks go up by one and never exceed the maximum: " .. spec.id .. " " .. step.talent)
-            ranks[step.talent] = step.rank
+local guides = addon.TalentGuides
+for _, guide in ipairs({ "wowhead", "icyveins" }) do
+    local specCount = 0
+    for _, list in pairs(addon.SpecDetection.classSpecs) do
+        for _, spec in ipairs(list) do
+            specCount = specCount + 1
+            local steps = TA:Steps(spec.id, guide)
+            check(steps and #steps == 51, guide .. " guide has 51 points for spec " .. spec.id)
+            local ranks, lastLevel, ids = {}, 9, {}
+            for _, step in ipairs(steps) do
+                check(step.level == lastLevel + 1, "Guide levels continuous for spec " .. spec.id)
+                lastLevel = step.level
+                check(step.rank == (ranks[step.talent] or 0) + 1 and step.rank <= step.max,
+                    "Guide ranks go up by one and never exceed the maximum: " .. guide .. " " .. spec.id .. " " .. step.talent)
+                check(type(step.spellID) == "number" and step.spellID > 0 and (ids[step.talent] == nil or ids[step.talent] == step.spellID),
+                    "Every guide talent has one spell id: " .. guide .. " " .. spec.id .. " " .. step.talent)
+                ranks[step.talent], ids[step.talent] = step.rank, step.spellID
+            end
+            check(lastLevel == 60, "Guide ends at level 60 for spec " .. spec.id)
         end
-        check(lastLevel == 60, "Guide ends at level 60 for spec " .. spec.id)
     end
+    check(specCount == 28, "All 28 specs have a " .. guide .. " guide")
 end
-check(specCount == 28 and orders[103] == orders[104], "All 28 specs have a guide; Feral Cat and Bear share one")
-local fury = TA:Steps(72)
-check(fury[19].talent == "Dual Wield Specialization" and fury[19].level == 28 and fury[19].rank == 4
+check(guides.icyveins[103] == guides.icyveins[104] and guides.wowhead[103] ~= guides.wowhead[104],
+    "Icy Veins: Feral Cat and Bear share one guide; Wowhead has one each")
+local fury = TA:Steps(72, "icyveins")
+check(fury[19].talent == "Dual Wield Specialization" and fury[19].level == 28 and fury[19].rank == 4 and fury[19].spellID == 23584
     and fury[19].max == 5 and TA:TreeName("beast-mastery") == "Beast Mastery", "Fury level 28 step transcribed correctly")
+local enh = TA:Steps(263, "wowhead")
+check(enh[20].talent == "Flurry" and enh[20].level == 29 and enh[20].rank == 5 and enh[20].spellID == 16256,
+    "Wowhead Enhancement: level 29 = Flurry 5/5")
 
--- Mock talent API for Fury: tab 1 = Fury talents, tab 2 = Arms
-local mockTalents, mockUnspent = nil, nil
-function GetNumTalentTabs() return mockTalents and 2 or 0 end
-function GetNumTalents(tab) return mockTalents and #mockTalents[tab] or 0 end
-function GetTalentInfo(tab, index)
-    local row = mockTalents[tab][index]
-    return row[1], "icon", 1, 1, row[2], row[3]
-end
-function UnitCharacterPoints() return mockUnspent end
-local function talents(ranks)
-    local all = { "Cruelty", "Unbridled Wrath", "Furious Precision", "Enrage", "Dual Wield Specialization", "Death Wish", "Flurry" }
-    local fury_rows, arms_rows = {}, { { "Deflection", ranks.Deflection or 0, 5 }, { "Unrelated Talent", ranks.Unrelated or 0, 5 } }
-    for _, name in ipairs(all) do fury_rows[#fury_rows + 1] = { name, ranks[name] or 0, 5 } end
-    return { fury_rows, arms_rows }
+-- Settings: default guide, master switch, migration of the old Options checkbox
+GearVerdictDB.options = GearVerdictDB.options or {}
+check(TA:GuideKey() == "wowhead" and TA:GuideName() == "Wowhead", "Default guide is Wowhead")
+GearVerdictDB.options.levelingGuide = "nonsense"
+check(TA:GuideKey() == "wowhead", "Unknown guide falls back to Wowhead")
+GearVerdictDB.options.talentHint = true
+TA:Migrate()
+check(GearVerdictDB.options.levelingEnabled == true and GearVerdictDB.options.talentHint == nil, "Old talent option moves to the master switch")
+GearVerdictDB.options.talentHint, GearVerdictDB.options.levelingEnabled = false, nil
+TA:Migrate()
+check(GearVerdictDB.options.levelingEnabled == nil and GearVerdictDB.options.talentHint == nil, "Old option off: master switch stays off")
+
+-- Mock of Forever's modern talent tree (C_ClassTalents / C_Traits). mockTree rows: { spell, name, rank }.
+local mockTree, mockUnspent, spellNames = nil, nil, {}
+C_ClassTalents = {
+    GetActiveConfigID = function() return mockTree and 4355200 or nil end,
+    HasUnspentTalentPoints = function() return (mockUnspent or 0) > 0 end,
+}
+C_Traits = {
+    GetConfigInfo = function() return { treeIDs = { 1082 } } end,
+    GetTreeNodes = function() local nodes = {} for index = 1, #mockTree do nodes[index] = index end return nodes end,
+    GetNodeInfo = function(_, node)
+        local row = mockTree[node]
+        return { currentRank = row[3], maxRanks = 5, activeEntry = row.noActive and nil or { entryID = node * 10 },
+            entryIDs = { node * 10 } }
+    end,
+    GetEntryInfo = function(_, entryID) return { definitionID = entryID + 1 } end,
+    GetDefinitionInfo = function(definitionID) return { spellID = mockTree[(definitionID - 1) / 10][1] } end,
+    GetTreeCurrencyInfo = function()
+        if mockUnspent == nil then return {} end
+        return { { quantity = mockUnspent, spent = 0, maxQuantity = 0 } }
+    end,
+}
+C_Spell = { GetSpellName = function(spellID) return spellNames[spellID] end }
+local furySpells = {}
+for _, step in ipairs(fury) do furySpells[step.talent] = step.spellID end
+local function talents(ranks, skip)
+    local tree = {}
+    local all = { "Cruelty", "Unbridled Wrath", "Furious Precision", "Enrage", "Dual Wield Specialization", "Death Wish",
+        "Flurry", "Deflection" }
+    for _, name in ipairs(all) do
+        if name ~= skip then
+            tree[#tree + 1] = { furySpells[name] or 12000 + #tree, name, ranks[name] or 0 }
+            spellNames[tree[#tree][1]] = name
+        end
+    end
+    tree[#tree + 1] = { 999001, "Unrelated Talent", ranks.Unrelated or 0 }
+    spellNames[999001] = "Unrelated Talent"
+    return tree
 end
 local function levelAs(level) UnitLevel = function() return level end end
 function UnitClass() return "Warrior", "WARRIOR" end
 P:SetManualSpecID(72)
-GearVerdictDB.options = GearVerdictDB.options or {}
-GearVerdictDB.options.talentHint = true
+GearVerdictDB.options.levelingEnabled = true
+GearVerdictDB.options.levelingGuide = "icyveins"
 
 -- On the guide path: levels 10-27 done (18 points), level 28 point unspent
-mockTalents = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, ["Furious Precision"] = 3, Enrage = 2, ["Dual Wield Specialization"] = 3 })
+mockTree = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, ["Furious Precision"] = 3, Enrage = 2, ["Dual Wield Specialization"] = 3 })
 mockUnspent = 1
+local read = TA:Read()
+check(read and read.talents == 9 and read.spent == 18 and read.unspent == 1 and read.bySpell[23584] == 3
+    and read.ranks["dual wield specialization"] == 3, "Talent tree is read through C_Traits")
 local r = TA:Suggest(28)
 check(r.status == "ok" and r.mode == "talents" and r.step.talent == "Dual Wield Specialization" and r.step.rank == 4
     and not r.off and r.text == "Level 28: next talent -> Fury: Dual Wield Specialization (4/5)", "On the path: next guide step")
 -- Missed points: the player skipped Furious Precision; guide steps are filled first
-mockTalents = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, Enrage = 2, ["Dual Wield Specialization"] = 5 })
+mockTree = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, Enrage = 2, ["Dual Wield Specialization"] = 5 })
 r = TA:Suggest(28)
 check(r.step.talent == "Furious Precision" and r.step.rank == 1 and r.step.level == 20, "Missed guide points are filled first")
--- Off-path point (Deflection in Arms) is reported, hint keeps following the guide
-mockTalents = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, ["Furious Precision"] = 3, Enrage = 2, Unrelated = 1, ["Dual Wield Specialization"] = 2 })
+-- A guide talent that is not in the tree is skipped
+mockTree = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, Enrage = 2, ["Dual Wield Specialization"] = 3 }, "Furious Precision")
+r = TA:Suggest(28)
+check(r.status == "ok" and r.step.talent == "Dual Wield Specialization" and r.step.rank == 4, "Guide talents missing from the tree are skipped")
+-- Name as backup when the spell id differs
+mockTree = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, ["Furious Precision"] = 3, Enrage = 2, ["Dual Wield Specialization"] = 3 })
+mockTree[5][1] = 777777
+spellNames[777777] = "Dual Wield Specialization"
+r = TA:Suggest(28)
+check(r.mode == "talents" and r.step.talent == "Dual Wield Specialization" and r.step.rank == 4 and not r.off,
+    "A talent with another spell id is still found by name")
+-- activeEntry missing: the first entry is used
+mockTree = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, ["Furious Precision"] = 3, Enrage = 2, ["Dual Wield Specialization"] = 3 })
+mockTree[1].noActive = true
+check(TA:Read().bySpell[furySpells.Cruelty] == 5, "A node without an active entry is read from its first entry")
+-- Off-path point (Unrelated Talent) is reported, hint keeps following the guide
+mockTree = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, ["Furious Precision"] = 3, Enrage = 2, Unrelated = 1, ["Dual Wield Specialization"] = 2 })
 r = TA:Suggest(28)
 check(r.off and r.step.talent == "Dual Wield Specialization" and r.step.rank == 3, "Off-path talents noticed, guide still followed")
 check(table.concat(TH:Report(r), "\n"):find("off the guide path"), "Preview text mentions the deviation")
+check(table.concat(TH:Report(r), "\n"):find("Icy Veins guide"), "Preview text names the guide")
 -- No unspent points: silent at level-up, preview still works and says so
 mockUnspent = 0
 r = TA:Suggest(28)
 check(r.status == "nopoints" and r.text == nil, "No unspent points: no hint")
 r = TA:Suggest(28, { preview = true })
 check(r.status == "ok" and table.concat(TH:Report(r), "\n"):find("no unspent talent points"), "Preview works without points and says so")
--- Fallback: talent API empty -> by level
+-- Unspent points from HasUnspentTalentPoints when the currency gives nothing
+mockUnspent = nil
+check(TA:Read().unspent == 0, "No currency info and no unspent points: 0")
+-- Fallback: no talent config -> by level
 mockUnspent = 1
-mockTalents = nil
+mockTree = nil
 r = TA:Suggest(28)
-check(r.mode == "level" and r.step.talent == "Dual Wield Specialization" and r.step.level == 28, "Empty talent API falls back to the level")
+check(r.mode == "level" and r.step.talent == "Dual Wield Specialization" and r.step.level == 28, "Unreadable tree falls back to the level")
 check(table.concat(TH:Report(r), "\n"):find("by level only"), "Preview shows the fallback mode")
 -- Fallback: API missing completely
-local savedTabs = GetNumTalentTabs
-GetNumTalentTabs = nil
+local savedTraits = C_Traits
+C_Traits = nil
+mockTree = talents({})
 r = TA:Suggest(30)
 check(r.mode == "level" and r.step.talent == "Death Wish", "Missing talent functions fall back to the level")
-GetNumTalentTabs = savedTabs
--- Fallback: names do not match the guide
-mockTalents = { { { "Unrelated Talent", 1, 5 } }, { { "Other", 0, 3 } } }
+C_Traits = savedTraits
+-- Fallback: nothing in the tree matches the guide
+mockTree = { { 999001, "Unrelated Talent", 1 }, { 999002, "Other", 0 } }
+spellNames[999002] = "Other"
 r = TA:Suggest(28)
-check(r.mode == "level" and r.status == "ok", "Names that never match fall back to the level")
+check(r.mode == "level" and r.status == "ok", "A tree without any guide talent falls back to the level")
 -- Limits and switches
-mockTalents = talents({})
+mockTree = talents({})
 check(TA:Suggest(61).status == "range" and TA:Suggest(9).status == "range", "Nothing above 60 or below 10")
 check(TA:Suggest(60).status == "ok" and TA:Suggest(60).mode == "talents", "Level 60 is covered")
 P:SetManualSpecID(nil)
 check(TA:Suggest(28).status == "nospec", "No chosen spec: no hint")
 P:SetManualSpecID(72)
-GearVerdictDB.options.talentHint = nil
-check(TA:Suggest(28).status == "off" and TA:Suggest(28, { preview = true }).status == "ok", "Option off: silent, preview still works")
-GearVerdictDB.options.talentHint = true
+GearVerdictDB.options.levelingEnabled = nil
+check(TA:Suggest(28).status == "off" and TA:Suggest(28, { preview = true }).status == "ok", "Helper off: silent, preview still works")
+GearVerdictDB.options.levelingEnabled = true
 function UnitClass() return "Mage", "MAGE" end
 check(TA:Suggest(28).status == "nospec", "A spec of another class gives no hint")
+-- Wowhead guide: the user's Enhancement case (19 points like Wowhead's first 19, level 29 -> Flurry 5/5)
+function UnitClass() return "Shaman", "SHAMAN" end
+P:SetManualSpecID(263)
+GearVerdictDB.options.levelingGuide = "wowhead"
+mockTree = {}
+local enhRanks = { ["Thundering Strikes"] = 5, ["Mental Dexterity"] = 3, ["Ancestral Knowledge"] = 3, ["Shamanistic Focus"] = 1,
+    ["Elemental Weapons"] = 3, Flurry = 4 }
+local seenEnh = {}
+for _, step in ipairs(enh) do
+    if not seenEnh[step.talent] then
+        seenEnh[step.talent] = true
+        mockTree[#mockTree + 1] = { step.spellID, step.talent, enhRanks[step.talent] or 0 }
+        spellNames[step.spellID] = step.talent
+    end
+end
+r = TA:Suggest(29)
+check(r.status == "ok" and r.mode == "talents" and r.text == "Level 29: next talent -> Enhancement: Flurry (5/5)" and not r.off,
+    "Wowhead Enhancement: 19 points read, next is Flurry 5/5")
+GearVerdictDB.options.levelingGuide = "icyveins"
 function UnitClass() return "Warrior", "WARRIOR" end
+P:SetManualSpecID(72)
 
 -- Level-up flow: point arrives late
 local shown, printed, delayedCalls = {}, {}, {}
 TH.ShowBanner = function(_, text, note) shown[#shown + 1] = text end
 addon.Print = function(_, text) printed[#printed + 1] = text end
 C_Timer = { After = function(_, callback) delayedCalls[#delayedCalls + 1] = callback end }
-mockTalents = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, ["Furious Precision"] = 3, Enrage = 2, ["Dual Wield Specialization"] = 3 })
+mockTree = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, ["Furious Precision"] = 3, Enrage = 2, ["Dual Wield Specialization"] = 3 })
 mockUnspent = 0
 clock = 100
 TH:OnLevelUp(28)
@@ -728,9 +816,10 @@ TH.frame = nil
 TH:TryPending()
 check(#shown == 1 and shown[1]:find("Dual Wield Specialization") and #printed == 1 and not TH.pending,
     "Point arrives late: one banner and one chat line")
-GearVerdictDB.options.talentHint = nil
+GearVerdictDB.options.levelingEnabled = nil
 TH:OnLevelUp(29)
-check(not TH.pending, "Option off: level-up does nothing")
-GearVerdictDB.options.talentHint = nil
+check(not TH.pending, "Helper off: level-up does nothing")
+GearVerdictDB.options.levelingGuide = nil
+C_ClassTalents, C_Traits, C_Spell = nil, nil, nil
 function UnitClass() return "Shaman", "SHAMAN" end
 print("PASS: " .. tests .. " assertions; all addon files parse")

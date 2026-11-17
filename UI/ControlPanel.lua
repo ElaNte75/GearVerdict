@@ -17,6 +17,8 @@ panel.pages = {
       note = "How upgrades look in your bags and in tooltips." },
     { key = "weights", label = "Custom Weights", module = "PanelWeightsPage",
       note = "How much each stat is worth for your specialization." },
+    { key = "leveling", label = "Leveling", module = "PanelLevelingPage",
+      note = "Help while leveling: which talent to take next." },
     { key = "interface", label = "Interface", module = "PanelInterfacePage",
       note = "Colors of this window and how it behaves." },
     { key = "facts", label = "Facts", module = "PanelFactsPage",

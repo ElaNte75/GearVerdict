@@ -25,6 +25,7 @@ Data\Presets\Druid.lua
 Data\Weights.lua
 Data\WeightString.lua
 Data\TalentOrders.lua
+Data\TalentOrdersWowhead.lua
 Engine\StatNormalization.lua
 Engine\ItemData.lua
 Engine\Scoring.lua
@@ -44,6 +45,7 @@ UI\PanelStatPriority.lua
 UI\PanelSpecPage.lua
 UI\PanelOptionsPage.lua
 UI\PanelWeightsPage.lua
+UI\PanelLevelingPage.lua
 UI\PanelInterfacePage.lua
 UI\PanelFactsPage.lua
 UI\WeightTransferDialog.lua

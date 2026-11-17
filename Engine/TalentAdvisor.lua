@@ -2,28 +2,54 @@ local _, addon = ...
 local advisor = {}
 addon.TalentAdvisor = advisor
 
--- Decides which talent to take next, following the Icy Veins leveling order of the chosen spec
--- (Data\TalentOrders.lua). It looks at the talents the player really has and steers back onto the
--- guide: the suggestion is the EARLIEST guide step (up to the current level) whose rank is not reached yet.
--- If the talent functions are missing or give nothing usable, it falls back to "the step of this level".
+-- Decides which talent to take next, following the leveling order of the chosen guide (Wowhead or Icy Veins,
+-- Data\TalentOrders*.lua) for the chosen spec. It looks at the talents the player really has (Forever uses the
+-- modern talent-tree functions, C_ClassTalents / C_Traits) and steers back onto the guide: the suggestion is the
+-- EARLIEST guide step (up to the current level) whose rank is not reached yet. Guide talents that are not in the
+-- player's tree are skipped. If the tree cannot be read, it falls back to "the step of this level".
 
 advisor.FIRST_LEVEL, advisor.LAST_LEVEL = 10, 60
+advisor.GUIDES = { wowhead = "Wowhead", icyveins = "Icy Veins" }
+advisor.DEFAULT_GUIDE = "wowhead"
 
--- Guide steps for a spec, one per level: { level, tree, talent, rank, max }. Built once per spec.
+local function options() return GearVerdictDB and GearVerdictDB.options or {} end
+
+-- Master switch of the Leveling page: off = every leveling feature stays silent.
+function advisor:Enabled() return options().levelingEnabled and true or false end
+
+function advisor:GuideKey()
+    local key = options().levelingGuide
+    return self.GUIDES[key] and key or self.DEFAULT_GUIDE
+end
+
+function advisor:GuideName(key) return self.GUIDES[key or self:GuideKey()] end
+
+-- The old "Suggest next talent" option of the Options page becomes the master switch.
+function advisor:Migrate()
+    local db = GearVerdictDB and GearVerdictDB.options
+    if not db or db.talentHint == nil then return end
+    if db.levelingEnabled == nil then db.levelingEnabled = db.talentHint and true or nil end
+    db.talentHint = nil
+end
+
+-- Guide steps for a spec, one per level: { level, tree, talent, rank, max, spellID }. Built once per guide + spec.
 local expanded = {}
-function advisor:Steps(specID)
-    if expanded[specID] then return expanded[specID] end
-    local order = addon.TalentOrders and addon.TalentOrders[specID]
+function advisor:Steps(specID, guide)
+    guide = guide or self:GuideKey()
+    local cacheKey = guide .. ":" .. tostring(specID)
+    if expanded[cacheKey] then return expanded[cacheKey] end
+    local orders = addon.TalentGuides and addon.TalentGuides[guide]
+    local order = orders and orders[specID]
     if not order then return nil end
     local steps = {}
     for _, row in ipairs(order) do
         for level = row[1], row[2] do
             steps[#steps + 1] = { level = level, tree = row[3], talent = row[4],
-                rank = row[5] + (level - row[1] + 1), max = row[7] }
+                rank = row[5] + (level - row[1] + 1), max = row[7], spellID = row[8] }
         end
     end
     table.sort(steps, function(a, b) return a.level < b.level end)
-    expanded[specID] = steps
+    expanded[cacheKey] = steps
     return steps
 end
 
@@ -32,58 +58,93 @@ function advisor:TreeName(tree)
     return (name:gsub("(%a)(%w*)", function(first, rest) return first:upper() .. rest end))
 end
 
--- Reads the player's talents by name. Returns nil when the talent functions are missing or empty.
--- Result: { ranks = { [lowercase name] = rank }, talents = N, spent = points, unspent = points or nil }
+local function call(fn, ...)
+    if type(fn) ~= "function" then return nil end
+    local ok, value = pcall(fn, ...)
+    if ok then return value end
+    return nil
+end
+
+local function spellName(spellID)
+    local name = C_Spell and call(C_Spell.GetSpellName, spellID)
+    if not name and GetSpellInfo then name = call(GetSpellInfo, spellID) end
+    return type(name) == "string" and name ~= "" and name or nil
+end
+
+-- Reads the player's talent tree. Returns nil when the talent functions are missing or give nothing.
+-- Result: { bySpell = { [spellID] = rank }, names = { [spellID] = lowercase name }, ranks = { [lowercase name] = rank },
+--           talents = N, spent = points, unspent = points or nil }
 function advisor:Read()
-    if not GetNumTalentTabs or not GetNumTalents or not GetTalentInfo then return nil end
-    local ok, tabs = pcall(GetNumTalentTabs)
-    if not ok or type(tabs) ~= "number" or tabs < 1 then return nil end
-    local read = { ranks = {}, talents = 0, spent = 0 }
-    for tab = 1, tabs do
-        local okCount, count = pcall(GetNumTalents, tab)
-        if okCount and type(count) == "number" then
-            for index = 1, count do
-                local okInfo, name, _, _, _, rank = pcall(GetTalentInfo, tab, index)
-                if okInfo and type(name) == "string" and name ~= "" then
-                    rank = tonumber(rank) or 0
+    if not C_ClassTalents or not C_Traits then return nil end
+    local configID = call(C_ClassTalents.GetActiveConfigID)
+    if not configID then return nil end
+    local config = call(C_Traits.GetConfigInfo, configID)
+    local treeID = type(config) == "table" and type(config.treeIDs) == "table" and config.treeIDs[1]
+    if not treeID then return nil end
+    local nodes = call(C_Traits.GetTreeNodes, treeID)
+    if type(nodes) ~= "table" then return nil end
+    local read = { bySpell = {}, names = {}, ranks = {}, talents = 0, spent = 0 }
+    for _, nodeID in ipairs(nodes) do
+        local node = call(C_Traits.GetNodeInfo, configID, nodeID)
+        if type(node) == "table" then
+            local entryID = type(node.activeEntry) == "table" and node.activeEntry.entryID
+                or type(node.entryIDs) == "table" and node.entryIDs[1]
+            local entry = entryID and call(C_Traits.GetEntryInfo, configID, entryID)
+            local definition = type(entry) == "table" and entry.definitionID
+                and call(C_Traits.GetDefinitionInfo, entry.definitionID)
+            local spellID = type(definition) == "table" and tonumber(definition.spellID)
+            if spellID then
+                local rank = tonumber(node.currentRank) or tonumber(node.activeRank) or 0
+                local name = spellName(spellID)
+                read.bySpell[spellID] = rank
+                if name then
+                    read.names[spellID] = name:lower()
                     read.ranks[name:lower()] = rank
-                    read.talents = read.talents + 1
-                    read.spent = read.spent + rank
                 end
+                read.talents = read.talents + 1
+                read.spent = read.spent + rank
             end
         end
     end
     if read.talents == 0 then return nil end
-    local unspent
-    if UnitCharacterPoints then
-        local okPoints, points = pcall(UnitCharacterPoints, "player")
-        if okPoints and type(points) == "number" then unspent = points end
+    local currency = call(C_Traits.GetTreeCurrencyInfo, configID, treeID, false)
+    if type(currency) == "table" and type(currency[1]) == "table" and tonumber(currency[1].quantity) then
+        read.unspent = tonumber(currency[1].quantity)
+    else
+        local has = call(C_ClassTalents.HasUnspentTalentPoints)
+        if has == false then read.unspent = 0 end
     end
-    if unspent == nil and GetUnspentTalentPoints then
-        local okPoints, points = pcall(GetUnspentTalentPoints)
-        if okPoints and type(points) == "number" then unspent = points end
-    end
-    read.unspent = unspent
     return read
 end
 
--- Pure steering: the earliest guide step up to `level` that the given ranks have not reached.
+-- The player's rank of a guide talent: by spell id first, by name second; nil = not in the tree.
+local function rankOf(read, step)
+    if step.spellID and read.bySpell[step.spellID] ~= nil then return read.bySpell[step.spellID] end
+    return read.ranks[step.talent:lower()]
+end
+
+-- Pure steering: the earliest guide step up to `level` that the player has not reached.
 -- Returns step, off (true when talents outside the guide path were found), matched (guide talents found).
-function advisor:Steer(steps, level, ranks)
-    local final, matched = {}, 0
+function advisor:Steer(steps, level, read)
+    local finalBySpell, finalByName, seen, matched = {}, {}, {}, 0
     for _, step in ipairs(steps) do
-        final[step.talent:lower()] = step.rank
-    end
-    for name in pairs(final) do
-        if ranks[name] ~= nil then matched = matched + 1 end
+        if step.spellID then finalBySpell[step.spellID] = step.rank end
+        finalByName[step.talent:lower()] = step.rank
+        if not seen[step.talent] then
+            seen[step.talent] = true
+            if rankOf(read, step) ~= nil then matched = matched + 1 end
+        end
     end
     local off = false
-    for name, rank in pairs(ranks) do
-        if rank > (final[name] or 0) then off = true; break end
+    for spellID, rank in pairs(read.bySpell) do
+        local name = read.names[spellID]
+        local allowed = finalBySpell[spellID] or (name and finalByName[name]) or 0
+        if rank > allowed then off = true; break end
     end
     for _, step in ipairs(steps) do
         if step.level > level then break end
-        if (ranks[step.talent:lower()] or 0) < step.rank then return step, off, matched end
+        local have = rankOf(read, step)
+        if have ~= nil and have < step.rank then return step, off, matched end
     end
     return nil, off, matched
 end
@@ -93,16 +154,15 @@ local function describe(step, level)
         step.rank, step.max)
 end
 
--- Main entry. level = level to advise for (default: the player's). options.preview = ignore the on/off
--- option and the unspent-points rule (used by the Preview button and /gv talent).
--- Returns a table: status, level, mode ("talents" / "level" / nil), step, text, off, read, why.
+-- Main entry. level = level to advise for (default: the player's). options.preview = ignore the master switch
+-- and the unspent-points rule (used by the Preview button and /gv talent).
+-- Returns a table: status, level, guide, mode ("talents" / "level" / nil), step, text, off, read, why.
 -- status: "ok", "off", "nospec", "unsupported", "range", "nopoints", "done".
-function advisor:Suggest(level, options)
-    options = options or {}
-    local result = { level = tonumber(level) or UnitLevel() or 0 }
-    local db = GearVerdictDB and GearVerdictDB.options or {}
-    if not options.preview and not db.talentHint then
-        result.status, result.why = "off", "The option is switched off."
+function advisor:Suggest(level, opts)
+    opts = opts or {}
+    local result = { level = tonumber(level) or UnitLevel("player") or 0, guide = self:GuideKey() }
+    if not opts.preview and not self:Enabled() then
+        result.status, result.why = "off", "The leveling helper is switched off."
         return result
     end
     local specID = addon.Presets and addon.Presets:SelectedSpecID()
@@ -110,7 +170,7 @@ function advisor:Suggest(level, options)
         result.status, result.why = "nospec", "Choose your specialization in /gv first."
         return result
     end
-    local steps = self:Steps(specID)
+    local steps = self:Steps(specID, result.guide)
     if not steps then
         result.status, result.why = "unsupported", "No talent guide for this specialization."
         return result
@@ -123,11 +183,11 @@ function advisor:Suggest(level, options)
     local read = self:Read()
     result.read = read
     if read then
-        local step, off, matched = self:Steer(steps, result.level, read.ranks)
+        local step, off, matched = self:Steer(steps, result.level, read)
         result.matched = matched
         if matched > 0 then
             result.mode, result.off = "talents", off
-            if read.unspent == 0 and not options.preview then
+            if read.unspent == 0 and not opts.preview then
                 result.status, result.why = "nopoints", "No unspent talent points."
                 return result
             end
@@ -138,9 +198,9 @@ function advisor:Suggest(level, options)
             result.status, result.step, result.text = "ok", step, describe(step, result.level)
             return result
         end
-        result.why = "Talents were read, but none had the guide's names; using the level instead."
+        result.why = "Your talent tree was read, but none of the guide's talents are in it; using the level instead."
     else
-        result.why = "Talent functions give nothing; using the level instead."
+        result.why = "Your talent tree could not be read; using the level instead."
     end
     result.mode = "level"
     for _, step in ipairs(steps) do

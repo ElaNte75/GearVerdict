@@ -30,6 +30,7 @@ frame:SetScript("OnEvent", function(_, event, arg, success)
         GearVerdictDB.options = GearVerdictDB.options or {}
         GearVerdictDB.specChoices = GearVerdictDB.specChoices or {}
         addon.Weights:Migrate()
+        if addon.TalentAdvisor then addon.TalentAdvisor:Migrate() end
         if GearVerdictDB.build ~= select(2, GetBuildInfo()) then GearVerdictDB.cache = {} end
         GearVerdictDB.build = select(2, GetBuildInfo())
         addon.Diagnostics:Initialize()
