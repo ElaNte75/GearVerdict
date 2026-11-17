@@ -1,0 +1,48 @@
+## Interface: 16001
+## Title: GearVerdict
+## Notes: Experimental base-stat gear comparisons for Forever.
+## Author: GearVerdict
+## Version: 0.1.0
+## IconTexture: Interface\AddOns\GearVerdict\Media\icon.tga
+## SavedVariables: GearVerdictDB
+## OptionalDeps: GearVerdict_Debug
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
+Core\Bootstrap.lua
+Data\SpecDetection.lua
+Data\Presets.lua
+Data\Presets\Warrior.lua
+Data\Presets\Paladin.lua
+Data\Presets\Hunter.lua
+Data\Presets\Rogue.lua
+Data\Presets\Priest.lua
+Data\Presets\Shaman.lua
+Data\Presets\Mage.lua
+Data\Presets\Warlock.lua
+Data\Presets\Druid.lua
+Data\Weights.lua
+Data\WeightString.lua
+Engine\StatNormalization.lua
+Engine\ItemData.lua
+Engine\Scoring.lua
+Engine\Eligibility.lua
+Engine\Comparison.lua
+Display\RingPlacement.lua
+Display\Tooltips.lua
+Display\UpgradeIndicators.lua
+Display\BagArrows.lua
+Display\BagnonAdapter.lua
+Display\QuestArrows.lua
+UI\PanelWidgets.lua
+UI\ControlPanel.lua
+UI\PanelStatPriority.lua
+UI\PanelSpecPage.lua
+UI\PanelOptionsPage.lua
+UI\PanelWeightsPage.lua
+UI\PanelInterfacePage.lua
+UI\PanelFactsPage.lua
+UI\WeightTransferDialog.lua
+UI\MinimapIcon.lua
+Core\Core.lua

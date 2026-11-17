@@ -1,0 +1,74 @@
+local _, addon = ...
+local tooltips = { seen = setmetatable({}, { __mode = "k" }), tracked = setmetatable({}, { __mode = "k" }) }
+addon.Tooltips = tooltips
+
+function tooltips:Track(tooltip)
+    if self.tracked[tooltip] or not tooltip.HookScript then return end
+    self.tracked[tooltip] = true
+    local clear = function(frame) self.seen[frame] = nil end
+    tooltip:HookScript("OnTooltipCleared", clear)
+    tooltip:HookScript("OnHide", clear)
+    tooltip:HookScript("OnShow", function(frame)
+        if not self.seen[frame] then return end
+        addon.Diagnostics:Log("tooltip-geometry", "width=" .. tostring(frame.GetWidth and frame:GetWidth())
+            .. " height=" .. tostring(frame.GetHeight and frame:GetHeight())
+            .. " bottom=" .. tostring(frame.GetBottom and frame:GetBottom()))
+    end)
+end
+
+function tooltips:Process(tooltip)
+    if not GearVerdictDB or not tooltip.GetItem then return end
+    self:Track(tooltip)
+    local _, link = tooltip:GetItem()
+    if not link or not addon:IsPublic(link) then return end
+    if self.seen[tooltip] == link then return end
+    local name, _, _, _, _, _, _, _, equipLoc, _, _, classID = C_Item.GetItemInfo(link)
+    if not name or (classID ~= 2 and classID ~= 4) or not equipLoc or equipLoc == "" then return end
+    self.seen[tooltip] = link
+    local result, reason = addon.Comparison:Evaluate(link)
+    addon.Diagnostics:Log("comparison", link .. " " .. (result
+        and ("slot=" .. result.slot .. " delta=" .. result.delta) or tostring(reason)))
+    if result then
+        local previousLink = GetInventoryItemLink("player", result.slot)
+        addon.Diagnostics:Log("replacement", "slot=" .. result.slot .. " previous=" .. (previousLink or "empty"))
+        for stat, value in pairs(result.candidate.stats) do
+            addon.Diagnostics:Log("candidate-stat", stat .. "=" .. value .. " weight=" .. tostring(addon.Presets:Weight(stat)))
+        end
+    end
+    if not addon.Comparison:IsUpgrade(result) then return end
+    if addon.RingPlacement then addon.RingPlacement:Remember(link, result.slot) end
+    tooltip:AddLine(" ")
+    tooltip:AddLine("GearVerdict", 0.4, 0.8, 1)
+    local _, classFile = UnitClass("player")
+    local classColor = RAID_CLASS_COLORS and RAID_CLASS_COLORS[classFile]
+    local preset = addon.Presets:Get()
+    tooltip:AddLine(preset and preset.label or "Enhancement Shaman", classColor and classColor.r or 0.8,
+        classColor and classColor.g or 0.8, classColor and classColor.b or 0.8)
+    local percentMode = GearVerdictDB.options and GearVerdictDB.options.valueMode == "percent"
+    for _, entry in ipairs(result.comparisons) do
+        if entry.empty then
+            tooltip:AddLine("Upgrade", 0.3, 1, 0.3)
+        elseif entry.upgrade then
+            local quality = entry.previousLink and select(3, C_Item.GetItemInfo(entry.previousLink))
+            local color = quality and ITEM_QUALITY_COLORS and ITEM_QUALITY_COLORS[quality]
+            local right = percentMode and entry.percent and string.format("%+.1f%%", entry.percent)
+                or string.format("%+.2f pts", entry.delta)
+            tooltip:AddDoubleLine("|cffffd100vs|r " .. (entry.previousName or ("Slot " .. entry.slot)), right,
+                color and color.r or 0.85, color and color.g or 0.85, color and color.b or 0.85, 0.3, 1, 0.3)
+        end
+        addon.Diagnostics:Log("slot-comparison", "slot=" .. entry.slot .. " empty=" .. tostring(entry.empty)
+            .. " delta=" .. entry.delta .. " percent=" .. tostring(entry.percent))
+    end
+    addon.Diagnostics:Log("tooltip-layout", "mode=synchronous rows=" .. #result.comparisons
+        .. " lines=" .. tostring(tooltip.NumLines and tooltip:NumLines()))
+end
+
+function tooltips:Initialize()
+    if self.initialized then return end
+    if TooltipDataProcessor and Enum.TooltipDataType then
+        self.initialized = true
+        TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip)
+            self:Process(tooltip)
+        end)
+    end
+end
