@@ -46,20 +46,31 @@ function page:Create(parent)
 
     local hintLine, hintLabel = widgets:Section(frame, "Talent hint on level-up", anchor, widgets.GAP_SECTION)
     widgets:Help(frame, hintLabel, "Talent hint on level-up",
-        "When you reach a new level (10-60), a message in the middle of the screen and in chat tells you which "
+        "When you reach a new level (10-60), a message in the middle of the screen tells you which "
         .. "talent to take next, following the chosen guide for your specialization. It reads your talents and, "
         .. "if you took other ones, steers you back onto the guide.")
     local preview = widgets:Button(frame, "Preview", 80, function()
         if addon.TalentHint then addon.TalentHint:Preview() else addon:Print("Talent hint files are not loaded; restart the game.") end
     end)
     preview:SetPoint("TOPLEFT", hintLine, "BOTTOMLEFT", 2, -(widgets.GAP_AFTER_LINE + 2))
-    widgets:Tooltip(preview, "Preview", "Shows the suggestion for your current level now, and which way it was found "
-        .. "(reading your talents or by level only). Works even when the helper is off. Same as /gv talent.")
+    widgets:Tooltip(preview, "Preview", "Shows the message now, with your next talent point "
+        .. "(of a later level if everything up to now is taken). Works even when the helper is off. Same as /gv talent.")
     self.status = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     self.status:SetPoint("LEFT", preview, "RIGHT", 12, 0)
     self.status:SetPoint("RIGHT", frame, "RIGHT", -8, 0)
     self.status:SetJustifyH("LEFT")
     self.status:SetWordWrap(false)
+
+    local timeLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    timeLabel:SetPoint("TOPLEFT", preview, "BOTTOMLEFT", 0, -16)
+    timeLabel:SetText("Message stays")
+    local hint = addon.TalentHint
+    self.seconds = widgets:Slider(frame, hint and hint.MIN_SECONDS or 10, hint and hint.MAX_SECONDS or 60, 5, 160,
+        function() return hint and hint:ShowSeconds() or 20 end,
+        function(value) options().levelingBannerSeconds = value end,
+        function(value) return value .. " s" end)
+    self.seconds:SetPoint("LEFT", timeLabel, "RIGHT", 14, 0)
+    widgets:Tooltip(self.seconds, "Message stays", "How long the level-up message stays on screen: 10 seconds to 1 minute.")
     return frame
 end
 
@@ -73,6 +84,7 @@ function page:Update()
         check:SetChecked(check.guideKey == guide)
         widgets:UpdateCheck(check)
     end
+    self.seconds:Refresh()
     local specID = addon.Presets and addon.Presets:SelectedSpecID()
     if specID and addon.Presets:IsSupported(specID) then
         self.status:SetText("For: " .. widgets:SpecText(specID))

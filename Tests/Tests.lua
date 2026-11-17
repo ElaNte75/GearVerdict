@@ -712,7 +712,7 @@ check(read and read.talents == 9 and read.spent == 18 and read.unspent == 1 and 
     and read.ranks["dual wield specialization"] == 3, "Talent tree is read through C_Traits")
 local r = TA:Suggest(28)
 check(r.status == "ok" and r.mode == "talents" and r.step.talent == "Dual Wield Specialization" and r.step.rank == 4
-    and not r.off and r.text == "Level 28: next talent -> Fury: Dual Wield Specialization (4/5)", "On the path: next guide step")
+    and not r.off and r.text == "Level 28: Dual Wield Specialization (4/5)", "On the path: next guide step")
 -- Missed points: the player skipped Furious Precision; guide steps are filled first
 mockTree = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, Enrage = 2, ["Dual Wield Specialization"] = 5 })
 r = TA:Suggest(28)
@@ -736,14 +736,13 @@ check(TA:Read().bySpell[furySpells.Cruelty] == 5, "A node without an active entr
 mockTree = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, ["Furious Precision"] = 3, Enrage = 2, Unrelated = 1, ["Dual Wield Specialization"] = 2 })
 r = TA:Suggest(28)
 check(r.off and r.step.talent == "Dual Wield Specialization" and r.step.rank == 3, "Off-path talents noticed, guide still followed")
-check(table.concat(TH:Report(r), "\n"):find("off the guide path"), "Preview text mentions the deviation")
-check(table.concat(TH:Report(r), "\n"):find("Icy Veins guide"), "Preview text names the guide")
+check(TH:PreviewText(r) == r.text, "Preview shows the suggestion")
 -- No unspent points: silent at level-up, preview still works and says so
 mockUnspent = 0
 r = TA:Suggest(28)
 check(r.status == "nopoints" and r.text == nil, "No unspent points: no hint")
 r = TA:Suggest(28, { preview = true })
-check(r.status == "ok" and table.concat(TH:Report(r), "\n"):find("no unspent talent points"), "Preview works without points and says so")
+check(r.status == "ok" and r.read.unspent == 0, "Preview works without points")
 -- Unspent points from HasUnspentTalentPoints when the currency gives nothing
 mockUnspent = nil
 check(TA:Read().unspent == 0, "No currency info and no unspent points: 0")
@@ -752,7 +751,7 @@ mockUnspent = 1
 mockTree = nil
 r = TA:Suggest(28)
 check(r.mode == "level" and r.step.talent == "Dual Wield Specialization" and r.step.level == 28, "Unreadable tree falls back to the level")
-check(table.concat(TH:Report(r), "\n"):find("by level only"), "Preview shows the fallback mode")
+check(TH:PreviewText(r) == "Level 28: Dual Wield Specialization (4/5)", "Fallback text has the same form")
 -- Fallback: API missing completely
 local savedTraits = C_Traits
 C_Traits = nil
@@ -793,15 +792,19 @@ for _, step in ipairs(enh) do
     end
 end
 r = TA:Suggest(29)
-check(r.status == "ok" and r.mode == "talents" and r.text == "Level 29: next talent -> Enhancement: Flurry (5/5)" and not r.off,
+check(r.status == "ok" and r.mode == "talents" and r.text == "Level 29: Flurry (5/5)" and not r.off,
     "Wowhead Enhancement: 19 points read, next is Flurry 5/5")
+check(TA:Suggest(28).status == "done", "Level 28 with everything taken: no level-up hint")
+r = TA:Suggest(28, { preview = true })
+check(r.status == "ok" and r.ahead and TH:PreviewText(r) == "Level 29: Flurry (5/5)",
+    "Preview at 28 with everything taken shows the next point (level 29)")
 GearVerdictDB.options.levelingGuide = "icyveins"
 function UnitClass() return "Warrior", "WARRIOR" end
 P:SetManualSpecID(72)
 
 -- Level-up flow: point arrives late
-local shown, printed, delayedCalls = {}, {}, {}
-TH.ShowBanner = function(_, text, note) shown[#shown + 1] = text end
+local shown, printed, delayedCalls, titles = {}, {}, {}, {}
+TH.ShowBanner = function(_, text, title) shown[#shown + 1] = text; titles[#shown] = title or TH.TITLE end
 addon.Print = function(_, text) printed[#printed + 1] = text end
 C_Timer = { After = function(_, callback) delayedCalls[#delayedCalls + 1] = callback end }
 mockTree = talents({ Cruelty = 5, ["Unbridled Wrath"] = 5, ["Furious Precision"] = 3, Enrage = 2, ["Dual Wield Specialization"] = 3 })
@@ -814,8 +817,20 @@ mockUnspent = 1
 clock = 102
 TH.frame = nil
 TH:TryPending()
-check(#shown == 1 and shown[1]:find("Dual Wield Specialization") and #printed == 1 and not TH.pending,
-    "Point arrives late: one banner and one chat line")
+check(#shown == 1 and shown[1]:find("Dual Wield Specialization") and #printed == 0 and not TH.pending,
+    "Point arrives late: one banner, nothing in chat")
+check(titles[1] == "GearVerdict", "Level-up banner title is GearVerdict")
+check(TH:ShowSeconds() == 20, "Message stays 20 seconds by default")
+GearVerdictDB.options.levelingBannerSeconds = 45
+check(TH:ShowSeconds() == 45, "Message time follows the slider")
+GearVerdictDB.options.levelingBannerSeconds = 500
+check(TH:ShowSeconds() == 60, "Message time never above 1 minute")
+GearVerdictDB.options.levelingBannerSeconds = 2
+check(TH:ShowSeconds() == 10, "Message time never below 10 seconds")
+GearVerdictDB.options.levelingBannerSeconds = nil
+TH:Preview(28)
+check(titles[2] == "GearVerdict Preview" and shown[2] == "Level 28: Dual Wield Specialization (4/5)" and #printed == 0,
+    "Preview banner title says Preview, nothing in chat")
 GearVerdictDB.options.levelingEnabled = nil
 TH:OnLevelUp(29)
 check(not TH.pending, "Helper off: level-up does nothing")

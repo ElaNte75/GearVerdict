@@ -5,13 +5,21 @@ addon.MinimapIcon = icon
 -- Minimap launcher made with LibDataBroker + LibDBIcon (embedded in Libs/), the standard way, so the
 -- button works on its own around the minimap and is also collected by button bags such as the
 -- Leatrix Plus "Combine addon buttons" bag. Saved in GearVerdictDB.options.minimap (LibDBIcon format).
+-- It is also listed in the game's own addon menu next to the minimap (the TOC names the three global
+-- functions at the end of this file).
 
 local NAME = "GearVerdict"
 icon.texture = "Interface/AddOns/GearVerdict/Media/icon"
 
 function icon:DB()
     local options = GearVerdictDB.options
-    if type(options.minimap) ~= "table" then options.minimap = { hide = false } end
+    if type(options.minimap) ~= "table" then options.minimap = { hide = true } end
+    -- Since GearVerdict is in the game's addon menu, the minimap button is hidden by default (once, also for
+    -- players who had it); "Show the minimap icon" on the Interface page brings it back.
+    if not options.minimapMenuDefault then
+        options.minimap.hide = true
+        options.minimapMenuDefault = true
+    end
     return options.minimap
 end
 
@@ -56,4 +64,19 @@ function icon:SetShown(shown)
     self:DB().hide = not shown
     if not self.dbicon then return end
     if shown then self.dbicon:Show(NAME) else self.dbicon:Hide(NAME) end
+end
+
+-- Game addon menu (minimap addon list): click opens or closes the Control Panel, hover shows the tooltip.
+function GearVerdict_OnAddonCompartmentClick()
+    SlashCmdList.GEARVERDICT("")
+end
+
+function GearVerdict_OnAddonCompartmentEnter(_, menuButton)
+    GameTooltip:SetOwner(menuButton or UIParent, "ANCHOR_LEFT")
+    icon:Tooltip(GameTooltip)
+    GameTooltip:Show()
+end
+
+function GearVerdict_OnAddonCompartmentLeave()
+    GameTooltip:Hide()
 end

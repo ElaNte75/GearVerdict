@@ -2,8 +2,11 @@
 ## Title: GearVerdict
 ## Notes: Experimental base-stat gear comparisons for Forever.
 ## Author: GearVerdict
-## Version: 0.1.0
+## Version: 0.1.1
 ## IconTexture: Interface\AddOns\GearVerdict\Media\icon.tga
+## AddonCompartmentFunc: GearVerdict_OnAddonCompartmentClick
+## AddonCompartmentFuncOnEnter: GearVerdict_OnAddonCompartmentEnter
+## AddonCompartmentFuncOnLeave: GearVerdict_OnAddonCompartmentLeave
 ## SavedVariables: GearVerdictDB
 ## OptionalDeps: GearVerdict_Debug
 Libs\LibStub\LibStub.lua

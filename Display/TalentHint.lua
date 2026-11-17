@@ -2,48 +2,41 @@ local _, addon = ...
 local hint = {}
 addon.TalentHint = hint
 
--- Shows the talent suggestion: a small banner in the middle of the screen (20 seconds, with a countdown
--- and an X to close it earlier) and the same line in chat. The choice itself is made in
--- Engine\TalentAdvisor.lua. Also provides the preview report.
+-- Shows the talent suggestion: three centered lines in the middle of the screen, no background (title,
+-- level line, small countdown). How long it stays is chosen on the Leveling page (10-60 s, default 20).
+-- Nothing goes to chat. The choice itself is made in Engine\TalentAdvisor.lua.
 
-hint.SHOW_SECONDS = 20
+hint.SHOW_SECONDS, hint.MIN_SECONDS, hint.MAX_SECONDS = 20, 10, 60
 hint.WAIT_SECONDS = 6
-hint.OFF_PATH_TEXT = "You are off the guide path; following it from here."
+hint.TITLE = "GearVerdict"
+hint.PREVIEW_TITLE = "GearVerdict Preview"
 
 local function enabled()
     return addon.TalentAdvisor and addon.TalentAdvisor:Enabled() or false
 end
 
+-- Seconds the message stays on screen (Leveling page slider).
+function hint:ShowSeconds()
+    local value = tonumber(GearVerdictDB and GearVerdictDB.options and GearVerdictDB.options.levelingBannerSeconds)
+    if not value then return self.SHOW_SECONDS end
+    return math.max(self.MIN_SECONDS, math.min(self.MAX_SECONDS, math.floor(value + 0.5)))
+end
+
 function hint:CreateBanner()
     if self.banner then return self.banner end
     local banner = CreateFrame("Frame", nil, UIParent)
-    banner:SetSize(520, 54)
+    banner:SetSize(520, 62)
     banner:SetPoint("CENTER", UIParent, "CENTER", 0, 180)
     banner:SetFrameStrata("DIALOG")
-    banner:EnableMouse(true)
-    local background = banner:CreateTexture(nil, "BACKGROUND")
-    background:SetAllPoints()
-    background:SetColorTexture(0, 0, 0, 0.7)
-    local edge = banner:CreateTexture(nil, "BORDER")
-    edge:SetPoint("BOTTOMLEFT")
-    edge:SetPoint("BOTTOMRIGHT")
-    edge:SetHeight(2)
-    edge:SetColorTexture(1, 0.82, 0, 1)
-    banner.main = banner:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    banner.main:SetPoint("TOP", 0, -9)
+    banner:EnableMouse(false)
+    -- No background: title, level line and a small countdown line, all centered.
+    banner.title = banner:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    banner.title:SetPoint("TOP", 0, -6)
+    banner.main = banner:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+    banner.main:SetPoint("TOP", banner.title, "BOTTOM", 0, -6)
     banner.main:SetWidth(460)
-    banner.note = banner:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    banner.note:SetPoint("TOP", banner.main, "BOTTOM", 0, -4)
-    banner.note:SetWidth(460)
-    -- X in the top-right corner: close it yourself once you have read it.
-    local close = CreateFrame("Button", nil, banner, "UIPanelCloseButton")
-    close:SetSize(24, 24)
-    close:SetPoint("TOPRIGHT", 2, 2)
-    close:SetScript("OnClick", function() banner:Hide() end)
-    banner.close = close
-    -- Countdown in the bottom-right corner, updated about once per second.
     banner.timer = banner:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-    banner.timer:SetPoint("BOTTOMRIGHT", -6, 5)
+    banner.timer:SetPoint("TOP", banner.main, "BOTTOM", 0, -5)
     banner:SetScript("OnUpdate", function(frame)
         local left = (frame.hideAt or 0) - GetTime()
         if left <= 0 then frame:Hide(); return end
@@ -58,22 +51,18 @@ function hint:CreateBanner()
     return banner
 end
 
-function hint:ShowBanner(text, note)
+function hint:ShowBanner(text, title)
     local banner = self:CreateBanner()
-    banner.main:SetText("GearVerdict \226\128\148 " .. text)
-    banner.note:SetText(note or "")
-    banner:SetHeight(note and 78 or 62)
-    banner.hideAt = GetTime() + self.SHOW_SECONDS
+    banner.title:SetText(title or self.TITLE)
+    banner.main:SetText(text)
+    banner.hideAt = GetTime() + self:ShowSeconds()
     banner.shownSeconds = nil
     banner:Show()
 end
 
--- Banner + chat for a finished suggestion (status "ok").
+-- Banner for a finished suggestion (status "ok"): title + level line only. Nothing goes to chat.
 function hint:Display(result)
-    local note = result.off and result.mode == "talents" and self.OFF_PATH_TEXT or nil
-    self:ShowBanner(result.text, note)
-    addon:Print(result.text)
-    if note then addon:Print(note) end
+    self:ShowBanner(result.text)
 end
 
 -- Level-up flow. The point may arrive a moment after the level, so wait briefly and listen for the change.
@@ -115,37 +104,15 @@ function hint:Initialize()
     end)
 end
 
--- Lines of the preview report (also used by tests).
-function hint:Report(result)
-    local lines = {}
-    local mode = result.mode == "talents" and "reading your real talents"
-        or result.mode == "level" and "by level only (fallback: your talents could not be used)" or "none"
-    lines[#lines + 1] = ("Talent hint preview for level %d (%s guide). Mode: %s."):format(result.level or 0,
-        addon.TalentAdvisor:GuideName(result.guide) or "?", mode)
-    local read = result.read
-    if read then
-        lines[#lines + 1] = ("Read: %d talents, %d points spent, unspent points: %s, guide talents found in your tree: %d.")
-            :format(read.talents, read.spent, read.unspent == nil and "unknown" or tostring(read.unspent),
-                result.matched or 0)
-    else
-        lines[#lines + 1] = "Read: nothing (your talent tree could not be read)."
-    end
-    if result.status == "ok" then
-        lines[#lines + 1] = result.text
-        if result.off and result.mode == "talents" then lines[#lines + 1] = self.OFF_PATH_TEXT end
-    else
-        lines[#lines + 1] = "No suggestion: " .. (result.why or result.status)
-    end
-    if result.why and result.status == "ok" then lines[#lines + 1] = result.why end
-    if read and read.unspent == 0 then lines[#lines + 1] = "You have no unspent talent points right now." end
-    return lines
+-- Preview: same banner with the title "GearVerdict Preview". It shows the next guide point (even one of a
+-- later level when everything up to now is taken), else the reason there is none.
+function hint:PreviewText(result)
+    if result.status == "ok" then return result.text end
+    return "No talent hint: " .. (result.why or result.status or "?")
 end
 
 function hint:Preview(level)
     local result = addon.TalentAdvisor:Suggest(level, { preview = true })
-    for _, line in ipairs(self:Report(result)) do addon:Print(line) end
-    if result.status == "ok" then
-        self:ShowBanner(result.text, result.off and result.mode == "talents" and self.OFF_PATH_TEXT or nil)
-    end
+    self:ShowBanner(self:PreviewText(result), self.PREVIEW_TITLE)
     return result
 end

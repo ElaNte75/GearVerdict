@@ -150,8 +150,7 @@ function advisor:Steer(steps, level, read)
 end
 
 local function describe(step, level)
-    return ("Level %d: next talent -> %s: %s (%d/%d)"):format(level, advisor:TreeName(step.tree), step.talent,
-        step.rank, step.max)
+    return ("Level %d: %s (%d/%d)"):format(level, step.talent, step.rank, step.max)
 end
 
 -- Main entry. level = level to advise for (default: the player's). options.preview = ignore the master switch
@@ -190,6 +189,15 @@ function advisor:Suggest(level, opts)
             if read.unspent == 0 and not opts.preview then
                 result.status, result.why = "nopoints", "No unspent talent points."
                 return result
+            end
+            if not step and opts.preview then
+                -- Everything up to now is taken: the preview shows the next guide point of a later level.
+                local ahead = self:Steer(steps, self.LAST_LEVEL, read)
+                if ahead then
+                    result.status, result.step, result.ahead = "ok", ahead, true
+                    result.text = describe(ahead, ahead.level)
+                    return result
+                end
             end
             if not step then
                 result.status, result.why = "done", "Everything the guide wants up to this level is taken."

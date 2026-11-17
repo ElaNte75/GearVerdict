@@ -73,8 +73,8 @@ function page:Create(parent, panel)
     self.minimap = widgets:Check(frame, "Show the minimap icon", self.lock, widgets.GAP_NEXT_CHECK, function(_, checked)
         addon.MinimapIcon:SetShown(checked)
     end)
-    widgets:Tooltip(self.minimap, "Show the minimap icon", "A button by the minimap that opens and closes this window. "
-        .. "Drag it around the minimap. Button-bag addons (such as the Leatrix Plus button bag) collect it too.")
+    widgets:Tooltip(self.minimap, "Show the minimap icon", "An extra button by the minimap that opens and closes this "
+        .. "window. Off by default: GearVerdict is always in the game's addon menu next to the minimap.")
     local reset = widgets:Button(frame, "Reset position", 110, function() panel:ResetPosition() end)
     reset:SetPoint("TOPLEFT", self.minimap, "BOTTOMLEFT", 4, -6)
     widgets:Tooltip(reset, "Reset position", "Move the window back to the middle of the screen.")

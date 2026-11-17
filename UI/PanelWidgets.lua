@@ -230,3 +230,48 @@ function widgets:Button(parent, text, width, onClick)
     if onClick then button:SetScript("OnClick", onClick) end
     return button
 end
+
+-- Flat slider: thin track, fill in the theme color up to the handle, value shown at the right.
+-- get() returns the current value, set(value) stores it; format(value) gives the text at the right.
+function widgets:Slider(parent, minValue, maxValue, step, width, get, set, format)
+    local slider = CreateFrame("Slider", nil, parent)
+    slider:SetSize(width or 180, 16)
+    slider:SetOrientation("HORIZONTAL")
+    slider:SetMinMaxValues(minValue, maxValue)
+    slider:SetValueStep(step)
+    if slider.SetObeyStepOnDrag then slider:SetObeyStepOnDrag(true) end
+    slider:EnableMouse(true)
+    slider:SetHitRectInsets(0, 0, -4, -4)
+    local track = slider:CreateTexture(nil, "BACKGROUND")
+    track:SetHeight(4)
+    track:SetPoint("LEFT")
+    track:SetPoint("RIGHT")
+    self:Fill(track, "divider")
+    local thumb = slider:CreateTexture(nil, "OVERLAY")
+    thumb:SetSize(8, 14)
+    self:Fill(thumb, "checked")
+    slider:SetThumbTexture(thumb)
+    local fill = slider:CreateTexture(nil, "ARTWORK")
+    fill:SetHeight(4)
+    fill:SetPoint("LEFT", track, "LEFT")
+    fill:SetPoint("RIGHT", thumb, "CENTER")
+    self:Fill(fill, "sectionLine")
+    local value = slider:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    value:SetPoint("LEFT", slider, "RIGHT", 12, 0)
+    self:PaintText(value, "checked")
+    local updating = false
+    slider:SetScript("OnValueChanged", function(_, raw)
+        if updating then return end
+        local rounded = math.floor(raw / step + 0.5) * step
+        set(rounded)
+        value:SetText(format and format(rounded) or tostring(rounded))
+    end)
+    function slider:Refresh()
+        updating = true
+        local current = get()
+        self:SetValue(current)
+        value:SetText(format and format(current) or tostring(current))
+        updating = false
+    end
+    return slider
+end
