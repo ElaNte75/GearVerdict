@@ -2,10 +2,11 @@ local _, addon = ...
 local hint = {}
 addon.TalentHint = hint
 
--- Shows the talent suggestion: a small banner in the middle of the screen (about 8 seconds) and the same
--- line in chat. The choice itself is made in Engine\TalentAdvisor.lua. Also provides the preview report.
+-- Shows the talent suggestion: a small banner in the middle of the screen (20 seconds, with a countdown
+-- and an X to close it earlier) and the same line in chat. The choice itself is made in
+-- Engine\TalentAdvisor.lua. Also provides the preview report.
 
-hint.SHOW_SECONDS = 8
+hint.SHOW_SECONDS = 20
 hint.WAIT_SECONDS = 6
 hint.OFF_PATH_TEXT = "You are off the guide path; following it from here."
 
@@ -19,7 +20,7 @@ function hint:CreateBanner()
     banner:SetSize(520, 54)
     banner:SetPoint("CENTER", UIParent, "CENTER", 0, 180)
     banner:SetFrameStrata("DIALOG")
-    banner:EnableMouse(false)
+    banner:EnableMouse(true)
     local background = banner:CreateTexture(nil, "BACKGROUND")
     background:SetAllPoints()
     background:SetColorTexture(0, 0, 0, 0.7)
@@ -30,10 +31,28 @@ function hint:CreateBanner()
     edge:SetColorTexture(1, 0.82, 0, 1)
     banner.main = banner:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     banner.main:SetPoint("TOP", 0, -9)
-    banner.main:SetWidth(500)
+    banner.main:SetWidth(460)
     banner.note = banner:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     banner.note:SetPoint("TOP", banner.main, "BOTTOM", 0, -4)
-    banner.note:SetWidth(500)
+    banner.note:SetWidth(460)
+    -- X in the top-right corner: close it yourself once you have read it.
+    local close = CreateFrame("Button", nil, banner, "UIPanelCloseButton")
+    close:SetSize(24, 24)
+    close:SetPoint("TOPRIGHT", 2, 2)
+    close:SetScript("OnClick", function() banner:Hide() end)
+    banner.close = close
+    -- Countdown in the bottom-right corner, updated about once per second.
+    banner.timer = banner:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    banner.timer:SetPoint("BOTTOMRIGHT", -6, 5)
+    banner:SetScript("OnUpdate", function(frame)
+        local left = (frame.hideAt or 0) - GetTime()
+        if left <= 0 then frame:Hide(); return end
+        local seconds = math.ceil(left)
+        if seconds ~= frame.shownSeconds then
+            frame.shownSeconds = seconds
+            frame.timer:SetText(("closes in %ds"):format(seconds))
+        end
+    end)
     banner:Hide()
     self.banner = banner
     return banner
@@ -43,13 +62,10 @@ function hint:ShowBanner(text, note)
     local banner = self:CreateBanner()
     banner.main:SetText("GearVerdict \226\128\148 " .. text)
     banner.note:SetText(note or "")
-    banner:SetHeight(note and 70 or 54)
+    banner:SetHeight(note and 78 or 62)
+    banner.hideAt = GetTime() + self.SHOW_SECONDS
+    banner.shownSeconds = nil
     banner:Show()
-    self.token = (self.token or 0) + 1
-    local token = self.token
-    C_Timer.After(self.SHOW_SECONDS, function()
-        if self.token == token then banner:Hide() end
-    end)
 end
 
 -- Banner + chat for a finished suggestion (status "ok").
