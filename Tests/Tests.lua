@@ -650,9 +650,9 @@ check(enh[20].talent == "Flurry" and enh[20].level == 29 and enh[20].rank == 5 a
 
 -- Settings: default guide, master switch, migration of the old Options checkbox
 GearVerdictDB.options = GearVerdictDB.options or {}
-check(TA:GuideKey() == "wowhead" and TA:GuideName() == "Wowhead", "Default guide is Wowhead")
+check(TA:GuideKey() == "icyveins" and TA:GuideName() == "Icy Veins", "Default guide is Icy Veins")
 GearVerdictDB.options.levelingGuide = "nonsense"
-check(TA:GuideKey() == "wowhead", "Unknown guide falls back to Wowhead")
+check(TA:GuideKey() == "icyveins", "Unknown guide falls back to Icy Veins")
 GearVerdictDB.options.talentHint = true
 TA:Migrate()
 check(GearVerdictDB.options.levelingEnabled == true and GearVerdictDB.options.talentHint == nil, "Old talent option moves to the master switch")

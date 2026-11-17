@@ -10,7 +10,7 @@ addon.TalentAdvisor = advisor
 
 advisor.FIRST_LEVEL, advisor.LAST_LEVEL = 10, 60
 advisor.GUIDES = { wowhead = "Wowhead", icyveins = "Icy Veins" }
-advisor.DEFAULT_GUIDE = "wowhead"
+advisor.DEFAULT_GUIDE = "icyveins"
 
 local function options() return GearVerdictDB and GearVerdictDB.options or {} end
 

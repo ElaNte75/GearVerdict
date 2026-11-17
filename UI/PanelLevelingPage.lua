@@ -26,11 +26,11 @@ function page:Create(parent)
     widgets:Help(frame, guideLabel, "Talent guide",
         "Which website's talent order the hint follows. Both cover levels 10-60 for every specialization.")
     local choices = {
+        { key = "icyveins", label = "Icy Veins  (default)", tip = "The talent order of the Icy Veins leveling guide for your "
+            .. "specialization. Complete for every specialization." },
         { key = "wowhead", label = "Wowhead", tip = "The first build's \"Talent Order\" on Wowhead's talent page for your "
             .. "specialization. Where that page has none (Rogue, Warlock, Balance and Restoration Druid) Wowhead's "
             .. "leveling guide order is used." },
-        { key = "icyveins", label = "Icy Veins", tip = "The talent order of the Icy Veins leveling guide for your "
-            .. "specialization." },
     }
     local anchor, gap = guideLine, widgets.GAP_AFTER_LINE - 4
     for _, choice in ipairs(choices) do
@@ -68,7 +68,7 @@ function page:Update()
     local widgets, advisor = addon.PanelWidgets, addon.TalentAdvisor
     self.enable:SetChecked(options().levelingEnabled and true or false)
     widgets:UpdateCheck(self.enable)
-    local guide = advisor and advisor:GuideKey() or "wowhead"
+    local guide = advisor and advisor:GuideKey() or "icyveins"
     for _, check in ipairs(self.guideChecks) do
         check:SetChecked(check.guideKey == guide)
         widgets:UpdateCheck(check)

@@ -63,7 +63,7 @@ local sections = {
     { title = "Talent hint on level-up", entries = {
         { title = "Next talent suggestion", tag = "unverified",
           text = "Optional (Leveling page, off by default). At each level from 10 to 60 it names the next talent from "
-            .. "the chosen guide (Wowhead or Icy Veins) for your chosen specialization. It reads your real talent tree "
+            .. "the chosen guide (Icy Veins by default, or Wowhead) for your chosen specialization. It reads your real talent tree "
             .. "and steers you back to the guide if you took others. Reading the tree was tested in Forever with a "
             .. "test logger; the hint itself is not seen working at a level-up yet. If the tree cannot be read it "
             .. "suggests by level only; the Preview button shows which way it worked." },
