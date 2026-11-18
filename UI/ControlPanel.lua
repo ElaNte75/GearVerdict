@@ -6,22 +6,24 @@ addon.ControlPanel = panel
 -- Each page lives in its own module with :Create(parent, panel) returning its frame, and :Update().
 -- Window behavior (options): windowPosition, lockWindow, hideInCombat, reopenAfterCombat.
 
-local WIDTH, HEIGHT = 540, 440
-local SIDEBAR, HEADER, FOOTER, PADDING = 140, 50, 40, 14
+local WIDTH, HEIGHT = 660, 500
+local SIDEBAR, HEADER, FOOTER, PADDING = 172, 60, 48, 18
+local LOGO = "Interface\\AddOns\\GearVerdict\\Media\\icon.tga"
+local ICONS = "Interface\\Icons\\"
 panel.contentWidth = WIDTH - SIDEBAR - 2 * PADDING
 
 panel.pages = {
-    { key = "spec", label = "Specialization", module = "PanelSpecPage",
+    { key = "spec", icon = "class", label = "Specialization", module = "PanelSpecPage",
       note = "Choose the specialization GearVerdict compares gear for." },
-    { key = "options", label = "Options", module = "PanelOptionsPage",
+    { key = "options", icon = "INV_Misc_Spyglass_02", label = "Options", module = "PanelOptionsPage",
       note = "How upgrades look in your bags and in tooltips." },
-    { key = "weights", label = "Custom Weights", module = "PanelWeightsPage",
+    { key = "weights", icon = "INV_Misc_Note_01", label = "Custom Weights", module = "PanelWeightsPage",
       note = "How much each stat is worth for your specialization." },
-    { key = "leveling", label = "Leveling", module = "PanelLevelingPage",
+    { key = "leveling", icon = "INV_Misc_Book_09", label = "Leveling", module = "PanelLevelingPage",
       note = "Help while leveling: which talent to take next." },
-    { key = "interface", label = "Interface", module = "PanelInterfacePage",
+    { key = "interface", icon = "INV_Misc_Gear_01", label = "Interface", module = "PanelInterfacePage",
       note = "Colors of this window and how it behaves." },
-    { key = "facts", label = "Facts", module = "PanelFactsPage",
+    { key = "facts", icon = "INV_Misc_QuestionMark", label = "Facts", module = "PanelFactsPage",
       note = "What GearVerdict counts, what it does not, and how sure we are." },
 }
 
@@ -34,23 +36,52 @@ local function line(frame, width, height)
     return texture
 end
 
-local function navButton(parent, label)
+-- The page icon; "class" = the player's class emblem (round, from the game's class icons).
+local function setIcon(texture, icon)
+    local _, classFile = UnitClass("player")
+    local coords = icon == "class" and CLASS_ICON_TCOORDS and CLASS_ICON_TCOORDS[classFile]
+    if coords then
+        texture:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
+        texture:SetTexCoord(coords[1], coords[2], coords[3], coords[4])
+    else
+        texture:SetTexture(ICONS .. (icon ~= "class" and icon or "INV_Misc_Book_11"))
+        texture:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+    end
+end
+
+local function navButton(parent, label, icon)
     local widgets = addon.PanelWidgets
     local button = CreateFrame("Button", nil, parent)
-    button:SetHeight(24)
+    button:SetHeight(30)
     button.bg = button:CreateTexture(nil, "BACKGROUND")
     button.bg:SetAllPoints()
     local highlight = button:CreateTexture(nil, "HIGHLIGHT")
     highlight:SetAllPoints()
     widgets:Fill(highlight, "navHighlightBg")
+    button.bar = button:CreateTexture(nil, "ARTWORK")
+    button.bar:SetPoint("TOPLEFT")
+    button.bar:SetPoint("BOTTOMLEFT")
+    button.bar:SetWidth(3)
+    button.icon = button:CreateTexture(nil, "ARTWORK")
+    button.icon:SetSize(18, 18)
+    button.icon:SetPoint("LEFT", 11, 0)
+    setIcon(button.icon, icon)
     button.text = button:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    button.text:SetPoint("LEFT", 8, 0)
+    button.text:SetPoint("LEFT", button.icon, "RIGHT", 8, 0)
     button.text:SetPoint("RIGHT", -4, 0)
     button.text:SetJustifyH("LEFT")
     button.text:SetWordWrap(false)
     button.text:SetText(label)
     function button:SetSelected(selected)
-        if selected then widgets:Fill(self.bg, "navSelectedBg", true) else self.bg:SetColorTexture(0, 0, 0, 0) end
+        if selected then
+            widgets:Fill(self.bg, "navSelectedBg", true)
+            widgets:Fill(self.bar, "checked", true)
+        else
+            self.bg:SetColorTexture(0, 0, 0, 0)
+        end
+        self.bar:SetShown(selected)
+        self.icon:SetDesaturated(not selected)
+        self.icon:SetAlpha(selected and 1 or 0.75)
         self.text:SetTextColor(widgets:Color(selected and "navSelectedText" or "navText"))
     end
     button:SetSelected(false)
@@ -174,7 +205,9 @@ function panel:Build()
     content:SetPoint("TOPLEFT", sidebar, "TOPRIGHT")
     content:SetPoint("BOTTOMRIGHT", 0, FOOTER)
     widgets:Background(content, "contentBg")
-    local headerLine = line(frame, WIDTH, 1)
+    local headerLine = frame:CreateTexture(nil, "BORDER")
+    headerLine:SetHeight(1)
+    widgets:Fill(headerLine, "sectionLine")
     headerLine:SetPoint("BOTTOMLEFT", header, "BOTTOMLEFT")
     headerLine:SetPoint("BOTTOMRIGHT", header, "BOTTOMRIGHT")
     local footerLine = line(frame, WIDTH, 1)
@@ -184,8 +217,12 @@ function panel:Build()
     sidebarLine:SetPoint("TOPRIGHT", sidebar, "TOPRIGHT")
     sidebarLine:SetPoint("BOTTOMRIGHT", sidebar, "BOTTOMRIGHT")
 
+    local logo = header:CreateTexture(nil, "ARTWORK")
+    logo:SetSize(38, 38)
+    logo:SetPoint("LEFT", 14, 0)
+    logo:SetTexture(LOGO)
     local title = header:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    title:SetPoint("TOPLEFT", 14, -10)
+    title:SetPoint("TOPLEFT", logo, "TOPRIGHT", 10, -3)
     widgets:PaintText(title, "title")
     title:SetText("GearVerdict")
     local accent = header:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
@@ -199,14 +236,14 @@ function panel:Build()
     frame.subtitle:SetWordWrap(false)
     widgets:PaintText(frame.subtitle, "subtitle")
     local version = header:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    version:SetPoint("TOPRIGHT", -14, -12)
+    version:SetPoint("TOPRIGHT", -16, -16)
     widgets:PaintText(version, "note")
     version:SetText("v" .. addon.version)
 
-    local close = widgets:Button(footer, "Close", 80, function() frame:Hide() end)
-    close:SetPoint("RIGHT", -12, 0)
+    local close = widgets:Button(footer, "Close", 90, function() frame:Hide() end)
+    close:SetPoint("RIGHT", -16, 0)
     local footerNote = footer:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    footerNote:SetPoint("LEFT", 14, 0)
+    footerNote:SetPoint("LEFT", 18, 0)
     footerNote:SetPoint("RIGHT", close, "LEFT", -12, 0)
     footerNote:SetJustifyH("LEFT")
     footerNote:SetWordWrap(false)
@@ -220,9 +257,9 @@ function panel:Build()
     self.buttons, self.frames = {}, {}
     local previous
     for index, page in ipairs(self.pages) do
-        local button = navButton(sidebar, page.label)
-        if index == 1 then button:SetPoint("TOPLEFT", 6, -12) else button:SetPoint("TOPLEFT", previous, "BOTTOMLEFT", 0, -3) end
-        button:SetPoint("RIGHT", sidebar, "RIGHT", -6, 0)
+        local button = navButton(sidebar, page.label, page.icon)
+        if index == 1 then button:SetPoint("TOPLEFT", 0, -14) else button:SetPoint("TOPLEFT", previous, "BOTTOMLEFT", 0, -2) end
+        button:SetPoint("RIGHT", sidebar, "RIGHT", -1, 0)
         button:SetScript("OnClick", function() self:Select(page.key) end)
         self.buttons[page.key], previous = button, button
         local module = addon[page.module]

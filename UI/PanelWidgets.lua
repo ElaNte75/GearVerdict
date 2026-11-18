@@ -17,7 +17,15 @@ widgets.colors = {
     good = { 0.36, 1.0, 0.36, 1.0 },
     bad = { 1.0, 0.50, 0.25, 1.0 },
     warning = { 1.0, 0.82, 0.0, 1.0 },
+    fieldBg = { 0.0, 0.0, 0.0, 0.35 },
+    buttonBg = { 1.0, 1.0, 1.0, 0.06 },
+    buttonHoverBg = { 1.0, 1.0, 1.0, 0.13 },
+    buttonText = { 0.96, 0.96, 0.96, 1.0 },
+    shadow = { 0.0, 0.0, 0.0, 0.45 },
 }
+-- Flat backdrop: one-pixel edge, plain fill (the look of the buttons, boxes and window edge).
+local FLAT = { bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1 }
+local BACKDROP = BackdropTemplateMixin and "BackdropTemplate" or nil
 
 local function theme(name, bg, header, sidebar, border, title, selected, selectedText, line, checked, note)
     return { name = name, frameBg = { bg[1], bg[2], bg[3], 0.97 }, contentBg = { bg[1], bg[2], bg[3], 1 },
@@ -87,19 +95,33 @@ function widgets:PaintText(fontString, name)
     self:Paint(fontString, name, "text")
 end
 
+-- Controls that color themselves (buttons, checkboxes) are listed here and redrawn on a theme change.
+widgets.repaint = setmetatable({}, { __mode = "k" })
+
 function widgets:ApplyTheme()
     for region, entry in pairs(self.painted) do paint(region, entry.name, entry.kind) end
+    for control in pairs(self.repaint) do control:Repaint() end
 end
 
+-- The window edge: a thin line in the theme color, a soft shadow outside it and a bright stripe on top.
 function widgets:Border(frame, inset)
-    local border = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
+    local border = CreateFrame("Frame", nil, frame, BACKDROP)
     border:SetPoint("TOPLEFT", -(inset or 0), inset or 0)
     border:SetPoint("BOTTOMRIGHT", inset or 0, -(inset or 0))
     border:SetFrameLevel(frame:GetFrameLevel() + 20)
     if border.SetBackdrop then
-        border:SetBackdrop({ edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 12 })
+        border:SetBackdrop({ edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1 })
         self:Paint(border, "border", "border")
     end
+    local shadow = frame:CreateTexture(nil, "BACKGROUND", nil, -8)
+    shadow:SetPoint("TOPLEFT", -4, 4)
+    shadow:SetPoint("BOTTOMRIGHT", 4, -4)
+    self:Fill(shadow, "shadow")
+    local stripe = border:CreateTexture(nil, "OVERLAY")
+    stripe:SetPoint("TOPLEFT", 1, -1)
+    stripe:SetPoint("TOPRIGHT", -1, -1)
+    stripe:SetHeight(2)
+    self:Fill(stripe, "title")
     return border
 end
 
@@ -201,33 +223,75 @@ function widgets:UpdateCheck(check)
         check:SetAlpha(0.45)
         check.Text:SetTextColor(color("disabled"))
     end
+    if check.Repaint then check:Repaint() end
 end
 
--- A checkbox with its label. anchor = what it goes under (a section line or the previous checkbox).
+-- A checkbox with its label: a flat dark box with a square in the theme color when ticked.
+-- anchor = what it goes under (a section line or the previous checkbox).
 function widgets:Check(page, label, anchor, gap, onClick)
-    local check = CreateFrame("CheckButton", nil, page, "UICheckButtonTemplate")
+    local check = CreateFrame("CheckButton", nil, page)
     check:SetSize(24, 24)
     check:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -(gap or 0))
-    if not check.Text then
-        check.Text = check:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    end
-    check.Text:ClearAllPoints()
+    check.box = CreateFrame("Frame", nil, check, BACKDROP)
+    check.box:SetSize(16, 16)
+    check.box:SetPoint("CENTER")
+    if check.box.SetBackdrop then check.box:SetBackdrop(FLAT) end
+    check.mark = check.box:CreateTexture(nil, "OVERLAY")
+    check.mark:SetSize(8, 8)
+    check.mark:SetPoint("CENTER")
+    check.Text = check:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     check.Text:SetPoint("LEFT", check, "RIGHT", 2, 1)
-    check.Text:SetFontObject("GameFontHighlight")
     check.Text:SetText(label)
     check:SetHitRectInsets(0, -math.max(40, (check.Text:GetStringWidth() or 0) + 6), 0, 0)
+    function check:Repaint()
+        local active = self:IsEnabled() and (self.hover or self:GetChecked())
+        if self.box.SetBackdropColor then
+            self.box:SetBackdropColor(color("fieldBg"))
+            self.box:SetBackdropBorderColor(color(active and "checked" or "sectionLine"))
+        end
+        self.mark:SetColorTexture(color(self:IsEnabled() and "checked" or "disabled"))
+        self.mark:SetShown(self:GetChecked() and true or false)
+    end
+    check:SetScript("OnEnter", function(self) self.hover = true; self:Repaint() end)
+    check:SetScript("OnLeave", function(self) self.hover = false; self:Repaint() end)
+    hooksecurefunc(check, "SetChecked", function(self) self:Repaint() end)
     check:SetScript("OnClick", function(self)
         if onClick then onClick(self, self:GetChecked() and true or false) end
         widgets:UpdateCheck(self)
     end)
+    self.repaint[check] = true
+    check:Repaint()
     return check
 end
 
+-- A flat button: dark fill, thin edge in the theme color, lighter while the mouse is over it.
 function widgets:Button(parent, text, width, onClick)
-    local button = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
-    button:SetSize(width or 90, 22)
+    local button = CreateFrame("Button", nil, parent, BACKDROP)
+    button:SetSize(width or 90, 24)
+    if button.SetBackdrop then button:SetBackdrop(FLAT) end
+    local label = button:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    label:SetPoint("LEFT", 4, 0)
+    label:SetPoint("RIGHT", -4, 0)
+    label:SetWordWrap(false)
+    button:SetFontString(label)
     button:SetText(text)
+    function button:Repaint()
+        local enabled = self:IsEnabled()
+        if self.SetBackdropColor then
+            self:SetBackdropColor(color(enabled and self.hover and "buttonHoverBg" or "buttonBg"))
+            self:SetBackdropBorderColor(color(enabled and (self.hover and "checked" or "sectionLine") or "divider"))
+        end
+        label:SetTextColor(color(enabled and (self.hover and "title" or "buttonText") or "disabled"))
+    end
+    button:SetScript("OnEnter", function(self) self.hover = true; self:Repaint() end)
+    button:SetScript("OnLeave", function(self) self.hover = false; self:Repaint() end)
+    button:SetScript("OnEnable", function(self) self:Repaint() end)
+    button:SetScript("OnDisable", function(self) self.hover = false; self:Repaint() end)
+    button:SetScript("OnMouseDown", function(self) if self:IsEnabled() then label:SetPoint("LEFT", 5, -1); label:SetPoint("RIGHT", -3, -1) end end)
+    button:SetScript("OnMouseUp", function() label:SetPoint("LEFT", 4, 0); label:SetPoint("RIGHT", -4, 0) end)
     if onClick then button:SetScript("OnClick", onClick) end
+    self.repaint[button] = true
+    button:Repaint()
     return button
 end
 
