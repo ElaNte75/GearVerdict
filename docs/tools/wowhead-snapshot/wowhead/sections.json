@@ -1,0 +1,684 @@
+{
+ "warrior/protection@tank#0": {
+  "heading": "STANDARD BUILD",
+  "intro": "",
+  "text": "This build serves as your go-to build and balances defensiveness and threat that isn't too reckless in either direction. It forgoes a lot of the rage reduction talents, like Improved Thunder Clap, Improved Bloodrage, and Improved Sunder Armor, but with the current rage calculations from incoming damage, particularly as you enter raid, these will offer very limited utility. Enrage has approximately 67% uptime while fighting a single target, and almost 100% while fighting 2 or more, while allowing you to pick up 5 points in Enrage and 4 points in Deflection, which are highly effective talent points. Anticipation is also fully utilized in this build, but it may or may not be needed depending on tuning and what type of content you're engaging in. Most of the Rage cost reduction talents are skipped, as current rage models indicate that they will be of little value. The exception to that is Focused Rage, which is highly effective in increasing our DPS and threat. Improved Heroic Strike also provides a lot of value, but it competes directly with Deflection, and which ones you pick comes down to personal preference. One point could be flexed into Reckless Swings, particularly if you're doing content where the rage gain is not very high. It does cost a fair bit of health (657 at level 60), but this is rather inconsequential when defensively geared. This is best utilized when not currently tanking a target, and you need to build rage.",
+  "keys": [
+   "12317",
+   "16462",
+   "12297",
+   "29787"
+  ]
+ },
+ "warrior/protection@tank#1": {
+  "heading": "IMPALE BUILD",
+  "intro": "",
+  "text": "This build balances defensiveness and threat that isn't too reckless in either direction. Similar to the Standard Build, it forgoes a lot of the rage reduction talents This build incorporates Impale and Deep Wounds, meaning it will scale better than alternative builds. With spell 11574 now scaling with Attack Power, it also becomes a core part of our rotation, which brings additional value to Improved Rend. This build opts to pick up Vanguard, which is a huge quality-of-life tool in a lot of environments, but has limited value on boss encounters in a raid. With that said, there are not a lot of meaningful alternatives earlier in the tree.",
+  "keys": [
+   "16493",
+   "12834",
+   "12286",
+   "1310317"
+  ]
+ },
+ "warrior/protection@tank#2": {
+  "heading": "FURY-PROT BUILD",
+  "intro": "",
+  "text": "If you played Classic, particularly Anniversary, you may be familiar with the infamous \"Fury-Prot\" playstyle that used 2x one-handers and went down the Fury while picking up key Protection talents to maximize threat. With the current threat modifiers and scaling on our abilities, there will be limited need for that sort of playstyle in Forever. With that said, there is a perfectly viable Fury-Prot build in Forever that sacrifices a small amount of survivability for some offensive throughput. This build scales better than the other builds due to having access to Flurry and Shield Slam not scaling with Attack Power. The build is more suitable for when you are slightly overgeared either way. With this build, you still prioritize spell 2565 and spell 25288 while filling with Bloodthirst and spell 25286. Having access to Death Wish also makes it a more potent build in shorter fights. In a dungeon environment, you can include Gore Drinker by dropping points in Improved Berserker Rage and/or Improved Execute, but the healing from it is rather negligible. One thing to note is that this build only rewarded if you play around entering spell 2458 in the execute phase to spam spell 20662 with spell 1719 and Death Wish, which comes at a significant risk defensively. Without executing, this build is only a low single-digit DPS increase compared to the other alternatives. You also have the benefit of self-sustain through Blood Craze and Gore Drinker, which is decent for dungeon content or solo play, but inconsequential in a raiding environment.",
+  "keys": [
+   "12319",
+   "23881",
+   "12328",
+   "1323967",
+   "20500",
+   "20502",
+   "16487"
+  ]
+ },
+ "warrior/protection@tank#3": {
+  "heading": "DUAL WIELD BUILD",
+  "intro": "",
+  "text": "As this doesn't have a single talent point in the Protection tree, it may seem weird to include it on this page, but there may be cases where it's useful, particularly in fights where you are up against enemies that don't have blockable attacks. Certain elementals will have their melee attacks bypass the combat table, as their attacks are counted as magic damage, meaning you can't parry, dodge, or block their attacks. In this case, a regular sword-and-board build is greatly hampered due to their reliance on Revenge. In a normal boss fight, this build will increase the damage you take by 50%, do less threat, and only increase your damage by approximately 15%, so please don't use this build unless it's for a specific purpose, and if you do, don't tell your guild leader that it was my idea!",
+  "keys": []
+ },
+ "warrior/protection@tank#4": {
+  "heading": "BEST PROTECTION WARRIOR PVE DUNGEON BUILD",
+  "intro": "In a dungeon environment, you essentially have two routes to go down:",
+  "text": "This is your standard deep Protection build that allows you to focus on staying in spell 71 and has high uptime of Enrage while fighting multiple enemies. This build is recommended for people who are looking to take a more relaxed approach to the Protection Warrior in your dungeons. You could swap one point from Deflection into Piercing Howl for the added safety of being able to provide an AOE slow while kiting if the situation demands it.",
+  "keys": [
+   "12317",
+   "16462"
+  ]
+ },
+ "warrior/protection@tank#5": {
+  "heading": "BEST PROTECTION WARRIOR PVE DUNGEON BUILD",
+  "intro": "",
+  "text": "This is a high cleave damage build that incorporates Sweeping Strikes to spread spell 25288 and spell 20569. Sweeping Strikes and Cleave have a rather high-value interaction, where the Sweeping Strike benefits both targets hit, making one Cleave hit 4 times, rather than the normal 2. This build does require you to stance-dance, as Sweeping Strikes is only usable in spell 2457, meaning it requires a bit more effort than your standard build. However, those who are willing to put in the work are rewarded with the highest damage tank build in the game. It's also worth noting that this build leans into playing with a slower weapon, like (item).",
+  "keys": [
+   "12292"
+  ]
+ },
+ "warrior/protection@tank#6": {
+  "heading": "BEST PROTECTION WARRIOR PVP BUILD",
+  "intro": "",
+  "text": "While the Protection Warriors (or any tank, for that matter) are not notorious for their PvP prowess, they can have some surprisingly strong burst and handle 1v1s against melee extremely well. With a long 5-second stun through Concussion Blow, 3-second silence through Improved Shield Bash, and a 40-second CD spell 676, Protection Warriors are great at locking down enemies while disrupting the backline through their defensiveness. Shield Slam, in addition to hitting hard, also dispels magic effects on enemies, with Blood Craze providing some decent self-sustain. Every 30 minutes, the Protection Warrior can get a PVP-montage-worthy combo off with the following combo: Proc Revenge with spell 2565 Enter spell 2458 Use spell 1719 Enter spell 71 Use spell 2687 Use Concussion Blow Use spell 25288 Use spell 23925 Use spell 25286 if enough rage.",
+  "keys": [
+   "12809",
+   "12311",
+   "23922",
+   "16487"
+  ]
+ },
+ "warrior/arms@dps#0": {
+  "heading": "BEST ARMS WARRIOR PVE BUILD",
+  "intro": "This is the best standard Arms PvE build. The PvE build specs heavily into the Arms tree. The Fury tree has great talents, like Death Wish, but to spec into them you'd need 30 or fewer points in Arms, which means we can not select Mortal Strike. In this build the flexible talent is Enrage. If you are raiding and are certain you won't be the victim of attacks, you can put these points into Booming Voice if you are maintaining shouts, or Unbridled Wrath for maximum Rage generation. On the off-chance that you, however, are going to proc this talent, it will always yield more DPS than the alternatives.",
+  "text": "",
+  "keys": [
+   "12294",
+   "12317"
+  ]
+ },
+ "warrior/arms@dps#1": {
+  "heading": "BEST ARMS WARRIOR PVP BUILD",
+  "intro": "In PvP situations, Rage is quite Scarce. This often means spell 78 is used quite rarely. So we shift the points from Improved Heroic Strike into Deflection for greater survivability. The Flexible talent points in the PvP Build are: Improved Slam, Spearing Strike, and Enrage. You could drop these talents and put points into Iron Will. The best build largely depends on what classes you are facing and what environment you are PvPing in. In World PvP, Spearing Strike can be very valuable, but I'd drop it if I only played Battlegrounds. Enrage has no value against caster classes like Mages , but will be amazing against melee classes. Getting off spell 1464 casts can be difficult against classes with roots and great mobility, like Druids .",
+  "text": "",
+  "keys": [
+   "16462",
+   "12862",
+   "1310222",
+   "12317"
+  ]
+ },
+ "warrior/arms@dps#2": {
+  "heading": "BEST ARMS WARRIOR LEVELING BUILD",
+  "intro": "The leveling build differs from the PVE build by avoiding points in Improved Bloodrage, and Improved Heroic Strike. This is largely due to Rage and Health optimization while questing. spell 78 is an ability that not only costs Rage but also prevents you from generating Rage. Heroic strike falls very far down the priority list, usually so far that the target is already dead before it would be cast. spell 2687 is also inefficient while leveling, as the Rage-to-health conversion is not optimal, even with the talent. We drop these talents and shift points into 2/5 Deflection and 1/2 Improved Charge at first, then finish 5/5 and 2/2 after we finish putting points into the Fury tree.",
+  "text": "",
+  "keys": [
+   "16462",
+   "12285"
+  ]
+ },
+ "warrior/fury@dps#0": {
+  "heading": "BEST FURY WARRIOR PVE RAID BUILD",
+  "intro": "",
+  "text": "This build gets every one of our core talents: Death Wish, Bloodthirst, and Flurry. In the Arms tree, it picks up Improved Tactical Mastery and Improved Overpower in order to get a little more mileage out of our limited rage by letting us use Overpower more freely, and makes sure we can also take Impale to further boost the power of our critical strikes.",
+  "keys": [
+   "12328",
+   "23881",
+   "12319",
+   "12295",
+   "12290",
+   "16493"
+  ]
+ },
+ "warrior/fury@dps#1": {
+  "heading": "BEST FURY WARRIOR PVE DUNGEON BUILD",
+  "intro": "",
+  "text": "This talent tree drops Improved Berserker Rage, which see lesser use in dungeons due to the prevalence of lower-level mobs and the desire to keep rage in between packs, in favour of picking up a point in Lingering Rage and maxxing out Enrage. This ability is fantastic in situations where you will be taking constant sources of damage, which is very common in dungeons.",
+  "keys": [
+   "1323964",
+   "12317"
+  ]
+ },
+ "warrior/fury@dps#2": {
+  "heading": "BEST FURY WARRIOR PVP BUILD",
+  "intro": "",
+  "text": "While Fury is a weak PvP spec compared to Arms, this tree can grab some of the useful talents available: spell 145863 helps us get some much-needed sustain, Improved Berserker Rage gives us a way to remove effects such as roots and slows at the price of using our anti-fear cooldown, and Improved Intercept reduces the cooldown on our spell 20617 ability, letting us connect to targets faster.",
+  "keys": [
+   "20500",
+   "20504"
+  ]
+ },
+ "paladin/holy@healer#0": {
+  "heading": "BEST HOLY PALADIN PVE RAID BUILD",
+  "intro": "The build for raids is very straightforward. We go all the way to spell 1311595 on the Holy tree and grab all the healing increases in it, we pick Divine Intellect on the Protection tree and Conviction on the Retribution tree. The last points aren't super impactful and go to utility or defensive options, the recommended pick is Pursuit of Justice and Sacred Duty.",
+  "text": "",
+  "keys": [
+   "20257",
+   "20117",
+   "26022",
+   "1224697"
+  ]
+ },
+ "paladin/holy@healer#1": {
+  "heading": "BEST HOLY PALADIN PVE DUNGEON BUILD",
+  "intro": "Dungeons have more AoE DPS opportunities so we grab some spell 26573-related talents",
+  "text": "",
+  "keys": []
+ },
+ "paladin/holy@healer#2": {
+  "heading": "BEST HOLY PALADIN PVP BUILD",
+  "intro": "",
+  "text": "",
+  "keys": []
+ },
+ "paladin/protection@tank#0": {
+  "heading": "STANDARD BUILD",
+  "intro": "",
+  "text": "This build serves as your go-to build and picks up all the powerful defensive talents while not giving up too much offensive utility. This build skips over two points in Toughness, which is roughly equivalent in damage reduction to Anticipation before reaching Defense Cap (the point at which you can no longer be critically struck by bosses). That being said, Anticipation offers the smoothest damage intake, making it preferable to Toughness. If you get enough defense through your gear to drop points out of Anticipation, you can swap over a few points. This build incorporates Sacred Arbiter into the build. This is not necessary in most circumstances, as you naturally refresh your Judgement debuffs (like spell 20355) by auto-attacking the target, but if you happen to be in a raid group where you have a Holy Paladin and no Retribution Paladin, then this is a really good talent, especially with the new Shieldsworn talent reducing the cooldown of spell 10333 by 4 seconds. Speaking of Shieldsworn, this talent is incredibly powerful against magical damage, not only for the damage reduction portion, but also because it allows you to proc Shield Specialization, Holy Shield, and Reckoning in an environment where you otherwise would've struggled with mana and offensive throughput. Since the talent also brings spell 10333 to a 6-second cooldown, it means that Iron Creed has a potential 100% uptime, giving Protection Paladin a very strong passive damage reduction when combined with the 9% from Improved Righteous Fury. Pursuit of Justice has a very intangible value and is very strong, and gives you the flexibility of using whichever boot enchantment you wish, while also granting 7% additional movement speed over what you could've had using spell 13890.",
+  "keys": [
+   "20143",
+   "20096",
+   "1311087",
+   "1328544",
+   "20150",
+   "20925",
+   "20177",
+   "1311034",
+   "20468",
+   "26022"
+  ]
+ },
+ "paladin/protection@tank#1": {
+  "heading": "SHOCKPROT BUILD",
+  "intro": "",
+  "text": "This is a more offensively skewed single-target threat build that incorporates Holy Shock into the rotation and buffs all holy damage by 10% through Consecrated Ground and makes your spells all but guaranteed to hit through Divine Precision and Precision, which is great for threat. This build gives up a fair bit of defensiveness by not picking up all points in Iron Creed, Toughness, Deflection, or Anticipation, so it should be seen as a more situational build rather than something you default to. The defensive loss is not staggering, but it's noticeable, and it can struggle with mana, despite incorporating Holy Conduit, which is the most mana-efficient talent in the whole talent tree.",
+  "keys": [
+   "1311606",
+   "1310905",
+   "1310904",
+   "20189",
+   "1311034",
+   "20143",
+   "20096",
+   "1237268"
+  ]
+ },
+ "paladin/protection@tank#2": {
+  "heading": "RETPROT BUILD",
+  "intro": "",
+  "text": "This build, despite having fewer points in Protection than the Shockprot build, is a slightly more defensive option due to having 5 points in Deflection while also bringing Vindication. This build is very comparable to the standard build in terms of throughput, despite incorporating Champion of the Light and Vengeance. With that said, where this build shines is in its cleave/AOE damage capabilities to buff the damage from spell 20924 and spell 10301. The build will also scale more than other builds with Intellect, depending on how prevalent it is on our gear.",
+  "keys": [
+   "20060",
+   "9452",
+   "1311084",
+   "20049"
+  ]
+ },
+ "paladin/protection@tank#3": {
+  "heading": "OFFENSIVE OFF-TANK BUILD",
+  "intro": "",
+  "text": "It may be slightly rich to call this a Protection build, as it doesn't include any talents from the Protection tree, and the only defensive utility it provides is Deflection. It incorporates Vengeance, which is very easy to stack in Forever, with seals being able to crit, but the chance can be improved through using items like (item) and (item). Champion of the Light is a new talent in Forever, and depending on how much Intellect we end up getting on our gear, it could be one of the most impactful AOE damage talents. This is very close to the Shockadin build Retribution players will use and doesn't put any additional value on using a one-hander over a two-hander, which means you have the option to swap to a 2-hander and remove spell 25780 if the fight no longer requires a second tank. This build will not see frequent use and should either be reserved for a \"for fun\" build when you want to optimize for throughput, or on fights where the damage is unblockable, like while fighting elementals that bypass the combat table.",
+  "keys": [
+   "20060",
+   "20049",
+   "1311084"
+  ]
+ },
+ "paladin/protection@tank#4": {
+  "heading": "BEST PROTECTION PALADIN PVE DUNGEON BUILD",
+  "intro": "",
+  "text": "Pursuit of Justice is one of the most important talents for dungeon efficiency, meaning we are naturally led down the Retribution tree. This build is very similar to the standard build, but deprioritizes Anticipation. Defense as a skill loses a lot of value when you're not fighting raid boss-level enemies, and it allows us to pick up other powerful talents, like Vindication and Guardian's Favor. With that said, the gain from this build over a standard protection build is very minimal, so save your gold and don't respec if you already have a standard protection build.",
+  "keys": [
+   "26022",
+   "9452",
+   "20174"
+  ]
+ },
+ "paladin/protection@tank#5": {
+  "heading": "BEST PROTECTION PALADIN PVP BUILD",
+  "intro": "",
+  "text": "While the Protection Paladin (or any tank, for that matter) is not notorious for its PVP prowess, there are some interesting builds you could run while PvP-ing in Forever. The above build plays into the Shockadin burst while serving as an off-healer, either with your buddy out in the open world or in a Battleground environment. With a bit of Spell Power on your gear, this build has very high burst potential through stunning the target using spell 10308 before unleashing the following combo: spell 20924 for Consecrated Ground (can use Rank 1 if mana is an issue) Divine Favor Holy Shock + spell 20271 spell 10333 + Swift Judgement + spell 20271 Judgement and Swift Judgement are both off the global cooldown and can be combined with other spells. The combo is still doable without Light's Vigil, but it cuts one Holy Shock out of the rotation, which means less damage but also less setup. Including Templar's Bulwark, Sacred Duty, and Guardian's Favor is quite interesting from a survivability perspective, as it allows you to use one of your Forbearance spells on yourself every minute. Reckoning also becomes quite strong since so many abilities can crit, while also allowing some potential blocks when fighting melee targets. If you can stack 3-4 Reckoning stacks, you can also swap to a 2-hander to release it for some high burst.",
+  "keys": [
+   "1310905",
+   "20216",
+   "1311606",
+   "1310994",
+   "1311015",
+   "1224697",
+   "20174"
+  ]
+ },
+ "paladin/retribution@dps#0": {
+  "heading": "Retribution (Unsealed Wrath) PvE DPS Raid Build",
+  "intro": "",
+  "text": "This is the standard Retribution build that favors slower 2-handed weapons and specializes more in the Retribution tree. This build will utilize both Seal of Command and Seal of Righteousness via the new capstone talent mechanism Unsealed Wrath. Because of Champion of the Light , spell power and intellect will be some of our stronger stats and provide the most scaling, even more than strength or attack power will provide, despite the multiple strength and attack power talents present in the build. Taking Reverence and dropping 2 points in Precision is an option if extra mana is needed, since hit can easily be added via gear choices but mana regeneration is not as easily acquired. There is only a small level of flexibility otherwise,, such as the single point in Unyielding Faith which can be placed elsewhere if desired.",
+  "keys": [
+   "1310735"
+  ]
+ },
+ "paladin/retribution@dps#1": {
+  "heading": "Holy \"Shockadin\" PvE DPS Raid Build",
+  "intro": "",
+  "text": "This is the Holy-based \"shockadin\" build that instead specializes in the Holy tree and favors faster 2-handed weapons while using Seal of Righteousness . Because of Champion of the Light , spell power and intellect will be some of our stronger stats and provide the most scaling, even more than strength or attack power will provide, despite the multiple strength and attack power talents present in the build. This build will also excel more at off-healing, should you choose to do so, thanks to the presence of Holy Shock . It will also have slightly improved AoE damage against multiple enemies due to the Consecrated Ground talent, and additionally will be more capable against Undead and Demon targets, as this build is able to take Purifying Power .",
+  "keys": []
+ },
+ "paladin/retribution@dps#2": {
+  "heading": "Retribution PvP Build",
+  "intro": "",
+  "text": "This is the almost exact same talents as the PvE build, though with a few small changes - like taking Deflection instead of Benediction , and swapping out Holy Conduit in order to get Eye for an Eye to punish critical strikes against you. You can, however, run your exact standard PvE spec largely without missing anything major in a PvP combat scenario thanks to the talent changes and major Paladin reworks shortly before launch. Additionally, you can take Reverence or Holy Conduit and wear more hit on your gear instead if you want extra mana sustain for extended PvP sessions, or you can swap the point in Unyielding Faith to something like Vindication instead. Though largely, there is not much flexibility here otherwise.",
+  "keys": []
+ },
+ "paladin/retribution@dps#3": {
+  "heading": "Holy \"Shockadin\" Build",
+  "intro": "",
+  "text": "This is another interesting niche build that has some off-healing capabilities while still being able to deal damage. The main limiting factor behind this build is going to be Mana, as you will be unable to grab most of the best mana reduction or restoration talents; as a result, this build lives or dies by the ability to sustain mana for casting spells. This build has a lot of the same damage talents as a PvE \"shockadin\" build, while having some of the best healing talents available as well - talents like the classic Divine Favor and Holy Shock combination, Infusion of Light in order to cast quicker heals, plus 1/3 Healing Light to slightly boost healing output. As an added bonus, this build is still able to grab Repentance for crowd control and/or interrupting and Pursuit of Justice for a little bit of mobility, as well as Divine Precision for a ton of Holy spell hit chance and silence reduction. This build will primarily use Seal of Righteousness and can get up into melee range, dealing substantial damage with melee swings, seals, Judgement , Holy Shock , Consecration and Holy Strike . At the same time, this build is capable of healing moderately effectively in a pinch using Holy Shock or an infused Holy Light , such as while immune to silence from Voice of Truth . The limiting factor for this build is having mana to cast your spells, and spell power on your gear to imbue your spells. Deflection is not strictly required, but is generally sought after for PvP combat where a single parry can win a duel. You can always grab Benediction instead if you want the extra mana reduction. There is quite a lot of flexibility here, and it is almost certain that the meta \"shockadin\" PvP build will change over time. For example, you can take more points in Healing Light , or drop Infusion of Light and/or Reverence , or grab Eye for an Eye in the Retribution tree. Have fun playing around with this build to your personal preference.",
+  "keys": []
+ },
+ "hunter/beast-mastery@dps#0": {
+  "heading": "BEST BEAST MASTERY HUNTER PVE DUNGEON AND RAID BUILD",
+  "intro": "As a Beast Mastery Hunter, you want to focus mainly on your pet damage and mana management. Lethal Attacks, Careful Aim and Trueshot Aura in the Marksmanship tree all indirectly increase your pet's damage too due to the transfer of stats. Improved Tracking is slightly stronger than Mortal Shots, due to it being a blanket damage increase. All untaken talents in the Beast Mastery tree do not contribute to damage.",
+  "text": "",
+  "keys": [
+   "19426",
+   "1223984",
+   "1299346",
+   "19485"
+  ]
+ },
+ "hunter/beast-mastery@dps#1": {
+  "heading": "BEST BEAST MASTERY HUNTER PVP BUILD",
+  "intro": "It is very hard to grab any extra disruption talents when the damage value of Lethal Attacks, Careful Aim, and Improved Tracking is so big. One talent we are able to pick is Improved Concussive Shot in hopes of sometimes hitting the lucky stun. Improved Aspect of the Monkey has some value when you're in a fight with a melee opponent. Summon Hawk is the real show of Beast Mastery PvP as it has no minimum range attached to it, allowing you to cast it while fighting melee opponents.",
+  "text": "",
+  "keys": [
+   "19426",
+   "1223984",
+   "24293",
+   "19407",
+   "19549",
+   "1293241"
+  ]
+ },
+ "hunter/marksmanship@dps#0": {
+  "heading": "BEST MARKSMANSHIP HUNTER PVE DUNGEON AND RAID BUILD",
+  "intro": "As a Marksmanship Hunter, you want to focus purely on your ranged ability damage and mana management. Only Deadly Aspects and Improved Tracking are great picks in the other trees for this purpose. Luckily, the Marksmanship tree itself has plenty of talents we can utilize here. With the Lone Wolf talent, a pet is not needed, rendering the rest of the Beast Mastery tree obsolete. Most of the abilities in the Marksmanship tree either increase the damage, reduce the mana cost, or reduce the cooldown of your abilities. spell 1310786 is currently very mana-intensive, requiring a Hunter to go deep into Efficiency, even with various sources of mana regeneration.",
+  "text": "",
+  "keys": [
+   "19552",
+   "24293",
+   "415370",
+   "19416"
+  ]
+ },
+ "hunter/marksmanship@dps#1": {
+  "heading": "BEST MARKSMANSHIP HUNTER PVP BUILD",
+  "intro": "spell 20904 and Sniper Shot are very hard to use in PvP scenarios, but if you ever manage to get one off, they will deal devastating damage. Improved Concussive Shot, Improved Stings and Scatter Shot are all important talents for disruption, while Survivalist and Deterrence provide survivability. Rapid Recuperation being locked behind another talent and being tied to Serpent Sting makes it hard to pick. Marksmanship is probably best played as a do-or-die build, which explains the lack of more disruption or survivability in this build.",
+  "text": "",
+  "keys": [
+   "1310687",
+   "19407",
+   "1310661",
+   "19503",
+   "19255",
+   "19263"
+  ]
+ },
+ "hunter/survival@dps#0": {
+  "heading": "BEST SURVIVAL HUNTER MELEE PVE DUNGEON AND RAID BUILD",
+  "intro": "As a Melee Survival Hunter, you want to focus mainly on your melee damage and mana management. Lightning Reflexes provides too little power compared to talents in the Beast Mastery and Marksmanship tree with the current projected Agility levels, and Lacerating Strikes is just a terrible talent currently. Summon Hawk provides you with a great extra button to press.",
+  "text": "",
+  "keys": [
+   "1293241"
+  ]
+ },
+ "hunter/survival@dps#1": {
+  "heading": "BEST SURVIVAL HUNTER WEAVING PVE DUNGEON AND RAID BUILD",
+  "intro": "As a Weaving Survival Hunter, you want to focus on a mix of Ranged and Melee damage, and mana management. Lacerating Strikes is better than full melee here because, as a weaving Hunter, you will be using a 2-handed weapon, which will increase spell 14271 damage. Your survival talents will increase your melee damage, while the Marksmanship talents give us a nice boost to ranged damage.",
+  "text": "",
+  "keys": [
+   "1310533"
+  ]
+ },
+ "hunter/survival@dps#2": {
+  "heading": "BEST SURVIVAL HUNTER PVP BUILD",
+  "intro": "Survival Hunter is really strong in PvP as they can do a great deal of damage both from range and melee. You have access to Summon Hawk to overwhelm your opponent. You have a whole bunch of defensive talents in spell 19295, Deterrence, Surefooted, and Improved Aspect of the Monkey. And you can easily stick to your target with Strider Kick, Counterattack, and traps.",
+  "text": "",
+  "keys": [
+   "1293241",
+   "19263",
+   "19290",
+   "19549",
+   "1317257",
+   "19306"
+  ]
+ },
+ "priest/discipline@healer#0": {
+  "heading": "BEST DISCIPLINE PRIEST PVE RAID BUILD",
+  "intro": "",
+  "text": "This is a healing-focused tree that combines deep Discipline for Power Infusion with all of the essential Holy nodes. It is possible to instead go deep into the Shadow tree for the superb Dark Inspiration; however, this is very expensive and requires dropping 23 points across the Discipline and Holy trees. If your raid has a Shadow Priest, or if they do not but you care more about personal performance, then use this default build instead.",
+  "keys": [
+   "10060"
+  ]
+ },
+ "priest/discipline@healer#1": {
+  "heading": "BEST DISCIPLINE PRIEST PVE DUNGEON BUILD",
+  "intro": "",
+  "text": "Our dungeon build is quite similar to the build we will use while levelling or doing world content. The difference is that we are able to drop a few utility nodes like Spirit Tap and Improved Inner Fire because we are not planning on getting hit as often, nor will we be killing much ourselves. In their place, we can take stronger defensive nodes - especially for our tank - like Inspiration.",
+  "keys": [
+   "14892"
+  ]
+ },
+ "priest/discipline@healer#2": {
+  "heading": "BEST DISCIPLINE PRIEST PVP BUILD",
+  "intro": "",
+  "text": "Your PVP build should focus mostly on survivability, and many talent nodes that are quite useless in PVE become essential in PVP, like Silent Resolve, Martyrdom, and Blessed Recovery. Blackout is optional and can be dropped for more healing, but can swing tight contests since the stun duration is quite long.",
+  "keys": [
+   "14523",
+   "14531",
+   "27811",
+   "15326"
+  ]
+ },
+ "priest/holy@healer#0": {
+  "heading": "BEST HOLY PRIEST PVE DUNGEON BUILD",
+  "intro": "This is a hybrid of Discipline and Holy. It takes Inner Focus and enough points in Discipline for Penance, then finishes in Holy for the positive healing talents and Holy Nova. Wand Specialization is included so you can wand mobs down in dungeons when healing is not needed. The mix gives you more tools for smaller group content where you may need to contribute damage or cover a wider range of situations.",
+  "text": "",
+  "keys": [
+   "14751",
+   "402174",
+   "15237",
+   "14524"
+  ]
+ },
+ "priest/holy@healer#1": {
+  "heading": "BEST HOLY PRIEST PVP BUILD",
+  "intro": "This is the PvP build. It picks up Inner Focus and enough Discipline for the important survivability nodes, Penance and also Power Infusion to buff your team, then finishes off by grabbing healing talents in Holy. The points favor survivability and control over pure throughput.",
+  "text": "",
+  "keys": [
+   "14751",
+   "402174",
+   "10060"
+  ]
+ },
+ "priest/shadow@dps#0": {
+  "heading": "BEST SHADOW PRIEST PVE RAID BUILD",
+  "intro": "When it comes to raiding as a Shadow Priest, most of your talent selections are geared towards maximizing damage, sustaining Mana, and providing additional raid utility. This recommended build is still quite speculative and assumes that most raid encounters in WoW: Forever will typically feature one primary boss target and frequently feature some form of incoming raid damage. Spirit Tap, for example, is currently assumed to provide limited value in raids. Some of the more flexible talent choices include Twilight Focus to reduce pushback from incoming damage, Mental Strength to further increase Mana and Spell Crit, and Shadow Reach to assist with positioning. spell 1310076 and Inner Focus are currently not recommended, as they generally provide a negligible amount of additional damage potential over the course of a typical encounter. Silence is a reasonable optional talent for one point, provided that additional interrupts are in any way helpful in raid encounters. Improved Mind Blast is deliberately left at 4/5, as the fifth point does not actually allow you to cast spell 8092 more frequently in an ideal rotation. The 6-second cooldown on Mind Blast permits four 1.5-second global cooldowns (GCDs), or two Mind Flay channels between casts of Mind Blast. Reducing the cooldown of Mind Blast to 5.5 seconds would either require spending a full second idle between casts (4.5 seconds of casting plus 1 second of downtime), or simply playing as though Mind Blast had a 6-second cooldown.",
+  "text": "",
+  "keys": [
+   "14913",
+   "18551",
+   "17322",
+   "15273",
+   "15407"
+  ]
+ },
+ "priest/shadow@dps#1": {
+  "heading": "BEST SHADOW PRIEST PVE DUNGEON BUILD",
+  "intro": "For dungeon gameplay, the main change to the recommended build is the inclusion of Spirit Tap, which will provide additional Mana sustain in multi-target situations to better support the higher Mana requirements of casting spell 589 onto multiple enemy targets (also known as multi-dotting). The same overall considerations apply as with the raid build, and as mentioned, Silence can potentially be swapped in if additional interrupts provide value.",
+  "text": "",
+  "keys": [
+   "15270"
+  ]
+ },
+ "priest/shadow@dps#2": {
+  "heading": "BEST SHADOW PRIEST PVP BUILD",
+  "intro": "This recommended build for PvP is intended to act largely as a starting point, highlighting some of the most valuable talents to consider for PvP combat. There are a number of alternative talent options possible, especially if we consider options like battlegrounds versus 1v1 duels, or even choosing between Holy and Discipline supporting talents. Blackout and Improved Psychic Scream are chosen in the PvP talent build to provide access to more frequent, valuable crowd control. Talenting both Martyrdom and Twilight Focus may be overkill, and swapping one of these talents out for additional survivability or Mana economy is entirely reasonable. Talents like Improved Inner Fire, Mental Agility, and even spell 14750 can provide some solid additional value if you have points to spare. In the Shadow tree, Spirit Tap can be potentially useful in battlegrounds to maintain momentum between engagements, but has limited value in shorter encounters. Finally, spell 1310076 has solid potential to help finish off targets, but ultimately comes at the cost of points elsewhere in the talent tree.",
+  "text": "",
+  "keys": [
+   "15326",
+   "15392",
+   "14531",
+   "14913"
+  ]
+ },
+ "shaman/elemental@dps#0": {
+  "heading": "BEST ELEMENTAL SHAMAN PVE RAID BUILD",
+  "intro": "There are two primary raid build options that change which secondary tree you spend your points in. Mana Tide Totem may be a powerful raid cooldown for caster groups. Elemental struggles with high Mana costs, so it's unclear if Totemic Focus and Water Shield will be useful enough to help offset those costs. Water Shield is especially problematic because it loses charges every time you deal a Critical Strike. It should be refreshed during downtime when you're moving or unable to cast. The second build prioritizes uses the Mana cost reduction of Shamanistic Focus along with the higher Mana pool from Ancestral Knowledge. With Water Shield being clunky and inconsistent, this build may offer more reliable Mana. It also picks up 1 extra point in Thundering Strikes and Trial by Fire for slightly better DPS.",
+  "text": "",
+  "keys": [
+   "16190",
+   "16173",
+   "408510",
+   "16255",
+   "16086"
+  ]
+ },
+ "shaman/elemental@dps#1": {
+  "heading": "BEST ELEMENTAL SHAMAN PVE RAID BUILD",
+  "intro": "",
+  "text": "",
+  "keys": []
+ },
+ "shaman/elemental@dps#2": {
+  "heading": "BEST ELEMENTAL SHAMAN PVE DUNGEON BUILD",
+  "intro": "The Shamanistic Focus raid build is likely also the most effective Elemental dungeon build. You can also swap around points to pick up Earthbound, which can save your Tank in a pinch or help stop enemies from running away from the party. The utility from Mana Tide Totem is likely not worth the other downsides in a dungeon group.",
+  "text": "",
+  "keys": []
+ },
+ "shaman/elemental@dps#3": {
+  "heading": "BEST ELEMENTAL SHAMAN PVP BUILD",
+  "intro": "These builds are similar to the Personal Utility raid and dungeon build, but instead opting for Earthbound and Earth's Grasp for excellent kiting and crowd control. Because you only need 4% Hit Chance in PVP, you only need 4 points in Tidal Focus. This build opts for the true Elemental experience, using Lightning Mastery as the primary cooldown.",
+  "text": "This build opts for a hybrid Ele-Resto using Nature's Swiftness as the primary cooldown and offering much better healing capabilities.",
+  "keys": [
+   "1222988",
+   "16043",
+   "16179",
+   "16166"
+  ]
+ },
+ "shaman/elemental@dps#4": {
+  "heading": "BEST ELEMENTAL SHAMAN PVP BUILD",
+  "intro": "",
+  "text": "",
+  "keys": []
+ },
+ "shaman/enhancement@dps#0": {
+  "heading": "BEST ENHANCEMENT SHAMAN PVE RAID BUILD",
+  "intro": "This PvE raiding build takes all the relevant Talents from the Enhancement Tree with very little freedom of choice about what else to pick. You could consider not using Spirit Weapons if threat ends up being a non-issue, or you could also drop one point out of Improved Stormstrike once you have higher-level gear. Besides that, you will go quite far into the Elemental Tree, picking up more buffs to your Spell damage, pushing further into the Hybrid Specialization role of Enhancement Shaman. Reverberation is purely taken as a travel node, but using 3/5 points conveniently makes it so your spell 29228 and spell 10414 line up quite well. Thanks to both Elemental Focus and Improved Stormstrike, you should have very few Mana issues during raiding. Depending on your current gear and hit rating, you could consider removing 2-3 points from Maelstrom Weapon and putting them into Tidal Focus.",
+  "text": "",
+  "keys": [
+   "16268",
+   "1223031",
+   "16040",
+   "16164",
+   "408498"
+  ]
+ },
+ "shaman/enhancement@dps#1": {
+  "heading": "BEST ENHANCEMENT SHAMAN PVE DUNGEON BUILD",
+  "intro": "The PvE Dungeon build won't be using Rage of the Farseer, and only one rank of Maelstrom Weapon, since neither will see much use in the fast-paced gameplay that dungeons usually entail. Thanks to the extra 6 points, we can now finish the Hit rating Talent in the Restoration Tree, and also pick up Mindfulness. With that, we have 3 Mana Talents, which will heavily cut back on downtime having to drink in dungeons. We still keep all of the AoE support from the Elemental Tree, which should turn you into an AoE machine in dungeons that needs very little downtime to regen mana.",
+  "text": "",
+  "keys": [
+   "408498",
+   "1223033"
+  ]
+ },
+ "shaman/enhancement@dps#2": {
+  "heading": "BEST ENHANCEMENT SHAMAN PVP BUILD",
+  "intro": "In PvP, you can go for 2 different Builds, depending on what you are looking for. One offers more spell damage and control, going deeper into the Elemental Tree. While the other build goes deep into the Restoration Tree, sacrificing control and damage from the Elemental and Enhancement Trees. This way, you will be able to outsustain a lot of your opponents in PvP, or support your team, while still being able to stand your ground. Control",
+  "text": "Sustain",
+  "keys": []
+ },
+ "shaman/enhancement@dps#3": {
+  "heading": "BEST ENHANCEMENT SHAMAN PVP BUILD",
+  "intro": "",
+  "text": "",
+  "keys": []
+ },
+ "shaman/restoration@healer#0": {
+  "heading": "BEST RESTORATION SHAMAN PVE RAID BUILD",
+  "intro": "There are two main raid build options for Restoration, both pick up all relevant core talents: Riptide our new core rotational spell, Nature's Swiftness for emergency healing, and Mana Tide Totem, which is a powerful raid cooldown for caster groups. Because of the Water Shield and Ancestral Healing talents, Restoration has good synergy with Critical Strike, which returns Mana and grants a powerful armor buff. Remember to try to refresh Water Shield during healing downtime or when you are moving or unable to cast. You can pick up Improved Ghost Wolf to make spell 2645 instant cast and allow it to be used while indoors, which helps immensely with mobility, but doing so forces you to skip otherwise useful talents for healing, such as Restorative Totems, so we provide two builds underneath for you to swap between on fights where Ghost Wolf mobility is not helpful. Possible talent swaps would be the less valuable points in Restorative Totems and Ancestral Knowledge for niche talents such as finishing Tidal Focus if interrupting is important, Natural Grace if threat is an issue, and Improved Reincarnation if dying is a common occurence. Also, notice that with Mental Dexterity and Elemental Weapons instead of Earth's Grasp, Guardian Totems, and Shamanistic Focus you can actually deal some melee damage (with spell 16342 imbued) during healing downtime, allowing you to still contribute towards the raid while benefitting from full Spirit regeneration, but otherwise the utility talents are better.",
+  "text": "",
+  "keys": [
+   "408521",
+   "16188",
+   "16190",
+   "408510",
+   "16176",
+   "16262",
+   "17485",
+   "16179",
+   "16043",
+   "16258",
+   "1223030"
+  ]
+ },
+ "shaman/restoration@healer#1": {
+  "heading": "BEST RESTORATION SHAMAN PVE RAID BUILD",
+  "intro": "",
+  "text": "",
+  "keys": []
+ },
+ "shaman/restoration@healer#2": {
+  "heading": "BEST RESTORATION SHAMAN PVE DUNGEON BUILD",
+  "intro": "Talent recommendations are equal to raiding ones, as there are no particularly strong dungeon-specific talent picks available on the current talent trees.",
+  "text": "",
+  "keys": []
+ },
+ "shaman/restoration@healer#3": {
+  "heading": "BEST RESTORATION SHAMAN PVP BUILD",
+  "intro": "The recommended build is similar to the raiding and dungeon builds, but removes Restorative Totems in favor of Earth's Grasp, 3 points into Tidal Focus to almost hit cap spell 10414 in PvP by itself, Shamanistic Focus to reduce its Mana cost by almost half, and Guardian Totems for more frequent spell 8177s, as well as Improved Ghost Wolf deep in the Enhancement tree.",
+  "text": "",
+  "keys": [
+   "16043",
+   "16179",
+   "1223030",
+   "16258",
+   "16262"
+  ]
+ },
+ "mage/arcane@dps#0": {
+  "heading": "BEST ARCANE MAGE PVE RAID AND DUNGEON BUILD",
+  "intro": "Arcane sub-spec'ed into Fire is the best option, it allows you to get more rotational high value tools such as Improved Fire Blast range to match the rest of your spells; which you can use to build up Heating Up stacks to then Pyroblast with. This is of course on top of the arcane tools, which give you Missile Barrage to use whenever it procs; Arcane Wrath to use on cooldown; great mana regeneration with Arcane Meditation; and a new offensive and self-buffing Arcane Blast. You also get access to the capstone talent Arcane Power meaning you can deal a lot of burst damage initially. While an Arcane specialization focused on only casting Arcane school spells, performs worse but can be useful in a boss that's fully immune to Fire damage. It has about 6 free talent points you can swap around that I chose to put into Improved Flamestrike for some extra AoE damage; Improved Counterspell for a more active use of spell 2139 (in trash fights for example), and lastly into 2 points into Arcane Geometry (which is far more important the other two but can be considered optional as well).",
+  "text": "",
+  "keys": [
+   "11078",
+   "400624",
+   "11366",
+   "400588",
+   "1326079",
+   "18462",
+   "400574",
+   "12042"
+  ]
+ },
+ "mage/arcane@dps#1": {
+  "heading": "BEST ARCANE MAGE PVE RAID AND DUNGEON BUILD",
+  "intro": "",
+  "text": "This build can deal more damage in longer fights where you need to sustain your mana for longer, it comes at the cost of Arcane Power though. It deals less damage in shorter fights as well. Until we have proper gear to test with, this is more of a concept rather than a expected build.",
+  "keys": []
+ },
+ "mage/arcane@dps#2": {
+  "heading": "BEST ARCANE MAGE PVE RAID AND DUNGEON BUILD",
+  "intro": "",
+  "text": "",
+  "keys": []
+ },
+ "mage/arcane@dps#3": {
+  "heading": "BEST ARCANE MAGE PVP BUILD",
+  "intro": "The Arcane Fire PVP, also commonly called \"Pyro PoM Pyro\" specialization is an extremely CD dependent spec that specializes in very high burst... every 3 minutes. It enables you to cc an enemy, then hard cast a Pyroblast followed by a Presence of Mind + Pyroblast combo. Now with Arcane Wrath being added, it can be used as the instant cast spell after Presence of Mind instead. Using a quick 1.5s Pyroblast buffed by Heating Up as the initial cast - making this specialization require less of a setup. This can additionally be used to max range and widdle down enemies with Improved Fire Blast building up Heating Up stacks to then send out quick Pyroblast alongside Arcane Wrath whenever off-cooldown. Additionally, having Impact means you have a 10% chance to stun and build range to stall the fight out for more Heating Up stacks; or actually get to cast the Pyroblast with.",
+  "text": "",
+  "keys": [
+   "11366",
+   "12043",
+   "1326079",
+   "400624",
+   "11078",
+   "11103"
+  ]
+ },
+ "mage/fire@dps#0": {
+  "heading": "BEST FIRE MAGE PVE RAID AND DUNGEON BUILD",
+  "intro": "Within what we can consider as Fire, we can use two specializations: one focuses on using spell 10151 as its main spell while tapping into arcane for some mana support, and spell piercing for extra damage, as well as Missile Barrage to use whenever it procs. With Deep Fire, you can give up a point in a talent like Master of Elements for either Blast Wave or Flame Throwing if you want another AoE tool or more range respectively, which is great depending on what your goal is. The other option is a spell 1237313 focused specialization which goes into the frost tree instead for extra critical strike consistency from Shatter from reacting to Fingers of Frost instead. This specialization is far more locked in, without many flex options - but in the case it causes you to go out of mana, 2 points of Incineration can be removed and put into Master of Elements instead.",
+  "text": "",
+  "keys": [
+   "400588",
+   "29074",
+   "18459"
+  ]
+ },
+ "mage/fire@dps#1": {
+  "heading": "BEST FIRE MAGE PVE RAID AND DUNGEON BUILD",
+  "intro": "",
+  "text": "",
+  "keys": []
+ },
+ "mage/fire@dps#2": {
+  "heading": "BEST FIRE MAGE PVP BUILD",
+  "intro": "This is almost the classic Presence of Mind & Pyroblast PVP specialization, but it also has more sustained output in the form of extremely long ranged Improved Fire Blasts to trigger Heating Up consistently, allowing for more quick Pyroblasts. It also allows you to get use Improved Scorch on longer fights to build up the debuff and damage with quick casts, alongside the Improved Fire Blasts, to build up Heating Up as previously mentioned. It benefits from incredibly long range, relatively short casts, and high burst potential. All, without giving up the typical PvP tools - such as Improved Counterspell and extra range on some of your CC.",
+  "text": "",
+  "keys": [
+   "12043",
+   "11366",
+   "11078",
+   "400624",
+   "11095",
+   "11255"
+  ]
+ },
+ "mage/frost@dps#0": {
+  "heading": "BEST FROST MAGE PVE RAID BUILD",
+  "intro": "",
+  "text": "Simply put, this is the best deep Frost build you can do in PvE while not going for a Frostfire Bolt build, which leans heavier on Fire. That said, a nice positive here is that you have some flexibility in points. The single point in Improved Blizzard is enough to enable your AOE strength, but can be dropped in pure single-target raid situations for a point in Incineration or some quality of life talent, likewise you can easily drop points in Arcane Meditation if you don't need more mana. In general, the 3 points in Arcane Impact are not hugely impactful as well and can be shuffled into other talents as well. Likewise, if you have a tank that agro isn't an issue with and you have an abundance of mana, you can also drop Frost Channeling for range talents to be able to hit further away. Overall, you should consider what you're fighting and where your character's gear is at when approaching these talent trees, but the above should be what I think most people will end up with at the end of the day, especially in the early parts of the endgame.",
+  "keys": []
+ },
+ "mage/frost@dps#1": {
+  "heading": "BEST FROST MAGE PVE DUNGEON BUILD",
+  "intro": "",
+  "text": "The nicest thing about the above build is that it also works just as well for dungeon-running. The single point in Improved Blizzard unlocks your highest AOE output option.",
+  "keys": []
+ },
+ "mage/frost@dps#2": {
+  "heading": "BEST FROST MAGE PVP BUILD",
+  "intro": "",
+  "text": "Shifting points away from mana conservation and into survival tools like Ice Block as well as control tools like Permafrost, Frostbite, and Improved Frost Nova, should help with PvP combat a lot. Feel free to iterate for the type of PvP you're doing; if you plan to do some large-scale combat, you probably want Improved Blizzard, for example. Overall, this is a beginning feel kind of PvP spec and I will be the first to admit that I am not an expert in this arena, please seek out community resources like the Classic Mage Discord as PvP will be an evolving space.",
+  "keys": []
+ },
+ "druid/feral@dps#0": {
+  "heading": "BEST FERAL DRUID HIGH MANA REGEN/OPENWORLD BUILD",
+  "intro": "This talent is good as it provides a lot of needed mana regen if you're just in the open world playing as a Feral Druid DPS, lowers the time you need to drink so you can spend more time doing what you want to do.",
+  "text": "",
+  "keys": []
+ },
+ "druid/feral@dps#1": {
+  "heading": "BEST FERAL DRUID PVE DUNGEON/RAID BUILD",
+  "intro": "Best build for pure throughput; this build is purely meant to do damage in spell 768, also grabbing most talents needed to fully function as a Feral Druid Tank if needed.",
+  "text": "",
+  "keys": []
+ },
+ "druid/feral@dps#2": {
+  "heading": "BEST FERAL DRUID HYBRID TANK PVE BUILD",
+  "intro": "Best build if you're looking to be a Hybrid Tank Feral Druid, taking all talents needed to optimize survivability, but also grabbing all the must-have talents for spell 768 to be completely viable as a DPS.",
+  "text": "",
+  "keys": []
+ },
+ "druid/feral@dps#3": {
+  "heading": "BEST FERAL DRUID PVP BUILD",
+  "intro": "A good standard Feral PvP Build, which goes deep into the Restoration tree for Swiftmend and a lot of mana regen talents. While also being deep Feral and taking all talents needed to burst someone down.",
+  "text": "",
+  "keys": [
+   "18562"
+  ]
+ },
+ "druid/feral@tank#0": {
+  "heading": "FERAL DRUID TANK OPEN WORLD AND LEVELING BUILDS",
+  "intro": "Open World builds generally aim for an all-purpose build with good mana efficiency over maximizing a single category. Ideally, the leveling experience would incorporate respecs, but the two builds below can be run from level 1 to 60. This build picks the standard Feral talents and fully commits to Restoration to minimize the mana footprint. This approach minimizes downtime and does not rely on other sources of healing. During leveling, the spec picks up all the relevant Feral talents first, then puts all its remaining points into Restoration for the later levels. Bloom as a pick should be considered experimental; the exact parameters of its scaling and your gearset will ultimately determine whether picking it up is worth it.",
+  "text": "A slightly more offensive version, which instead of putting further points into Restoration goes for Nature's Majesty and Nature's Reach. This build is less mana-efficient and benefits more from also utilizing bandages and other consumables when the situation calls for it. The higher range allows for more efficient tagging and pulling and a more mobile playing style overall. Whether the point in Bloom is useful largely depends on your gearset.",
+  "keys": [
+   "1328621"
+  ]
+ },
+ "druid/feral@tank#1": {
+  "heading": "FERAL DRUID TANK OPEN WORLD AND LEVELING BUILDS",
+  "intro": "",
+  "text": "",
+  "keys": []
+ },
+ "druid/feral@tank#2": {
+  "heading": "BEST FERAL DRUID TANK DUNGEON AND RAIDING BUILDS",
+  "intro": "Raiding builds should be considered at maximum level. As we currently lack information and appropriate context, these builds will likely change considerably over the course of the next few patches. This hybrid build plays entirely the same as a mono bear, but its cat gameplay forsakes Shredding Attacks entirely, instead focusing on using spell 9850. For dungeon-running and lighter-hitting bosses, consider swapping points from Thick Hide to Blood Frenzy may be appropriate.",
+  "text": "This pure bear spec puts an additional point into Rend and Tear for slightly more damage, as well as Blood Frenzy for slightly better rage efficiency.",
+  "keys": [
+   "16929",
+   "1223246"
+  ]
+ },
+ "druid/feral@tank#3": {
+  "heading": "BEST FERAL DRUID TANK DUNGEON AND RAIDING BUILDS",
+  "intro": "",
+  "text": "",
+  "keys": []
+ },
+ "druid/balance@dps#0": {
+  "heading": "BEST BALANCE DRUID PVE RAID AND DUNGEON BUILD",
+  "intro": "The build suggested here takes a pathway of leaning into a multidotting build over a hard casting build early. As a general rule, expect to take points out of Reflection and put them into Genesis for a small damage increase assuming you are not going out of mana in fights. In a raiding environment, a hard-casting Eclipse build will be optimal. But there is no rush to taking those points while levelling.",
+  "text": "",
+  "keys": []
+ },
+ "druid/balance@dps#1": {
+  "heading": "BEST BALANCE DRUID PVP BUILD",
+  "intro": "For PvP builds, we are looking to maintain distance and control over our enemy. Therefore, a multidotting build is again preferred, but instead of mana sustain, we have opted for survivability and utility talents. This particular PvP build attempts to keep you in Moonkin form as much as possible. Other builds would have you play as a Restoration Druid see for more information on those builds.",
+  "text": "",
+  "keys": []
+ }
+}

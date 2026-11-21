@@ -33,6 +33,11 @@ function weapons:IsOff(kind, dual)
     return kind == "offitem" or ((kind == "offweapon" or kind == "one") and dual)
 end
 
+-- A held-in-off-hand item never takes the place of a shield or a weapon for a spec whose guide names a setup.
+function weapons:HeldNotWanted(guide, item)
+    return item and item.equipLoc == "INVTYPE_HOLDABLE" and guide and guide.setups ~= nil
+end
+
 -- Weapon speed from the item tooltip ("Speed 3.60"); nil when it cannot be read.
 function weapons:Speed(link, item)
     local key = item and item.key or link
@@ -56,8 +61,11 @@ function weapons:Speed(link, item)
 end
 
 -- Setup formed by a main-hand and an off-hand item (either may be nil).
+-- "held" = a held-in-off-hand item (not a shield, agreed with the user 2026-11-21): it only fits specs whose guide
+-- names no setup at all (casters, healers).
 function weapons:Setup(main, off)
     if main and self:Kind(main) == "twohand" then return "twohand" end
+    if off and off.equipLoc == "INVTYPE_HOLDABLE" then return "held" end
     if off and self:Kind(off) == "offitem" then return "shield" end
     if off then return "dual" end
     return "single"
@@ -71,6 +79,7 @@ function weapons:Fits(guide, main, off)
     end
     if not guide.setups then return true end
     local setup = self:Setup(main, off)
+    if setup == "held" then return false end
     if setup == "single" then return guide.setups.dual or guide.setups.shield or false end
     return guide.setups[setup] == true
 end

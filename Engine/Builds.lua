@@ -42,14 +42,13 @@ function engine:Choose(id)
     elseif not build then addon.Presets:SetManualSpecID(nil) end
 end
 
--- 0 = all defense, 100 = all offense (hand-set per build in the data).
-function engine:Offense(build)
-    return math.max(0, math.min(100, build.offense or 50))
-end
-
-function engine:TreesText(build)
+-- "Arms 3 | Fury 31 | Protection 17" (tree names from the data; numbers only when they are missing).
+function engine:TreesText(build, class)
     local t = build.trees
-    return t and (t[1] .. " / " .. t[2] .. " / " .. t[3]) or ""
+    if not t then return "" end
+    local names = addon.TalentBuilds.treeNames and addon.TalentBuilds.treeNames[class or select(2, UnitClass("player"))]
+    if not names then return t[1] .. " / " .. t[2] .. " / " .. t[3] end
+    return ("%s %d  |  %s %d  |  %s %d"):format(names[1], t[1], names[2], t[2], names[3], t[3])
 end
 
 -- Leveling steps of a hybrid build: one per level, { level, tree, talent, rank, max, spellID }.

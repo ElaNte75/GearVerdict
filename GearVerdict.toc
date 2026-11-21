@@ -31,6 +31,15 @@ Data\WeightString.lua
 Data\TalentOrders.lua
 Data\TalentOrdersWowhead.lua
 Data\TalentBuilds.lua
+Data\TalentBuilds\WarriorBuilds.lua
+Data\TalentBuilds\PaladinBuilds.lua
+Data\TalentBuilds\HunterBuilds.lua
+Data\TalentBuilds\RogueBuilds.lua
+Data\TalentBuilds\PriestBuilds.lua
+Data\TalentBuilds\ShamanBuilds.lua
+Data\TalentBuilds\MageBuilds.lua
+Data\TalentBuilds\WarlockBuilds.lua
+Data\TalentBuilds\DruidBuilds.lua
 Engine\StatNormalization.lua
 Engine\ItemData.lua
 Engine\Scoring.lua

@@ -1,9 +1,9 @@
 local addon = {}
-local where = { MinimapIcon = "UI", Builds = "Engine", TalentPlacer = "Engine", TalentBuilds = "Data", BuildPicker = "UI", BagArrows = "Display", BagnonAdapter = "Display", Bootstrap = "Core", Comparison = "Engine", ControlPanel = "UI", Core = "Core", Eligibility = "Engine", ArmorPreference = "Engine", WeaponData = "Engine", WeaponComparison = "Engine", WeaponGuide = "Data", ItemData = "Engine", PanelInterfacePage = "UI", PanelFactsPage = "UI", PanelOptionsPage = "UI", PanelSpecPage = "UI", PanelStatPriority = "UI", PanelWeightsPage = "UI", PanelWidgets = "UI", Presets = "Data", QuestArrows = "Display", QuestSellCoin = "Display", DungeonJournalArrows = "Display", RingPlacement = "Display", Scoring = "Engine", SpecDetection = "Data", StatNormalization = "Engine", Tooltips = "Display", UpgradeIndicators = "Display", WeightString = "Data", WeightTransferDialog = "UI", Weights = "Data", TalentOrders = "Data", TalentOrdersWowhead = "Data", PanelLevelingPage = "UI", TalentAdvisor = "Engine", TalentHint = "Display", Warrior = "Data/Presets", Paladin = "Data/Presets", Hunter = "Data/Presets", Rogue = "Data/Presets", Priest = "Data/Presets", Shaman = "Data/Presets", Mage = "Data/Presets", Warlock = "Data/Presets", Druid = "Data/Presets" }
+local where = { MinimapIcon = "UI", Builds = "Engine", TalentPlacer = "Engine", TalentBuilds = "Data", WarriorBuilds = "Data/TalentBuilds", PaladinBuilds = "Data/TalentBuilds", HunterBuilds = "Data/TalentBuilds", RogueBuilds = "Data/TalentBuilds", PriestBuilds = "Data/TalentBuilds", ShamanBuilds = "Data/TalentBuilds", MageBuilds = "Data/TalentBuilds", WarlockBuilds = "Data/TalentBuilds", DruidBuilds = "Data/TalentBuilds", BuildPicker = "UI", BagArrows = "Display", BagnonAdapter = "Display", Bootstrap = "Core", Comparison = "Engine", ControlPanel = "UI", Core = "Core", Eligibility = "Engine", ArmorPreference = "Engine", WeaponData = "Engine", WeaponComparison = "Engine", WeaponGuide = "Data", ItemData = "Engine", PanelInterfacePage = "UI", PanelFactsPage = "UI", PanelOptionsPage = "UI", PanelSpecPage = "UI", PanelStatPriority = "UI", PanelWeightsPage = "UI", PanelWidgets = "UI", Presets = "Data", QuestArrows = "Display", QuestSellCoin = "Display", DungeonJournalArrows = "Display", RingPlacement = "Display", Scoring = "Engine", SpecDetection = "Data", StatNormalization = "Engine", Tooltips = "Display", UpgradeIndicators = "Display", WeightString = "Data", WeightTransferDialog = "UI", Weights = "Data", TalentOrders = "Data", TalentOrdersWowhead = "Data", PanelLevelingPage = "UI", TalentAdvisor = "Engine", TalentHint = "Display", Warrior = "Data/Presets", Paladin = "Data/Presets", Hunter = "Data/Presets", Rogue = "Data/Presets", Priest = "Data/Presets", Shaman = "Data/Presets", Mage = "Data/Presets", Warlock = "Data/Presets", Druid = "Data/Presets" }
 local function path(name) return where[name] .. "/" .. name .. ".lua" end
-local files = { "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentBuilds", "Builds", "TalentAdvisor", "TalentPlacer", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "PanelWidgets", "ControlPanel", "PanelStatPriority", "BuildPicker", "PanelSpecPage", "PanelOptionsPage", "PanelLevelingPage", "PanelWeightsPage", "PanelInterfacePage", "PanelFactsPage", "WeightTransferDialog", "MinimapIcon", "Core" }
+local files = { "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentBuilds", "WarriorBuilds", "PaladinBuilds", "HunterBuilds", "RogueBuilds", "PriestBuilds", "ShamanBuilds", "MageBuilds", "WarlockBuilds", "DruidBuilds", "Builds", "TalentAdvisor", "TalentPlacer", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "PanelWidgets", "ControlPanel", "PanelStatPriority", "BuildPicker", "PanelSpecPage", "PanelOptionsPage", "PanelLevelingPage", "PanelWeightsPage", "PanelInterfacePage", "PanelFactsPage", "WeightTransferDialog", "MinimapIcon", "Core" }
 for _, name in ipairs(files) do assert(loadfile(path(name))) end
-for _, name in ipairs({ "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentBuilds", "Builds", "TalentAdvisor", "TalentPlacer", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "PanelStatPriority" }) do
+for _, name in ipairs({ "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentBuilds", "WarriorBuilds", "PaladinBuilds", "HunterBuilds", "RogueBuilds", "PriestBuilds", "ShamanBuilds", "MageBuilds", "WarlockBuilds", "DruidBuilds", "Builds", "TalentAdvisor", "TalentPlacer", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "PanelStatPriority" }) do
     assert(loadfile(path(name)))("GearVerdict", addon)
 end
 local tests = 0
@@ -1108,6 +1108,22 @@ do
     check(addon.Comparison:IsUpgrade(r) and near(r.delta, 2.7 * 6.3 - 1.1 * 6.3 * 0.93), "Fury: two-hander beats sword + shield")
     check(r.comparisons[1].previousName == "Worn Shortsword + Worn Wooden Shield", "Two-hander is compared with both hands")
     check(addon.Comparison:Evaluate("worn") == nil, "Equipped weapon is not an upgrade")
+    -- User screenshots 2026-11-21 (Protection): a held off-hand item is not a shield; a one-hander replaces only the sword
+    as("WARRIOR", 73); fresh()
+    items.stave = { item = { key = "stave", name = "Journeyman's Stave", equipLoc = "INVTYPE_HOLDABLE", classID = 4, subclassID = 0,
+        required = 1, stats = { ITEM_MOD_STAMINA_SHORT = 1 } } }
+    items.vshield = { item = { key = "vshield", name = "Veteran Shield", equipLoc = "INVTYPE_SHIELD", classID = 4, subclassID = 6,
+        required = 1, stats = { RESISTANCE0_NAME = 328, ITEM_MOD_STRENGTH_SHORT = 2 } } }
+    weapon("hsword2", "Heirloom Sword", "INVTYPE_WEAPONMAINHAND", 7, 7.6, 2.1, { ITEM_MOD_STAMINA_SHORT = 1 })
+    weapon("knife", "Edward's Knife", "INVTYPE_WEAPON", 15, 12.2, 1.6, { ITEM_MOD_AGILITY_SHORT = 2, ITEM_MOD_STAMINA_SHORT = 2 })
+    equippedLinks = { [16] = "hsword2", [17] = "vshield" }
+    check(not addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("stave")), "Protection: a held off-hand item never replaces the shield")
+    check(WD:Setup(nil, items.stave.item) == "held" and WD:Setup(nil, items.vshield.item) == "shield", "Held item and shield are different setups")
+    r = addon.Comparison:Evaluate("knife")
+    check(addon.Comparison:IsUpgrade(r) and r.comparisons[1].previousName == "Heirloom Sword", "One-hander: only the replaced sword is named, the shield stays")
+    check(WD:Fits(addon.WeaponGuide:Get(63), nil, items.stave.item) and not WD:HeldNotWanted(addon.WeaponGuide:Get(63), items.stave.item),
+        "Casters (no setup in the guide) still take held off-hand items")
+    as("WARRIOR", 72); dual = false
     -- Heirloom case (2026-11-21): both under 2.6, nearly equal value -> the slower one (nearer 2.6) wins
     weapon("hsword", "Heirloom Sword", "INVTYPE_WEAPONMAINHAND", 7, 32 / 2 / 2.1, 2.1)
     weapon("hdagger", "Heirloom Dagger", "INVTYPE_WEAPON", 15, 26 / 2 / 1.7, 1.7)
@@ -1216,7 +1232,7 @@ do
     local B, saved = addon.Builds, { class = UnitClass, level = UnitLevel }
     function UnitClass() return "Warrior", "WARRIOR" end
     local list = B:List()
-    check(#list == 10 and list[1].classic and list[4].id == "standard", "Warrior has 3 classic + 7 hybrid builds")
+    check(#list == 16 and list[1].classic and list[2].classic and list[3].classic and B:Find("standard") and B:Find("fury-prot"), "Warrior has 3 classic + 13 Wowhead builds, old ids kept")
     for _, build in ipairs(list) do
         if build.order then
             check(#build.order == 51, build.name .. ": one talent per level 10-60")
@@ -1239,15 +1255,45 @@ do
     check(B:Chosen().id == "classic-72", "Old spec choice shows as the matching classic build")
     B:Choose("fury-prot")
     check(addon.Presets:SelectedSpecID() == 73 and addon.Presets:ManualSpecID() == 72, "Hybrid uses its gear spec, keeps the old spec choice")
-    check(B:Offense(B:Find("dual-wield")) > B:Offense(B:Find("standard")), "Dual Wield is more offense than Standard")
-    check(B:TreesText(B:Find("fury-prot")) == "3 / 31 / 17", "Trees text")
-    for _, build in ipairs(list) do check(build.weapons and build.weapons ~= "", build.name .. ": names its weapon setup") end
-    for _, build in ipairs(list) do
-        check(build.key and #build.key >= 4 and #build.key <= 6, build.name .. ": 4-6 key talents")
-        for _, spell in ipairs(build.key) do check(addon.TalentBuilds.talents[spell], build.name .. ": key talent is known") end
+    check(B:TreesText(B:Find("fury-prot")) == "Arms 3  |  Fury 31  |  Protection 17", "Trees text with the tree names")
+    check(B:Find("dungeon-cleave").weapons and not B:Find("standard").weapons, "Weapons only where the guide names them")
+    -- Every class: builds are well formed
+    for class, classList in pairs(addon.TalentBuilds.byClass) do
+        local ids, names, classic = {}, {}, 0
+        for _, build in ipairs(classList) do
+            check(not ids[build.id] and not names[build.name], class .. ": unique id and name (" .. build.name .. ")")
+            ids[build.id], names[build.name] = true, true
+            check(addon.Presets.bySpec[build.gearSpec] and addon.Presets.bySpec[build.gearSpec].class == class, build.name .. ": gear spec belongs to the class")
+            check(build.trees[1] + build.trees[2] + build.trees[3] >= 50, build.name .. ": tree points")
+            check(build.offense == nil, build.name .. ": no invented meter value")
+            if build.classic then
+                classic = classic + 1
+                check(not build.description and not build.key and not build.weapons and not build.order, build.name .. ": classic build adds nothing of its own")
+            else
+                check(build.source and build.source:find("Wowhead") and build.description and build.description ~= "", build.name .. ": Wowhead source and the guide's description")
+            end
+            if build.order then
+                check(#build.order == 51, build.name .. ": 51 talent points")
+                local counts = {}
+                for _, spell in ipairs(build.order) do
+                    counts[spell] = (counts[spell] or 0) + 1
+                    local talent = addon.TalentBuilds.talents[spell]
+                    check(talent and counts[spell] <= talent[3], build.name .. ": known talent within max rank")
+                end
+            end
+            if build.key then
+                check(#build.key <= 5, build.name .. ": at most 5 key talents")
+                local inOrder = {}
+                for _, spell in ipairs(build.order or {}) do inOrder[spell] = true end
+                for _, spell in ipairs(build.key) do
+                    check(addon.TalentBuilds.talents[spell] and (not build.order or inOrder[spell]), build.name .. ": key talent is taken by the build")
+                end
+            end
+        end
+        check(classic == #addon.SpecDetection:ClassSpecs(class), class .. ": one classic build per specialization")
     end
     local names = B:KeyNames(B:Find("fury-prot"), 4)
-    check(#names == 4 and names[1] == "Bloodthirst" and names[4] == "Blood Craze", "Key talent names for the description")
+    check(#names == 4 and names[1] == addon.TalentBuilds.talents[B:Find("fury-prot").key[1]][1], "Key talent names for the description, in the guide's order")
     check(#B:KeyNames(B:Find("fury-prot"), 2) == 2 and #B:KeyNames(nil) == 0, "Key names respect the limit")
     -- Level-up hint follows the build's own order (tree unreadable here -> by level)
     local steps = B:Steps(B:Find("fury-prot"))
@@ -1256,7 +1302,7 @@ do
     UnitLevel = function() return 15 end
     local r = addon.TalentAdvisor:Suggest(15)
     check(r.status == "ok" and r.build and r.build.id == "fury-prot" and r.step.talent == "Cruelty", "Hint follows the chosen hybrid build")
-    check(r.guide == "Fury-Prot", "Hint names the build, not the guide")
+    check(r.guide == "Protection: Fury-Prot", "Hint names the build, not the guide")
     B:Choose("classic-71")
     r = addon.TalentAdvisor:Suggest(15)
     check(r.build == nil, "Classic build keeps following the guide")

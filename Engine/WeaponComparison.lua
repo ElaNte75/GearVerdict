@@ -80,7 +80,10 @@ function compare:Option(context, slot, new, old, partner)
     local empty = not (old.main or old.off or old.ranged)
     local upgrade, reason = true, nil
     if not empty then upgrade, reason = addon.WeaponData:Judge(guide, new, old, delta, oldScore) end
-    local previousName = names(old.main, old.off, old.ranged)
+    -- Name only what changes (user 2026-11-21): both hands only when the two setups differ in both hands
+    -- (two-hander against one-hand + shield / off-hand), otherwise just the replaced item.
+    local function changed(a, b) return a and (not b or a.key ~= b.key) and a or nil end
+    local previousName = names(changed(old.main, new.main), changed(old.off, new.off), changed(old.ranged, new.ranged))
     return { slot = slot, delta = delta, empty = empty, upgrade = upgrade == true, weaponReason = reason,
         previousName = previousName, previousLink = context.links[slot] or context.links[MAIN],
         partner = partner and partner.item.name,
@@ -106,7 +109,9 @@ function compare:WithPartner(context, slot, candidate, wantsMain, old)
     for _, entry in ipairs(self:BagItems()) do
         local kind = addon.WeaponData:Kind(entry.item)
         local fitsHand = wantsMain and addon.WeaponData:IsOff(kind, context.dual) or (not wantsMain and addon.WeaponData:IsMain(kind))
-        if fitsHand and entry.item.key ~= candidate.key then try(entry) end
+        if fitsHand and entry.item.key ~= candidate.key and not addon.WeaponData:HeldNotWanted(context.guide, entry.item) then
+            try(entry)
+        end
     end
     return best
 end
@@ -116,6 +121,7 @@ function compare:Evaluate(link, candidate, preset, goal)
     local context = { preset = preset, guide = addon.WeaponGuide:Get(preset.specID), links = {},
         dual = addon.WeaponData:CanDualWield() }
     prepare(link, candidate)
+    if addon.WeaponData:HeldNotWanted(context.guide, candidate) then return nil, "Not usable in your weapon setup" end
     local items = {}
     for _, slot in ipairs({ MAIN, OFF, RANGED }) do
         local item, otherLink = equipped(slot)
