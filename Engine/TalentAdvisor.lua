@@ -83,7 +83,7 @@ function advisor:Read()
     if not treeID then return nil end
     local nodes = call(C_Traits.GetTreeNodes, treeID)
     if type(nodes) ~= "table" then return nil end
-    local read = { bySpell = {}, names = {}, ranks = {}, talents = 0, spent = 0 }
+    local read = { bySpell = {}, names = {}, ranks = {}, nodes = {}, byName = {}, configID = configID, talents = 0, spent = 0 }
     for _, nodeID in ipairs(nodes) do
         local node = call(C_Traits.GetNodeInfo, configID, nodeID)
         if type(node) == "table" then
@@ -97,7 +97,9 @@ function advisor:Read()
                 local rank = tonumber(node.currentRank) or tonumber(node.activeRank) or 0
                 local name = spellName(spellID)
                 read.bySpell[spellID] = rank
+                read.nodes[spellID] = { nodeID = nodeID, entryID = entryID }
                 if name then
+                    read.byName[name:lower()] = read.nodes[spellID]
                     read.names[spellID] = name:lower()
                     read.ranks[name:lower()] = rank
                 end
@@ -169,7 +171,15 @@ function advisor:Suggest(level, opts)
         result.status, result.why = "nospec", "Choose your specialization in /gv first."
         return result
     end
-    local steps = self:Steps(specID, result.guide)
+    local steps
+    -- A hybrid build brings its own talent order and replaces the guide choice.
+    local build = addon.Builds and addon.Builds:Chosen()
+    if build and build.order then
+        steps = addon.Builds:Steps(build)
+        result.guide, result.build = build.name, build
+    else
+        steps = self:Steps(specID, result.guide)
+    end
     if not steps then
         result.status, result.why = "unsupported", "No talent guide for this specialization."
         return result

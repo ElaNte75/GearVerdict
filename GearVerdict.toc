@@ -30,6 +30,7 @@ Data\Weights.lua
 Data\WeightString.lua
 Data\TalentOrders.lua
 Data\TalentOrdersWowhead.lua
+Data\TalentBuilds.lua
 Engine\StatNormalization.lua
 Engine\ItemData.lua
 Engine\Scoring.lua
@@ -38,7 +39,9 @@ Engine\ArmorPreference.lua
 Engine\WeaponData.lua
 Engine\Comparison.lua
 Engine\WeaponComparison.lua
+Engine\Builds.lua
 Engine\TalentAdvisor.lua
+Engine\TalentPlacer.lua
 Display\RingPlacement.lua
 Display\Tooltips.lua
 Display\UpgradeIndicators.lua
@@ -51,6 +54,7 @@ Display\TalentHint.lua
 UI\PanelWidgets.lua
 UI\ControlPanel.lua
 UI\PanelStatPriority.lua
+UI\BuildPicker.lua
 UI\PanelSpecPage.lua
 UI\PanelOptionsPage.lua
 UI\PanelWeightsPage.lua

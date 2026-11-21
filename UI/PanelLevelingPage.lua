@@ -86,7 +86,10 @@ function page:Update()
     end
     self.seconds:Refresh()
     local specID = addon.Presets and addon.Presets:SelectedSpecID()
-    if specID and addon.Presets:IsSupported(specID) then
+    local build = addon.Builds and addon.Builds:Chosen()
+    if build and build.order and specID and addon.Presets:IsSupported(specID) then
+        self.status:SetText("Following build: " .. build.name .. " (its own talent order)")
+    elseif specID and addon.Presets:IsSupported(specID) then
         self.status:SetText("For: " .. widgets:SpecText(specID))
     else
         self.status:SetText("Choose your specialization first.")

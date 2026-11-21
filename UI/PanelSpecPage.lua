@@ -30,7 +30,13 @@ function page:Create(parent)
         .. "Gear is compared with the stat weights of that role. Untick it to turn recommendations off.")
     self.checks = {}
     local anchor, gap = specLine, widgets.GAP_AFTER_LINE - 4
-    for _, spec in ipairs(addon.SpecDetection:ClassSpecs()) do
+    -- Classes with talent builds pick a build from a list (UI/BuildPicker.lua) instead of a specialization.
+    local useBuilds = addon.Builds and addon.BuildPicker and addon.Builds:List()
+    if useBuilds then
+        specLabel:SetText("Build")
+        anchor = addon.BuildPicker:Create(frame, specLine, gap + 8)
+    end
+    for _, spec in ipairs(useBuilds and {} or addon.SpecDetection:ClassSpecs()) do
         local supported = addon.Presets:IsSupported(spec.id)
         local check = widgets:Check(frame, spec.name, anchor, gap, function(_, checked) self:Choose(spec.id, checked) end)
         check.specID = spec.id
@@ -49,7 +55,7 @@ function page:Create(parent)
         self.checks[#self.checks + 1] = check
         anchor, gap = check, widgets.GAP_NEXT_CHECK
     end
-    if #self.checks == 0 then
+    if #self.checks == 0 and not useBuilds then
         anchor = widgets:Note(frame, "Your class is not supported yet.", specLine, widgets.GAP_AFTER_LINE)
     end
 
@@ -77,12 +83,15 @@ function page:Update()
         widgets:UpdateCheck(check)
         if check.specID == chosen then check.Text:SetTextColor(widgets:ClassColor()) end
     end
+    if addon.BuildPicker then addon.BuildPicker:Update() end
     local preset, reason = addon.Presets:Get()
     if preset then
-        self.status:SetText("Active: " .. widgets:SpecText(addon.Presets:SelectedSpecID()))
+        local build = addon.BuildPicker and addon.BuildPicker.frame and addon.Builds:Chosen()
+        self.status:SetText("Active: " .. (build and (build.name .. " (gear as " .. widgets:SpecText(addon.Presets:SelectedSpecID()) .. ")")
+            or widgets:SpecText(addon.Presets:SelectedSpecID())))
         self.status:SetTextColor(widgets:Color("good"))
     else
-        self.status:SetText(reason == "Choose your specialization in /gv" and "Choose a specialization above to get recommendations."
+        self.status:SetText(reason == "Choose your specialization in /gv" and (addon.BuildPicker and addon.BuildPicker.frame and "Choose a build above to get recommendations." or "Choose a specialization above to get recommendations.")
             or reason or "No recommendations")
         self.status:SetTextColor(widgets:Color("bad"))
     end

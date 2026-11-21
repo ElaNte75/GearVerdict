@@ -42,6 +42,7 @@ frame:SetScript("OnEvent", function(_, event, arg, success)
         initialized = true
         addon.MinimapIcon:Initialize()
         if addon.TalentHint then addon.TalentHint:Initialize() end
+        if addon.TalentPlacer then addon.TalentPlacer:Initialize() end
         if IsLoggedIn() then addon.Tooltips:Initialize() end
         if OpenAllBags then hooksecurefunc("OpenAllBags", function() refresh("OpenAllBags") end) end
         if ToggleBackpack then hooksecurefunc("ToggleBackpack", function() refresh("ToggleBackpack") end) end

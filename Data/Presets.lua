@@ -45,30 +45,47 @@ end
 
 -- Some servers (seen on Forever 2026-11-21) sometimes report an empty realm name. Then the choice is
 -- found by character name alone, but only when exactly one saved character has that name.
-local function characterKey()
+local function characterKey(store)
     local name = UnitName("player") or "?"
     local realm = GetRealmName and GetRealmName()
     if realm and realm ~= "" then return name .. "-" .. realm end
     local found
-    for key in pairs(GearVerdictDB.specChoices or {}) do
-        if key:sub(1, #name + 1) == name .. "-" then
-            if found then return name .. "-?" end
-            found = key
+    -- Look in this store, then in the specialization choices (same character keys).
+    for _, source in ipairs({ store, "specChoices" }) do
+        for key in pairs(GearVerdictDB[source] or {}) do
+            if key:sub(1, #name + 1) == name .. "-" and key ~= found then
+                if found then return name .. "-?" end
+                found = key
+            end
         end
     end
     return found or (name .. "-?")
 end
 
 function presets:ManualSpecID()
-    return GearVerdictDB.specChoices and GearVerdictDB.specChoices[characterKey()]
+    return GearVerdictDB.specChoices and GearVerdictDB.specChoices[characterKey("specChoices")]
 end
 
 function presets:SetManualSpecID(id)
     GearVerdictDB.specChoices = GearVerdictDB.specChoices or {}
-    GearVerdictDB.specChoices[characterKey()] = id
+    GearVerdictDB.specChoices[characterKey("specChoices")] = id
 end
 
+-- The talent build the player chose (Engine/Builds.lua), saved per character like the specialization.
+function presets:BuildChoice()
+    return GearVerdictDB.buildChoices and GearVerdictDB.buildChoices[characterKey("buildChoices")]
+end
+
+function presets:SetBuildChoice(id)
+    GearVerdictDB.buildChoices = GearVerdictDB.buildChoices or {}
+    GearVerdictDB.buildChoices[characterKey("buildChoices")] = id
+end
+
+-- Gear is judged with the specialization of the chosen hybrid build (its gearSpec), otherwise with the
+-- specialization chosen directly (classic builds set that choice themselves).
 function presets:SelectedSpecID()
+    local build = addon.Builds and addon.Builds:Chosen()
+    if build and not build.classic then return build.gearSpec end
     return self:ManualSpecID()
 end
 

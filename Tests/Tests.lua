@@ -1,9 +1,9 @@
 local addon = {}
-local where = { MinimapIcon = "UI", BagArrows = "Display", BagnonAdapter = "Display", Bootstrap = "Core", Comparison = "Engine", ControlPanel = "UI", Core = "Core", Eligibility = "Engine", ArmorPreference = "Engine", WeaponData = "Engine", WeaponComparison = "Engine", WeaponGuide = "Data", ItemData = "Engine", PanelInterfacePage = "UI", PanelFactsPage = "UI", PanelOptionsPage = "UI", PanelSpecPage = "UI", PanelStatPriority = "UI", PanelWeightsPage = "UI", PanelWidgets = "UI", Presets = "Data", QuestArrows = "Display", QuestSellCoin = "Display", DungeonJournalArrows = "Display", RingPlacement = "Display", Scoring = "Engine", SpecDetection = "Data", StatNormalization = "Engine", Tooltips = "Display", UpgradeIndicators = "Display", WeightString = "Data", WeightTransferDialog = "UI", Weights = "Data", TalentOrders = "Data", TalentOrdersWowhead = "Data", PanelLevelingPage = "UI", TalentAdvisor = "Engine", TalentHint = "Display", Warrior = "Data/Presets", Paladin = "Data/Presets", Hunter = "Data/Presets", Rogue = "Data/Presets", Priest = "Data/Presets", Shaman = "Data/Presets", Mage = "Data/Presets", Warlock = "Data/Presets", Druid = "Data/Presets" }
+local where = { MinimapIcon = "UI", Builds = "Engine", TalentPlacer = "Engine", TalentBuilds = "Data", BuildPicker = "UI", BagArrows = "Display", BagnonAdapter = "Display", Bootstrap = "Core", Comparison = "Engine", ControlPanel = "UI", Core = "Core", Eligibility = "Engine", ArmorPreference = "Engine", WeaponData = "Engine", WeaponComparison = "Engine", WeaponGuide = "Data", ItemData = "Engine", PanelInterfacePage = "UI", PanelFactsPage = "UI", PanelOptionsPage = "UI", PanelSpecPage = "UI", PanelStatPriority = "UI", PanelWeightsPage = "UI", PanelWidgets = "UI", Presets = "Data", QuestArrows = "Display", QuestSellCoin = "Display", DungeonJournalArrows = "Display", RingPlacement = "Display", Scoring = "Engine", SpecDetection = "Data", StatNormalization = "Engine", Tooltips = "Display", UpgradeIndicators = "Display", WeightString = "Data", WeightTransferDialog = "UI", Weights = "Data", TalentOrders = "Data", TalentOrdersWowhead = "Data", PanelLevelingPage = "UI", TalentAdvisor = "Engine", TalentHint = "Display", Warrior = "Data/Presets", Paladin = "Data/Presets", Hunter = "Data/Presets", Rogue = "Data/Presets", Priest = "Data/Presets", Shaman = "Data/Presets", Mage = "Data/Presets", Warlock = "Data/Presets", Druid = "Data/Presets" }
 local function path(name) return where[name] .. "/" .. name .. ".lua" end
-local files = { "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentAdvisor", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "PanelWidgets", "ControlPanel", "PanelStatPriority", "PanelSpecPage", "PanelOptionsPage", "PanelLevelingPage", "PanelWeightsPage", "PanelInterfacePage", "PanelFactsPage", "WeightTransferDialog", "MinimapIcon", "Core" }
+local files = { "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentBuilds", "Builds", "TalentAdvisor", "TalentPlacer", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "PanelWidgets", "ControlPanel", "PanelStatPriority", "BuildPicker", "PanelSpecPage", "PanelOptionsPage", "PanelLevelingPage", "PanelWeightsPage", "PanelInterfacePage", "PanelFactsPage", "WeightTransferDialog", "MinimapIcon", "Core" }
 for _, name in ipairs(files) do assert(loadfile(path(name))) end
-for _, name in ipairs({ "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentAdvisor", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "PanelStatPriority" }) do
+for _, name in ipairs({ "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentBuilds", "Builds", "TalentAdvisor", "TalentPlacer", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "PanelStatPriority" }) do
     assert(loadfile(path(name)))("GearVerdict", addon)
 end
 local tests = 0
@@ -1208,6 +1208,135 @@ do
     addon.ItemData.Get, GetInventoryItemLink, GearVerdictDB.capsEnabled = saved.get, saved.link, saved.caps
     C_TooltipInfo, UnitLevel, C_Container, CanDualWield = saved.tip, saved.level, nil, nil
     function UnitClass() return "Shaman", "SHAMAN" end
+    addon.Presets:SetManualSpecID(263)
+end
+
+-- Talent builds (Data/TalentBuilds.lua, Engine/Builds.lua)
+do
+    local B, saved = addon.Builds, { class = UnitClass, level = UnitLevel }
+    function UnitClass() return "Warrior", "WARRIOR" end
+    local list = B:List()
+    check(#list == 10 and list[1].classic and list[4].id == "standard", "Warrior has 3 classic + 7 hybrid builds")
+    for _, build in ipairs(list) do
+        if build.order then
+            check(#build.order == 51, build.name .. ": one talent per level 10-60")
+            local sum, counts = build.trees[1] + build.trees[2] + build.trees[3], {}
+            check(sum == 51, build.name .. ": tree points add up to 51")
+            for _, spell in ipairs(build.order) do
+                counts[spell] = (counts[spell] or 0) + 1
+                local talent = addon.TalentBuilds.talents[spell]
+                check(talent and counts[spell] <= talent[3], build.name .. ": known talent, never above max rank")
+            end
+            check(addon.Presets.bySpec[build.gearSpec] ~= nil, build.name .. ": gear spec has weights")
+            check(build.source and build.source:find("Wowhead"), build.name .. ": names Wowhead as its source")
+        end
+    end
+    B:Choose(nil)
+    check(B:Chosen() == nil and addon.Presets:SelectedSpecID() == nil, "No build chosen: no spec")
+    B:Choose("classic-72")
+    check(B:Chosen().classic and addon.Presets:ManualSpecID() == 72 and addon.Presets:SelectedSpecID() == 72, "Classic build = plain spec choice")
+    addon.Presets:SetBuildChoice(nil)
+    check(B:Chosen().id == "classic-72", "Old spec choice shows as the matching classic build")
+    B:Choose("fury-prot")
+    check(addon.Presets:SelectedSpecID() == 73 and addon.Presets:ManualSpecID() == 72, "Hybrid uses its gear spec, keeps the old spec choice")
+    check(B:Offense(B:Find("dual-wield")) > B:Offense(B:Find("standard")), "Dual Wield is more offense than Standard")
+    check(B:TreesText(B:Find("fury-prot")) == "3 / 31 / 17", "Trees text")
+    for _, build in ipairs(list) do check(build.weapons and build.weapons ~= "", build.name .. ": names its weapon setup") end
+    for _, build in ipairs(list) do
+        check(build.key and #build.key >= 4 and #build.key <= 6, build.name .. ": 4-6 key talents")
+        for _, spell in ipairs(build.key) do check(addon.TalentBuilds.talents[spell], build.name .. ": key talent is known") end
+    end
+    local names = B:KeyNames(B:Find("fury-prot"), 4)
+    check(#names == 4 and names[1] == "Bloodthirst" and names[4] == "Blood Craze", "Key talent names for the description")
+    check(#B:KeyNames(B:Find("fury-prot"), 2) == 2 and #B:KeyNames(nil) == 0, "Key names respect the limit")
+    -- Level-up hint follows the build's own order (tree unreadable here -> by level)
+    local steps = B:Steps(B:Find("fury-prot"))
+    check(#steps == 51 and steps[6].level == 15 and steps[6].talent == "Cruelty" and steps[6].rank == 3, "Steps: level 15 = Cruelty 3/5")
+    GearVerdictDB.options.levelingEnabled = true
+    UnitLevel = function() return 15 end
+    local r = addon.TalentAdvisor:Suggest(15)
+    check(r.status == "ok" and r.build and r.build.id == "fury-prot" and r.step.talent == "Cruelty", "Hint follows the chosen hybrid build")
+    check(r.guide == "Fury-Prot", "Hint names the build, not the guide")
+    B:Choose("classic-71")
+    r = addon.TalentAdvisor:Suggest(15)
+    check(r.build == nil, "Classic build keeps following the guide")
+    GearVerdictDB.options.levelingEnabled = nil
+    -- Character key also finds the build choice when the realm name is empty
+    B:Choose("impale")
+    GetRealmName = function() return "" end
+    check(B:Chosen() and B:Chosen().id == "impale", "Empty realm: build choice found by character name")
+    GetRealmName = function() return "Realm" end
+    B:Choose(nil)
+    UnitClass, UnitLevel = saved.class, saved.level
+    addon.Presets:SetManualSpecID(263)
+end
+
+-- Talent placement (Engine/TalentPlacer.lua): stages points only, never applies
+do
+    local PL, B = addon.TalentPlacer, addon.Builds
+    local saved = { class = UnitClass, level = UnitLevel, traits = C_Traits, talents = C_ClassTalents, spell = C_Spell,
+        toggle = ToggleTalentFrame, shown = PlayerSpellsFrame }
+    function UnitClass() return "Warrior", "WARRIOR" end
+    UnitLevel = function() return 15 end
+    local names = { [12282] = "Improved Heroic Strike", [12320] = "Cruelty", [12322] = "Unbridled Wrath" }
+    local tree, unspent, bought, committed = { { 12282, 0 }, { 12320, 0 }, { 12322, 0 } }, 6, {}, false
+    C_ClassTalents = { GetActiveConfigID = function() return 77 end, HasUnspentTalentPoints = function() return unspent > 0 end,
+        CommitConfig = function() committed = true end }
+    local failOn
+    C_Traits = {
+        GetConfigInfo = function() return { treeIDs = { 5 } } end,
+        GetTreeNodes = function() return { 1, 2, 3 } end,
+        GetNodeInfo = function(_, node) return { currentRank = tree[node][2], activeEntry = { entryID = node * 10 }, entryIDs = { node * 10 } } end,
+        GetEntryInfo = function(_, entry) return { definitionID = entry + 1 } end,
+        GetDefinitionInfo = function(definition) return { spellID = tree[(definition - 1) / 10][1] } end,
+        GetTreeCurrencyInfo = function() return { { quantity = unspent } } end,
+        CommitConfig = function() committed = true end,
+        PurchaseRank = function(config, node)
+            if tree[node][1] == failOn then return false end
+            tree[node][2], unspent, bought[#bought + 1] = tree[node][2] + 1, unspent - 1, names[tree[node][1]]
+            return true
+        end,
+    }
+    C_Spell = { GetSpellName = function(id) return names[id] end }
+    B:Choose("fury-prot")
+    local read = addon.TalentAdvisor:Read()
+    check(read.configID == 77 and read.nodes[12320].nodeID == 2 and read.byName["cruelty"].nodeID == 2, "Read remembers node ids")
+    local plan = PL:Plan(B:Steps(B:Find("fury-prot")), 15, read, 6)
+    check(#plan == 6 and plan[1].talent == "Improved Heroic Strike" and plan[4].talent == "Cruelty" and plan[6].rank == 3,
+        "Plan: 6 points in the build's order (3 Heroic Strike, 3 Cruelty)")
+    check(#PL:Plan(B:Steps(B:Find("fury-prot")), 15, read, 2) == 2, "Plan respects the point limit")
+    check(read.bySpell[12282] == 0, "Plan does not change the read talents")
+    local result = PL:Place()
+    check(result.status == "ok" and result.placed == 6 and unspent == 0, "Place stages all 6 points")
+    check(table.concat(bought, ",") == "Improved Heroic Strike,Improved Heroic Strike,Improved Heroic Strike,Cruelty,Cruelty,Cruelty",
+        "Points placed in the build's order")
+    check(not committed, "Never commits or applies the points")
+    check(PL:Place().status == "nopoints", "Nothing to place without unspent points")
+    unspent, tree[1][2], tree[2][2] = 5, 0, 0
+    failOn = 12320
+    result = PL:Place()
+    check(result.status == "failed" and result.placed == 3 and result.step.talent == "Cruelty", "A refused purchase stops and names the talent")
+    check(not committed, "Still no commit after a failure")
+    failOn = nil
+    B:Choose("classic-71")
+    unspent, tree[1][2], tree[2][2] = 2, 0, 0
+    GearVerdictDB.options.levelingGuide = "icyveins"
+    check(PL:Steps() ~= nil, "Classic build places by the guide steps")
+    B:Choose(nil)
+    check(PL:Place().status == "nobuild", "No build: nothing placed")
+    -- window opening
+    local opened = false
+    ToggleTalentFrame = function() opened = true; PlayerSpellsFrame = { IsShown = function() return true end } end
+    PlayerSpellsFrame = nil
+    check(PL:OpenWindow() and opened, "Talent window is opened with the client's toggle")
+    -- auto mode needs the option and the leveling helper
+    GearVerdictDB.options.autoPlaceTalents, GearVerdictDB.options.levelingEnabled = true, nil
+    check(not PL:AutoEnabled(), "Auto is silent while the leveling helper is off")
+    GearVerdictDB.options.levelingEnabled = true
+    check(PL:AutoEnabled(), "Auto works with option and helper on")
+    GearVerdictDB.options.autoPlaceTalents, GearVerdictDB.options.levelingEnabled = nil, nil
+    UnitClass, UnitLevel, C_Traits, C_ClassTalents, C_Spell = saved.class, saved.level, saved.traits, saved.talents, saved.spell
+    ToggleTalentFrame, PlayerSpellsFrame = saved.toggle, saved.shown
     addon.Presets:SetManualSpecID(263)
 end
 print("PASS: " .. tests .. " assertions; all addon files parse")
