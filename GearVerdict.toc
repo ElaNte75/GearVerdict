@@ -8,7 +8,7 @@
 ## AddonCompartmentFuncOnEnter: GearVerdict_OnAddonCompartmentEnter
 ## AddonCompartmentFuncOnLeave: GearVerdict_OnAddonCompartmentLeave
 ## SavedVariables: GearVerdictDB
-## OptionalDeps: GearVerdict_Debug
+## OptionalDeps: GearVerdict_Debug, ForeverDungeonJournal
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
@@ -25,6 +25,7 @@ Data\Presets\Shaman.lua
 Data\Presets\Mage.lua
 Data\Presets\Warlock.lua
 Data\Presets\Druid.lua
+Data\WeaponGuide.lua
 Data\Weights.lua
 Data\WeightString.lua
 Data\TalentOrders.lua
@@ -33,14 +34,19 @@ Engine\StatNormalization.lua
 Engine\ItemData.lua
 Engine\Scoring.lua
 Engine\Eligibility.lua
+Engine\ArmorPreference.lua
+Engine\WeaponData.lua
 Engine\Comparison.lua
+Engine\WeaponComparison.lua
 Engine\TalentAdvisor.lua
 Display\RingPlacement.lua
 Display\Tooltips.lua
 Display\UpgradeIndicators.lua
 Display\BagArrows.lua
 Display\BagnonAdapter.lua
+Display\QuestSellCoin.lua
 Display\QuestArrows.lua
+Display\DungeonJournalArrows.lua
 Display\TalentHint.lua
 UI\PanelWidgets.lua
 UI\ControlPanel.lua

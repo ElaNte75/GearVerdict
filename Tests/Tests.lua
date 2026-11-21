@@ -1,9 +1,9 @@
 local addon = {}
-local where = { MinimapIcon = "UI", BagArrows = "Display", BagnonAdapter = "Display", Bootstrap = "Core", Comparison = "Engine", ControlPanel = "UI", Core = "Core", Eligibility = "Engine", ItemData = "Engine", PanelInterfacePage = "UI", PanelFactsPage = "UI", PanelOptionsPage = "UI", PanelSpecPage = "UI", PanelStatPriority = "UI", PanelWeightsPage = "UI", PanelWidgets = "UI", Presets = "Data", QuestArrows = "Display", RingPlacement = "Display", Scoring = "Engine", SpecDetection = "Data", StatNormalization = "Engine", Tooltips = "Display", UpgradeIndicators = "Display", WeightString = "Data", WeightTransferDialog = "UI", Weights = "Data", TalentOrders = "Data", TalentOrdersWowhead = "Data", PanelLevelingPage = "UI", TalentAdvisor = "Engine", TalentHint = "Display", Warrior = "Data/Presets", Paladin = "Data/Presets", Hunter = "Data/Presets", Rogue = "Data/Presets", Priest = "Data/Presets", Shaman = "Data/Presets", Mage = "Data/Presets", Warlock = "Data/Presets", Druid = "Data/Presets" }
+local where = { MinimapIcon = "UI", BagArrows = "Display", BagnonAdapter = "Display", Bootstrap = "Core", Comparison = "Engine", ControlPanel = "UI", Core = "Core", Eligibility = "Engine", ArmorPreference = "Engine", WeaponData = "Engine", WeaponComparison = "Engine", WeaponGuide = "Data", ItemData = "Engine", PanelInterfacePage = "UI", PanelFactsPage = "UI", PanelOptionsPage = "UI", PanelSpecPage = "UI", PanelStatPriority = "UI", PanelWeightsPage = "UI", PanelWidgets = "UI", Presets = "Data", QuestArrows = "Display", QuestSellCoin = "Display", DungeonJournalArrows = "Display", RingPlacement = "Display", Scoring = "Engine", SpecDetection = "Data", StatNormalization = "Engine", Tooltips = "Display", UpgradeIndicators = "Display", WeightString = "Data", WeightTransferDialog = "UI", Weights = "Data", TalentOrders = "Data", TalentOrdersWowhead = "Data", PanelLevelingPage = "UI", TalentAdvisor = "Engine", TalentHint = "Display", Warrior = "Data/Presets", Paladin = "Data/Presets", Hunter = "Data/Presets", Rogue = "Data/Presets", Priest = "Data/Presets", Shaman = "Data/Presets", Mage = "Data/Presets", Warlock = "Data/Presets", Druid = "Data/Presets" }
 local function path(name) return where[name] .. "/" .. name .. ".lua" end
-local files = { "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentAdvisor", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "Comparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestArrows", "PanelWidgets", "ControlPanel", "PanelStatPriority", "PanelSpecPage", "PanelOptionsPage", "PanelLevelingPage", "PanelWeightsPage", "PanelInterfacePage", "PanelFactsPage", "WeightTransferDialog", "MinimapIcon", "Core" }
+local files = { "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentAdvisor", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "PanelWidgets", "ControlPanel", "PanelStatPriority", "PanelSpecPage", "PanelOptionsPage", "PanelLevelingPage", "PanelWeightsPage", "PanelInterfacePage", "PanelFactsPage", "WeightTransferDialog", "MinimapIcon", "Core" }
 for _, name in ipairs(files) do assert(loadfile(path(name))) end
-for _, name in ipairs({ "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentAdvisor", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "Comparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestArrows", "PanelStatPriority" }) do
+for _, name in ipairs({ "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentAdvisor", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "PanelStatPriority" }) do
     assert(loadfile(path(name)))("GearVerdict", addon)
 end
 local tests = 0
@@ -210,6 +210,35 @@ check(not addon.Eligibility:Check("item:901", eligible), "Red class/race/skill r
 C_TooltipInfo.GetHyperlink = function() return nil end
 check(not addon.Eligibility:Check("item:901", eligible), "Unloaded requirement data rejected")
 C_TooltipInfo.GetHyperlink = normalTooltip
+-- Dungeon Journal goals: items a few levels above the player.
+function UnitLevel() return 25 end
+eligible.required = 28
+check(not addon.Eligibility:Check("item:901", eligible), "Goals are off unless levelsAhead is given")
+local goalOk, goalLevel = addon.Eligibility:Check("item:901", eligible, 5)
+check(goalOk and goalLevel == 28, "Item 3 levels above is a goal within 5 levels ahead")
+check(not addon.Eligibility:Check("item:901", eligible, 2), "Item beyond levelsAhead is rejected")
+check(not addon.Eligibility:Check("item:901", eligible, 0), "levelsAhead 0 keeps only wearable items")
+eligible.required = 20
+local nowOk, nowGoal = addon.Eligibility:Check("item:901", eligible, 5)
+check(nowOk and nowGoal == nil, "Wearable item is no goal")
+function UnitLevel() return 37 end
+eligible.required, eligible.subclassID = 40, 3
+check(addon.Eligibility:Check("item:901", eligible, 5), "Mail goal at 40 is judged with the armor of level 40")
+check(not addon.Eligibility:Check("item:901", eligible), "Same mail item is not shown without goals")
+C_TooltipInfo.GetHyperlink = function()
+    return { lines = { { leftText = "Requires Level 40", leftColor = { r = 1, g = 0.1, b = 0.1 } } } }
+end
+check(addon.Eligibility:Check("item:901", eligible, 5), "Red level line does not block a goal")
+eligible.required = 37
+check(not addon.Eligibility:Check("item:901", eligible, 5), "Red level line still blocks a wearable-now check")
+eligible.required = 40
+C_TooltipInfo.GetHyperlink = function()
+    return { lines = { { rightText = "Requires another class", rightColor = { r = 1, g = 0.1, b = 0.1 } } } }
+end
+check(not addon.Eligibility:Check("item:901", eligible, 5), "Other red requirements still block a goal")
+C_TooltipInfo.GetHyperlink = normalTooltip
+UnitLevel = normalLevel
+eligible.required, eligible.subclassID = 1, 1
 C_Item.GetItemUniquenessByID = function(link)
     if link == "ring-new" or link == "ring-strong" then return true, "Test category", 1, 77 end
     return false
@@ -295,7 +324,7 @@ addon.Presets:SetManualSpecID(263)
 C_Item.GetItemInfo = function(link)
     return "Weapon", link, 2, 10, 1, "Weapon", "Staff", 1, "INVTYPE_2HWEAPON", 0, 0, 2, 10
 end
-compareDisplays(false, "Both hide unsupported weapon")
+compareDisplays(true, "Both show a usable staff for an empty weapon hand")
 C_Item.GetItemInfo = function(link)
     return "Trinket", link, 2, 10, 1, "Armor", "Misc", 1, "INVTYPE_TRINKET", 0, 0, 4, 0
 end
@@ -394,6 +423,71 @@ addon.QuestArrows:Refresh()
 check(not texture.visible, "Quest reward arrow clears when unusable")
 C_Item.IsEquippableItem = function() return true end
 QuestInfoFrame = nil
+
+-- Quest reward choice: nothing is an upgrade -> the most expensive reward gets a coin (Display/QuestSellCoin.lua)
+do
+    local SC = addon.QuestSellCoin
+    local a, b, c = {}, {}, {}
+    local best, winners = SC:Pick({ { button = a, price = 150 }, { button = b, price = 90 }, { button = c, price = 150 } })
+    check(best == 150 and winners[a] and winners[c] and not winners[b], "Highest vendor price wins; equal prices both win")
+    best, winners = SC:Pick({ { button = a, price = 150, upgrade = true }, { button = b, price = 90 } })
+    check(best == nil and not winners[a] and not winners[b], "Any upgrade among the choices: no coin")
+    best = SC:Pick({ { button = a, price = 150 } })
+    check(best == nil, "A single choice gets no coin")
+    best = SC:Pick({ { button = a, price = 150 }, { button = b, price = nil } })
+    check(best == nil, "Missing price data (still loading): no coin yet")
+    best = SC:Pick({ { button = a, price = 150, loading = true }, { button = b, price = 90 } })
+    check(best == nil, "Item data still loading: no coin yet")
+    best = SC:Pick({ { button = a, price = 0 }, { button = b, price = 0 } })
+    check(best == nil, "Nothing sells: no coin")
+    check(SC:Format(151) ~= nil, "Price text")
+end
+
+-- Whole quest panel: three unusable choices -> coin only on the most expensive one, tooltip line says so.
+do
+    local savedCreate, savedInfo, savedGetItem = CreateFrame, C_Item.GetItemInfo, GetQuestItemLink
+    local function newFrame()
+        local f = { visible = false }
+        for key, value in pairs(texture) do f[key] = value end
+        f.CreateTexture = function()
+            return { SetAllPoints = function() end, SetTexture = function() end, SetColorTexture = function() end,
+                SetSize = function() end, SetPoint = function() end }
+        end
+        return f
+    end
+    CreateFrame = newFrame
+    local prices = { ["item:1001"] = 40, ["item:1002"] = 250, ["item:1003"] = 90 }
+    C_Item.GetItemInfo = function(link)
+        return "Junk", link, 1, 1, 1, "Miscellaneous", "Junk", 1, "", 0, prices[link], 15, 0
+    end
+    local function choice(index)
+        local b = newFrame()
+        b.type, b.Icon = "choice", {}
+        b.IsShown = function() return true end
+        b.GetID = function() return index end
+        b.GetFrameLevel = function() return 1 end
+        return b
+    end
+    local one, two, three = choice(1), choice(2), choice(3)
+    QuestInfoFrame = { questLog = false, rewardsFrame = { RewardButtons = { one, two, three } } }
+    function GetQuestItemLink(_, index) return "item:" .. (1000 + index) end
+    GetQuestItemInfo = nil
+    addon.QuestArrows:Refresh()
+    local coin = addon.QuestSellCoin.frames
+    check(not (coin[one] and coin[one].visible) and coin[two].visible and not (coin[three] and coin[three].visible),
+        "Quest panel: coin only on the most expensive unusable choice")
+    check(two.gearVerdictSell == 250 and one.gearVerdictSell == nil, "Winner remembers its price for the tooltip")
+    local lines2 = {}
+    local tip = { GetItem = function() return "Junk", "item:1002" end, GetOwner = function() return two end,
+        AddLine = function(_, text) lines2[#lines2 + 1] = text end, HookScript = function() end }
+    addon.Tooltips:Process(tip)
+    check(lines2[2] and lines2[2]:find("best to sell"), "Tooltip of the winner says best to sell")
+    prices["item:1001"] = nil
+    addon.QuestArrows:Refresh()
+    check(not coin[two].visible, "A choice with unknown price: no coin yet")
+    QuestInfoFrame, GetQuestItemInfo = nil, nil
+    CreateFrame, C_Item.GetItemInfo, GetQuestItemLink = savedCreate, savedInfo, savedGetItem
+end
 local bagnonButton = {
     IsShown = button.IsShown, GetFrameLevel = button.GetFrameLevel, GetID = button.GetID,
     GetBag = function() return 0 end, IsCached = function() return false end,
@@ -433,6 +527,46 @@ check(not texture.visible, "Cached Bagnon button is excluded even inside a live 
 Bagnon = nil
 addon:Refresh()
 check(addon.BagnonAdapter.lastButtonCount == 0, "Addon works normally when Bagnon is absent")
+local journalRow = { item = { 904 }, icon = {}, IsVisible = function() return true end,
+    GetFrameLevel = function() return 1 end }
+ForeverDungeonJournal_NS = { UpdateFavouriteIndicator = function() end }
+addon:Refresh()
+ForeverDungeonJournal_NS.UpdateFavouriteIndicator(journalRow, 904)
+check(texture.visible and journalRow.gearVerdictAnchor == journalRow.icon,
+    "Dungeon Journal loot row gets the upgrade arrow on its icon")
+GearVerdictDB.options = GearVerdictDB.options or {}
+GearVerdictDB.options.dungeonJournalArrows = false
+addon:Refresh()
+check(not texture.visible, "Dungeon Journal arrows can be turned off")
+GearVerdictDB.options.dungeonJournalArrows = nil
+C_Item.IsEquippableItem = function() return false end
+addon:Refresh()
+check(not texture.visible, "Dungeon Journal row of an unusable item shows no arrow")
+C_Item.IsEquippableItem = function() return true end
+journalRow.item = { "recipe" }
+addon:Refresh()
+check(not texture.visible, "Dungeon Journal row without an item ID shows no arrow")
+local normalItemInfo = C_Item.GetItemInfo
+C_Item.GetItemInfo = function(link)
+    return "Test", link, 2, 10, 64, "Armor", "Cloth", 1, "INVTYPE_HEAD", 0, 0, 4, 1
+end
+journalRow.item = { 904 }
+GearVerdictDB.options.dungeonJournalLevelsAhead = 5
+addon:Refresh()
+check(texture.visible and addon.UpgradeIndicators.frames[journalRow].appliedKey:find("^TOPRIGHT1"),
+    "Goal item in the journal gets the gold arrow")
+GearVerdictDB.options.dungeonJournalLevelsAhead = 0
+addon:Refresh()
+check(not texture.visible, "Goals slider at 0 shows only wearable items")
+GearVerdictDB.options.dungeonJournalLevelsAhead = nil
+C_Item.GetItemInfo = normalItemInfo
+journalRow.item = { 904 }
+journalRow.IsVisible = function() return false end
+addon:Refresh()
+check(not texture.visible, "Hidden Dungeon Journal rows show no arrow")
+ForeverDungeonJournal_NS = nil
+addon:Refresh()
+check(true, "Addon works normally when the Dungeon Journal is absent")
 addon.Presets:SetManualSpecID(999)
 local _, unsupported = addon.Presets:Get()
 check(unsupported == "Specialization not supported yet", "Unsupported spec gives no recommendations")
@@ -443,6 +577,17 @@ addon.Presets:SetManualSpecID(263)
 check(addon.Presets:Get() == addon.Presets.bySpec[263], "Chosen Enhancement gives recommendations")
 GearVerdictDB.specChoices["Other-Realm"] = 262
 check(addon.Presets:ManualSpecID() == 263, "Spec choice is stored per character")
+-- Empty realm name from the server: found by character name when only one saved character matches.
+GetRealmName = function() return "" end
+check(addon.Presets:ManualSpecID() == 263, "Empty realm: choice found by character name")
+GearVerdictDB.specChoices["Tester-Second Realm"] = 264
+check(addon.Presets:ManualSpecID() == nil, "Empty realm: two saved characters with this name -> no guess")
+GearVerdictDB.specChoices["Tester-Second Realm"] = nil
+addon.Presets:SetManualSpecID(262)
+check(GearVerdictDB.specChoices["Tester-Realm"] == 262, "Empty realm: a new choice updates the saved character")
+addon.Presets:SetManualSpecID(263)
+GetRealmName = function() return "Realm" end
+check(addon.Presets:ManualSpecID() == 263, "Realm back: same saved choice")
 check(#addon.SpecDetection:ClassSpecs() == 3 and addon.SpecDetection:SpecName(264) == "Restoration",
     "Shaman offers its three talent trees")
 local arrow = addon.UpgradeIndicators.frames[button]
@@ -837,4 +982,232 @@ check(not TH.pending, "Helper off: level-up does nothing")
 GearVerdictDB.options.levelingGuide = nil
 C_ClassTalents, C_Traits, C_Spell = nil, nil, nil
 function UnitClass() return "Shaman", "SHAMAN" end
+
+-- Heavier armor preference (Engine/ArmorPreference.lua)
+do
+    local AP = addon.ArmorPreference
+    local function piece(kind, armor, loc)
+        return { classID = 4, subclassID = kind, equipLoc = loc or "INVTYPE_CHEST", stats = { RESISTANCE0_NAME = armor } }
+    end
+    local ok, reason = AP:Judge(piece(3, 67), piece(2, 33), 0, 0)
+    check(ok and reason.kind == "heavier" and reason.name == "Mail", "Mail beats leather when both have no stats")
+    check(AP:Judge(piece(3, 67), piece(2, 33), -0.9, 10), "Heavier type wins when at most 10% weaker")
+    check(not AP:Judge(piece(3, 67), piece(2, 33), -1.1, 10), "Heavier type loses when more than 10% weaker")
+    ok, reason = AP:Judge(piece(4, 90), piece(3, 67), 2, 10)
+    check(ok and reason == nil, "Heavier and better by stats is a plain upgrade without a reason line")
+    check(not AP:Judge(piece(2, 33), piece(3, 67), 0.9, 10), "Lighter type needs more than 10% better")
+    check(AP:Judge(piece(2, 33), piece(3, 67), 1.1, 10), "Lighter type wins when clearly better")
+    check(not AP:Judge(piece(2, 33), piece(3, 67), 0, 0), "Lighter type never wins a tie")
+    ok, reason = AP:Judge(piece(2, 50), piece(2, 33), 0, 5)
+    check(ok and reason.kind == "armor" and reason.amount == 17, "Same type tie: more Armor wins")
+    check(not AP:Judge(piece(2, 20), piece(2, 33), 0, 5), "Same type tie: less Armor loses")
+    ok, reason = AP:Judge(piece(1, 10, "INVTYPE_CLOAK"), piece(1, 3, "INVTYPE_CLOAK"), 0, 0)
+    check(ok and reason.kind == "armor" and reason.amount == 7, "Cloak tie: more Armor wins (Cadet vs Ragged Cloak)")
+    check(not AP:Judge(piece(1, 3, "INVTYPE_CLOAK"), piece(1, 10, "INVTYPE_CLOAK"), 0, 0), "Cloak tie: less Armor loses")
+    check(not AP:Judge(piece(1, 40, "INVTYPE_CLOAK"), piece(1, 10, "INVTYPE_CLOAK"), -0.5, 5), "Cloak: Armor never beats weaker stats")
+    ok, reason = AP:Judge(piece(1, 12, "INVTYPE_CLOAK"), piece(1, 3, "INVTYPE_CLOAK"), 0.8, 0)
+    check(ok and reason == nil, "Cloak with better stats is a plain upgrade (Thrice-Stitched Flesh)")
+    check(AP:Judge(piece(3, 67), nil, 0, 0), "Empty slot stays an upgrade")
+    check(AP:ReasonText({ kind = "heavier", name = "Mail" }) == "Heavier armor: Mail"
+        and AP:ReasonText({ kind = "armor", amount = 34 }) == "More armor: +34", "Reason texts")
+    check(addon.Comparison:IsUpgrade({ delta = -0.5, upgrade = true }), "IsUpgrade follows the armor decision")
+    check(not addon.Comparison:IsUpgrade({ delta = 0.5, upgrade = false }), "IsUpgrade respects a lost armor decision")
+
+    -- Whole comparison: Warrior wearing a leather tunic, finds a mail vest, neither has stats.
+    local savedGet, savedLink, savedCaps = addon.ItemData.Get, GetInventoryItemLink, GearVerdictDB.capsEnabled
+    function UnitClass() return "Warrior", "WARRIOR" end
+    function UnitLevel() return 28 end
+    addon.Presets:SetManualSpecID(72)
+    GearVerdictDB.capsEnabled = false
+    C_Item.IsEquippableItem = function() return true end
+    C_Item.GetItemUniquenessByID = function() return false end
+    C_TooltipInfo = { GetHyperlink = function() return { lines = { { leftText = "x", leftColor = { r = 1, g = 1, b = 1 } } } } end }
+    local tunic = piece(2, 33); tunic.key, tunic.name, tunic.required = "tunic", "Scavenger Tunic", 1
+    local vest = piece(3, 67); vest.key, vest.name, vest.required = "vest", "Rugged Mail Vest", 1
+    addon.ItemData.Get = function(_, link) return link == "tunic" and tunic or vest end
+    function GetInventoryItemLink(_, slot) if slot == 5 then return "tunic" end end
+    local verdict = addon.Comparison:Evaluate("vest")
+    check(addon.Comparison:IsUpgrade(verdict) and verdict.comparisons[1].armorReason.name == "Mail",
+        "Rugged Mail Vest is an upgrade over Scavenger Tunic for a Warrior")
+    addon.ItemData.Get = function(_, link) return link == "tunic" and vest or tunic end
+    check(not addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("tunic")), "Leather tunic is not shown over the mail vest")
+    addon.ItemData.Get, GetInventoryItemLink, GearVerdictDB.capsEnabled = savedGet, savedLink, savedCaps
+    function UnitClass() return "Shaman", "SHAMAN" end
+    function UnitLevel() return 60 end
+    addon.Presets:SetManualSpecID(263)
+end
+-- Weapon support (Data/WeaponGuide.lua, Engine/WeaponData.lua, Engine/WeaponComparison.lua)
+do
+    local WD, DPS = addon.WeaponData, "ITEM_MOD_DAMAGE_PER_SECOND_SHORT"
+    local saved = { get = addon.ItemData.Get, link = GetInventoryItemLink, caps = GearVerdictDB.capsEnabled,
+        tip = C_TooltipInfo, level = UnitLevel }
+    local items, equippedLinks, bags, red = {}, {}, {}, {}
+    local function weapon(key, name, loc, sub, dps, speed, stats)
+        local item = { key = key, name = name, equipLoc = loc, classID = 2, subclassID = sub, required = 1,
+            stats = stats or {} }
+        item.stats[DPS] = dps
+        items[key] = { item = item, speed = speed }
+        return key
+    end
+    local function shield(key, name, armor)
+        items[key] = { item = { key = key, name = name, equipLoc = "INVTYPE_SHIELD", classID = 4, subclassID = 6,
+            required = 1, stats = { RESISTANCE0_NAME = armor } } }
+        return key
+    end
+    addon.ItemData.Get = function(_, link)
+        local entry = items[link]
+        if not entry then return nil, "Item data unavailable" end
+        local copy = {}
+        for k, v in pairs(entry.item) do copy[k] = v end
+        return copy
+    end
+    function GetInventoryItemLink(_, slot) return equippedLinks[slot] end
+    C_TooltipInfo = { GetHyperlink = function(link)
+        local entry = items[link]
+        local lines = { { leftText = link, leftColor = { r = 1, g = 1, b = 1 } } }
+        if entry and entry.speed then
+            lines[2] = { leftText = "1 - 3 Damage", rightText = string.format("Speed %.2f", entry.speed),
+                leftColor = { r = 1, g = 1, b = 1 }, rightColor = { r = 1, g = 1, b = 1 } }
+        end
+        if red[link] then lines[3] = { leftText = "Two-Hand", rightText = "Axe", leftColor = { r = 1, g = 1, b = 1 },
+            rightColor = { r = 1, g = 0.1, b = 0.1 } } end
+        return { lines = lines }
+    end }
+    C_Container = {
+        GetContainerNumSlots = function(bag) return bag == 0 and #bags or 0 end,
+        GetContainerItemLink = function(bag, slot) return bag == 0 and bags[slot] or nil end,
+    }
+    local dual = true
+    function CanDualWield() return dual end
+    C_Item.IsEquippableItem = function() return true end
+    C_Item.GetItemUniquenessByID = function() return false end
+    GearVerdictDB.capsEnabled = false
+    local function as(class, spec, level)
+        UnitClass = function() return class, class end
+        UnitLevel = function() return level or 10 end
+        addon.Presets:SetManualSpecID(spec)
+    end
+    local function fresh() WD.speeds = {}; addon.WeaponComparison.bag = nil; clock = clock + 10 end
+    local function near(a, b) return math.abs(a - b) < 0.001 end
+
+    -- Speed is read from the tooltip
+    weapon("worn", "Worn Shortsword", "INVTYPE_WEAPONMAINHAND", 7, 1.1, 1.9)
+    check(WD:Speed("worn") == 1.9, "Weapon speed read from the tooltip")
+    check(WD:Speed("nothing-here") == nil, "Unreadable speed is nil")
+
+    -- The user's Fury case: Worn Shortsword + Worn Wooden Shield equipped
+    as("WARRIOR", 72); fresh(); dual = false
+    shield("woodshield", "Worn Wooden Shield", 10)
+    weapon("forsaken", "Forsaken Shortsword", "INVTYPE_WEAPONMAINHAND", 7, 2.1, 2.1)
+    weapon("bastard", "Forsaken Bastard Sword", "INVTYPE_2HWEAPON", 8, 2.7, 3.3)
+    equippedLinks = { [16] = "worn", [17] = "woodshield" }
+    local r = addon.Comparison:Evaluate("forsaken")
+    check(addon.Comparison:IsUpgrade(r) and r.slot == 16 and near(r.delta, 2.1 * 6.3 * 0.95 - 1.1 * 6.3 * 0.93),
+        "Fury: Forsaken Shortsword beats Worn Shortsword (DPS x 6.3, 1% less per 0.1 s under 2.6)")
+    r = addon.Comparison:Evaluate("bastard")
+    check(addon.Comparison:IsUpgrade(r) and near(r.delta, 2.7 * 6.3 - 1.1 * 6.3 * 0.93), "Fury: two-hander beats sword + shield")
+    check(r.comparisons[1].previousName == "Worn Shortsword + Worn Wooden Shield", "Two-hander is compared with both hands")
+    check(addon.Comparison:Evaluate("worn") == nil, "Equipped weapon is not an upgrade")
+    -- Heirloom case (2026-11-21): both under 2.6, nearly equal value -> the slower one (nearer 2.6) wins
+    weapon("hsword", "Heirloom Sword", "INVTYPE_WEAPONMAINHAND", 7, 32 / 2 / 2.1, 2.1)
+    weapon("hdagger", "Heirloom Dagger", "INVTYPE_WEAPON", 15, 26 / 2 / 1.7, 1.7)
+    equippedLinks = { [16] = "hdagger", [17] = "woodshield" }; fresh()
+    r = addon.Comparison:Evaluate("hsword")
+    check(addon.Comparison:IsUpgrade(r) and r.delta > 1.5, "Fury: Heirloom Sword (2.10) scores above Heirloom Dagger (1.70)")
+    weapon("copper", "Copper Shortsword", "INVTYPE_WEAPON", 7, 5.4, 2.5, { ITEM_MOD_STRENGTH_SHORT = 1 })
+    items.hsword.item.stats.ITEM_MOD_STAMINA_SHORT, items.hdagger.item.stats.ITEM_MOD_STAMINA_SHORT = 1, 1
+    equippedLinks = { [16] = "copper", [17] = "woodshield" }; fresh()
+    local swordPoints, daggerPoints = addon.Comparison:Evaluate("hsword").delta, addon.Comparison:Evaluate("hdagger").delta
+    check(near(swordPoints, 32 / 2 / 2.1 * 6.3 * 0.95 - 5.4 * 6.3 * 0.99 - 1) and swordPoints > daggerPoints,
+        "Screenshot case: against Copper Shortsword the sword shows more points than the dagger")
+    equippedLinks = { [16] = "hsword", [17] = "woodshield" }; fresh()
+    check(not addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("hdagger")),
+        "Fury: Heirloom Dagger is not shown over Heirloom Sword")
+    equippedLinks = { [16] = "worn", [17] = "woodshield" }; fresh()
+    check(addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("hdagger")), "A clearly better faster weapon still wins")
+
+    -- Usability
+    red.bastard = true
+    check(not addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("bastard")), "Unlearned weapon skill (red line) is rejected")
+    red.bastard = nil
+    weapon("pole", "Fishing Pole", "INVTYPE_2HWEAPON", 20, 1, 3)
+    check(addon.Comparison:Evaluate("pole") == nil, "Fishing poles are skipped")
+    check(addon.Eligibility:Check("woodshield", items.woodshield.item), "Shields pass the armor checks")
+
+    -- Arms: a one-hander must clearly beat the two-hander it would leave
+    as("WARRIOR", 71); fresh(); dual = false
+    weapon("big", "Big Axe", "INVTYPE_2HWEAPON", 1, 3, 3.6)
+    weapon("small", "Small Sword", "INVTYPE_WEAPON", 7, 3.2, 2.0)
+    equippedLinks = { [16] = "big" }
+    check(not addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("small")), "Arms: one-hander slightly better than the two-hander is not shown")
+    items.small.item.stats[DPS] = 4
+    check(addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("small")), "Arms: one-hander more than 10% better wins")
+    -- Speed: equal value, slower two-hander wins; faster one does not
+    weapon("slow", "Slow Axe", "INVTYPE_2HWEAPON", 1, 3, 3.5)
+    weapon("fast", "Fast Axe", "INVTYPE_2HWEAPON", 1, 3, 2.5)
+    equippedLinks = { [16] = "fast" }; fresh()
+    r = addon.Comparison:Evaluate("slow")
+    check(addon.Comparison:IsUpgrade(r) and near(r.delta, 3 * 6.3 * 0.08), "Arms: slower two-hander wins, speed is in the points")
+    check(WD:ReasonText({ kind = "speed", speed = 3.5 }) == "Preferred speed: 3.50", "Speed reason text")
+    check(WD:SpeedFactor({ classID = 2, speed = 1.0 }, 3.3) == 0.77 and WD:SpeedFactor({ classID = 2 }, 3.3) == 1,
+        "Speed factor: 1% per 0.1 s, unreadable speed changes nothing")
+    equippedLinks = { [16] = "slow" }; fresh()
+    check(not addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("fast")), "Arms: faster two-hander does not win a tie")
+
+    -- Prot Warrior holding a two-hander: one-hander + shield from the bags
+    as("WARRIOR", 73); fresh(); dual = false
+    weapon("mace", "Guard Mace", "INVTYPE_WEAPON", 4, 3, 1.8, { ITEM_MOD_STAMINA_SHORT = 4 })
+    shield("tower", "Tower Shield", 50)
+    items.tower.item.stats.ITEM_MOD_STAMINA_SHORT = 5
+    bags = { "tower" }
+    equippedLinks = { [16] = "big" }
+    r = addon.Comparison:Evaluate("mace")
+    check(addon.Comparison:IsUpgrade(r) and r.comparisons[1].partner == "Tower Shield", "Prot: one-hander + shield from bags beats the two-hander")
+    bags = {}; fresh()
+    r = addon.Comparison:Evaluate("mace")
+    check(r and r.comparisons[1].partner == nil, "Without a partner the one-hander is judged alone")
+
+    -- Assassination: daggers only (a better sword needs more than 10%)
+    as("ROGUE", 259); fresh(); dual = true
+    weapon("dagger", "Dagger", "INVTYPE_WEAPON", 15, 2, 1.8)
+    weapon("sword", "Sword", "INVTYPE_WEAPON", 7, 2.1, 2.6)
+    weapon("dagger2", "Better Dagger", "INVTYPE_WEAPON", 15, 2.5, 1.5)
+    equippedLinks = { [16] = "dagger", [17] = "dagger" }
+    check(not addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("sword")), "Assassination: sword is not shown over daggers")
+    r = addon.Comparison:Evaluate("dagger2")
+    check(addon.Comparison:IsUpgrade(r) and #r.comparisons == 2, "Assassination: better dagger compared in both hands")
+    dual = false; fresh()
+    check(#addon.Comparison:Evaluate("dagger2").comparisons == 1, "Without dual wield only the main hand is compared")
+
+    -- Enhancement: no shields over a two-hander, two-hander wanted
+    as("SHAMAN", 263); fresh(); dual = false
+    equippedLinks = { [16] = "big" }
+    check(not addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("tower")), "Enhancement: shield is not shown over the two-hander")
+
+    -- Casters: stats only; ranged slot for wands
+    as("MAGE", 63); fresh()
+    weapon("staff1", "Plain Staff", "INVTYPE_2HWEAPON", 10, 20, 3, { ITEM_MOD_INTELLECT_SHORT = 2 })
+    weapon("staff2", "Wise Staff", "INVTYPE_2HWEAPON", 10, 5, 3, { ITEM_MOD_INTELLECT_SHORT = 6 })
+    equippedLinks = { [16] = "staff1" }
+    check(addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("staff2")), "Caster: lower DPS staff with more Intellect wins")
+    weapon("wand", "Wand", "INVTYPE_RANGEDRIGHT", 19, 10, 1.5, { ITEM_MOD_INTELLECT_SHORT = 1 })
+    equippedLinks = {}
+    r = addon.Comparison:Evaluate("wand")
+    check(addon.Comparison:IsUpgrade(r) and r.slot == 18, "Wand goes to the ranged slot")
+
+    -- Marksmanship: ranged DPS counts, melee weapon by stats only
+    as("HUNTER", 254); fresh()
+    weapon("bow1", "Old Bow", "INVTYPE_RANGED", 2, 5, 3.0)
+    weapon("bow2", "New Bow", "INVTYPE_RANGED", 2, 6, 3.0)
+    equippedLinks = { [18] = "bow1" }
+    r = addon.Comparison:Evaluate("bow2")
+    check(addon.Comparison:IsUpgrade(r) and near(r.delta, 4.2), "MM: +1 ranged DPS is worth 4.2")
+    equippedLinks = { [16] = "fast" }
+    check(not addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("slow")), "MM: melee weapon DPS alone does not count")
+
+    addon.ItemData.Get, GetInventoryItemLink, GearVerdictDB.capsEnabled = saved.get, saved.link, saved.caps
+    C_TooltipInfo, UnitLevel, C_Container, CanDualWield = saved.tip, saved.level, nil, nil
+    function UnitClass() return "Shaman", "SHAMAN" end
+    addon.Presets:SetManualSpecID(263)
+end
 print("PASS: " .. tests .. " assertions; all addon files parse")

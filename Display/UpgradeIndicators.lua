@@ -2,6 +2,8 @@ local _, addon = ...
 local indicators = { frames = setmetatable({}, { __mode = "k" }) }
 addon.UpgradeIndicators = indicators
 indicators.defaultColor = { r = 0.1, g = 0.72, b = 0.15 }
+-- Dungeon Journal items that are a goal (wearable a few levels from now): always gold.
+indicators.goalColor = { r = 1.0, g = 0.72, b = 0.1 }
 
 function indicators:Options()
     local options = GearVerdictDB and GearVerdictDB.options or {}
@@ -9,8 +11,9 @@ function indicators:Options()
     return position, options.arrowColor or self.defaultColor
 end
 
-function indicators:Apply(frame, button)
+function indicators:Apply(frame, button, goal)
     local position, color = self:Options()
+    if goal then color = self.goalColor end
     -- Wide buttons (quest rewards) name the icon to attach to, so the arrow sits on the icon corner.
     local target = button.gearVerdictAnchor or button
     local key = position .. color.r .. "," .. color.g .. "," .. color.b .. tostring(target)
@@ -21,7 +24,7 @@ function indicators:Apply(frame, button)
     for _, texture in ipairs(frame.fills) do texture:SetColorTexture(color.r, color.g, color.b, 1) end
 end
 
-function indicators:Set(button, visible)
+function indicators:Set(button, visible, goal)
     local frame = self.frames[button]
     if not visible then
         if frame then frame:Hide() end
@@ -31,7 +34,7 @@ function indicators:Set(button, visible)
         frame = self:Build(button)
         self.frames[button] = frame
     end
-    self:Apply(frame, button)
+    self:Apply(frame, button, goal)
     frame:Show()
 end
 

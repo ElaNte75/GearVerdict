@@ -19,19 +19,41 @@ function eligibility:MaxArmor(class, level)
     return rule.max
 end
 
-function eligibility:Check(link, item)
-    if item.classID ~= 4 or not item.equipLoc or item.equipLoc == "" then
+-- The game's "Requires Level %d" line, as a pattern (to tell it apart from other red requirement lines).
+local function levelLinePattern()
+    local text = ITEM_MIN_LEVEL or "Requires Level %d"
+    return "^" .. text:gsub("([%(%)%.%+%-%*%?%[%]%^%$])", "%%%1"):gsub("%%d", "%%d+") .. "$"
+end
+
+-- levelsAhead (optional, Dungeon Journal only): an item up to that many levels above the player counts
+-- as a goal. It is then judged as if the player had its required level (armor type included), and
+-- the red "Requires Level" line no longer blocks it. Returns true, goalLevel (nil = wearable now).
+function eligibility:Check(link, item, levelsAhead)
+    if (item.classID ~= 4 and item.classID ~= 2) or not item.equipLoc or item.equipLoc == "" then
         return nil, "Unsupported equipment"
     end
     local level = UnitLevel("player")
-    if not item.required or item.required > level then return nil, "Level requirement not met" end
+    if not item.required then return nil, "Level requirement not met" end
+    local goal
+    if item.required > level then
+        if not levelsAhead or item.required > level + levelsAhead then return nil, "Level requirement not met" end
+        goal, level = item.required, item.required
+    end
     local _, class = UnitClass("player")
     local maxArmor = self:MaxArmor(class, level)
     if not maxArmor then return nil, "Unknown class" end
-    if item.subclassID and item.subclassID > 4 then return nil, "Unsupported armor type" end
-    if item.subclassID and item.subclassID > maxArmor then return nil, "Armor type not wearable yet" end
+    if item.classID == 2 then
+        -- Weapons: the learned-skill check is the red tooltip line below. Fishing poles and misc are skipped.
+        if item.subclassID == 14 or item.subclassID == 20 then return nil, "Unsupported weapon type" end
+    elseif item.equipLoc == "INVTYPE_SHIELD" or item.equipLoc == "INVTYPE_HOLDABLE" then
+        -- Shields and held-in-off-hand items: the client equip check and red lines decide.
+    else
+        if item.subclassID and item.subclassID > 4 then return nil, "Unsupported armor type" end
+        if item.subclassID and item.subclassID > maxArmor then return nil, "Armor type not wearable yet" end
+    end
     local equippable = C_Item.IsEquippableItem or IsEquippableItem
     if not equippable or not equippable(link) then return nil, "Item cannot be equipped" end
+    local levelLine = goal and levelLinePattern()
     if not C_TooltipInfo or not C_TooltipInfo.GetHyperlink then return nil, "Requirements API unavailable" end
     local info = C_TooltipInfo.GetHyperlink(link)
     if not info or not info.lines or not next(info.lines) then return nil, "Requirements unavailable" end
@@ -44,13 +66,13 @@ function eligibility:Check(link, item)
                 if not addon:IsPublic(r) or not addon:IsPublic(g) or not addon:IsPublic(b) then
                     return nil, "Restricted requirements"
                 end
-                if r and g and b and r > 0.7 and g < 0.3 and b < 0.3 then
+                if r and g and b and r > 0.7 and g < 0.3 and b < 0.3 and not (levelLine and text:match(levelLine)) then
                     return nil, "Unmet item requirement"
                 end
             end
         end
     end
-    return true
+    return true, goal
 end
 
 function eligibility:CanReplace(link, slot)
@@ -65,7 +87,7 @@ function eligibility:CanReplace(link, slot)
     if not categorized and not id then return nil, "Unknown unique item" end
     limit = categorized and limit or 1
     local count = 0
-    for _, otherSlot in ipairs({ 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 }) do
+    for _, otherSlot in ipairs({ 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 }) do
         if otherSlot ~= slot then
             local other = GetInventoryItemLink("player", otherSlot)
             if other then

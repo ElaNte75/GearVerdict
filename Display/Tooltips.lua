@@ -1,11 +1,11 @@
 local _, addon = ...
-local tooltips = { seen = setmetatable({}, { __mode = "k" }), tracked = setmetatable({}, { __mode = "k" }) }
+local tooltips = { seen = setmetatable({}, { __mode = "k" }), sold = setmetatable({}, { __mode = "k" }), tracked = setmetatable({}, { __mode = "k" }) }
 addon.Tooltips = tooltips
 
 function tooltips:Track(tooltip)
     if self.tracked[tooltip] or not tooltip.HookScript then return end
     self.tracked[tooltip] = true
-    local clear = function(frame) self.seen[frame] = nil end
+    local clear = function(frame) self.seen[frame] = nil self.sold[frame] = nil end
     tooltip:HookScript("OnTooltipCleared", clear)
     tooltip:HookScript("OnHide", clear)
     tooltip:HookScript("OnShow", function(frame)
@@ -21,11 +21,21 @@ function tooltips:Process(tooltip)
     self:Track(tooltip)
     local _, link = tooltip:GetItem()
     if not link or not addon:IsPublic(link) then return end
+    -- Quest reward chosen only for its vendor price (QuestSellCoin).
+    local owner = tooltip.GetOwner and tooltip:GetOwner()
+    local price = owner and owner.gearVerdictSell
+    if price and self.sold[tooltip] ~= link and addon.QuestSellCoin then
+        self.sold[tooltip] = link
+        tooltip:AddLine(" ")
+        tooltip:AddLine("GearVerdict: best to sell " .. addon.QuestSellCoin:Format(price), 1, 0.82, 0)
+    end
     if self.seen[tooltip] == link then return end
     local name, _, _, _, _, _, _, _, equipLoc, _, _, classID = C_Item.GetItemInfo(link)
     if not name or (classID ~= 2 and classID ~= 4) or not equipLoc or equipLoc == "" then return end
     self.seen[tooltip] = link
-    local result, reason = addon.Comparison:Evaluate(link)
+    local journal = addon.DungeonJournalArrows
+    local levelsAhead = journal and journal:IsRow(owner) and journal:LevelsAhead() or nil
+    local result, reason = addon.Comparison:Evaluate(link, levelsAhead)
     addon.Diagnostics:Log("comparison", link .. " " .. (result
         and ("slot=" .. result.slot .. " delta=" .. result.delta) or tostring(reason)))
     if result then
@@ -44,6 +54,10 @@ function tooltips:Process(tooltip)
     local preset = addon.Presets:Get()
     tooltip:AddLine(preset and preset.label or "Enhancement Shaman", classColor and classColor.r or 0.8,
         classColor and classColor.g or 0.8, classColor and classColor.b or 0.8)
+    if result.goal then
+        local gold = addon.UpgradeIndicators.goalColor
+        tooltip:AddLine("Goal: wearable at level " .. result.goal, gold.r, gold.g, gold.b)
+    end
     local percentMode = GearVerdictDB.options and GearVerdictDB.options.valueMode == "percent"
     for _, entry in ipairs(result.comparisons) do
         if entry.empty then
@@ -53,8 +67,19 @@ function tooltips:Process(tooltip)
             local color = quality and ITEM_QUALITY_COLORS and ITEM_QUALITY_COLORS[quality]
             local right = percentMode and entry.percent and string.format("%+.1f%%", entry.percent)
                 or string.format("%+.2f pts", entry.delta)
+            -- Won only by armor (heavier type or more Armor): the stat value is not a gain, so it is gold.
+            local vr, vg, vb = 0.3, 1, 0.3
+            if entry.armorReason or entry.weaponReason then vr, vg, vb = 1, 0.82, 0 end
             tooltip:AddDoubleLine("|cffffd100vs|r " .. (entry.previousName or ("Slot " .. entry.slot)), right,
-                color and color.r or 0.85, color and color.g or 0.85, color and color.b or 0.85, 0.3, 1, 0.3)
+                color and color.r or 0.85, color and color.g or 0.85, color and color.b or 0.85, vr, vg, vb)
+            local reason = addon.ArmorPreference and addon.ArmorPreference:ReasonText(entry.armorReason)
+            if reason then tooltip:AddLine("  " .. reason, 0.3, 1, 0.3) end
+        end
+        if entry.upgrade or entry.empty then
+            if entry.partner then tooltip:AddLine("  With " .. entry.partner .. " from bags", 0.3, 1, 0.3) end
+            local specName = preset and addon.SpecDetection:SpecName(preset.specID, classFile)
+            local weaponReason = addon.WeaponData and addon.WeaponData:ReasonText(entry.weaponReason, specName)
+            if weaponReason then tooltip:AddLine("  " .. weaponReason, 0.3, 1, 0.3) end
         end
         addon.Diagnostics:Log("slot-comparison", "slot=" .. entry.slot .. " empty=" .. tostring(entry.empty)
             .. " delta=" .. entry.delta .. " percent=" .. tostring(entry.percent))

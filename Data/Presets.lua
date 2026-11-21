@@ -43,8 +43,20 @@ function presets:BasisText(preset)
     return preset and self.basisText[preset.basis] or self.basisText.guide
 end
 
+-- Some servers (seen on Forever 2026-11-21) sometimes report an empty realm name. Then the choice is
+-- found by character name alone, but only when exactly one saved character has that name.
 local function characterKey()
-    return (UnitName("player") or "?") .. "-" .. (GetRealmName and GetRealmName() or "?")
+    local name = UnitName("player") or "?"
+    local realm = GetRealmName and GetRealmName()
+    if realm and realm ~= "" then return name .. "-" .. realm end
+    local found
+    for key in pairs(GearVerdictDB.specChoices or {}) do
+        if key:sub(1, #name + 1) == name .. "-" then
+            if found then return name .. "-?" end
+            found = key
+        end
+    end
+    return found or (name .. "-?")
 end
 
 function presets:ManualSpecID()

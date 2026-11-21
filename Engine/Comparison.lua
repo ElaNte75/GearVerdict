@@ -8,7 +8,7 @@ local slots = {
     INVTYPE_HAND = { 10 }, INVTYPE_FINGER = { 11, 12 },
     INVTYPE_TRINKET = { 13, 14 }, INVTYPE_CLOAK = { 15 },
 }
-local equippedSlots = { 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 }
+local equippedSlots = { 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 }
 
 function comparison:Equipment(targets)
     local total, items = {}, {}
@@ -25,15 +25,21 @@ function comparison:Equipment(targets)
     return total, items
 end
 
-function comparison:Evaluate(link)
+-- levelsAhead (optional): see Eligibility:Check; the result then carries goal = the required level.
+function comparison:Evaluate(link, levelsAhead)
     local preset, reason = addon.Presets:Get()
     if not preset then return nil, reason end
     local candidate, issue = addon.ItemData:Get(link)
     if not candidate then return nil, issue end
+    if addon.WeaponData:Handles(candidate.equipLoc) then
+        local eligible, restriction = addon.Eligibility:Check(link, candidate, levelsAhead)
+        if not eligible then return nil, restriction end
+        return addon.WeaponComparison:Evaluate(link, candidate, preset, eligible == true and restriction or nil)
+    end
     local targets = slots[candidate.equipLoc]
-    if not targets then return nil, "Weapons and special slots need separate validation" end
+    if not targets then return nil, "Special slots are not evaluated" end
     if candidate.equipLoc == "INVTYPE_TRINKET" then return nil, "Trinket effects are not evaluated" end
-    local eligible, restriction = addon.Eligibility:Check(link, candidate)
+    local eligible, restriction = addon.Eligibility:Check(link, candidate, levelsAhead)
     if not eligible then return nil, restriction end
     local total, items, equipmentIssue = self:Equipment(targets)
     if not total then return nil, equipmentIssue end
@@ -50,7 +56,8 @@ function comparison:Evaluate(link)
             local entry = { slot = slot, delta = delta, empty = items[slot] == nil,
                 previousName = previous.name, previousLink = GetInventoryItemLink("player", slot),
                 percent = not GearVerdictDB.capsEnabled and oldScore > 0 and delta / oldScore * 100 or nil }
-            entry.upgrade = entry.empty or delta > 0.01
+            local upgrade, armorReason = addon.ArmorPreference:Judge(candidate, items[slot], delta, oldScore)
+            entry.upgrade, entry.armorReason = entry.empty or upgrade == true, armorReason
             comparisons[#comparisons + 1] = entry
             if not best or (entry.upgrade and not best.upgrade)
                 or (entry.upgrade == best.upgrade and delta > best.delta) then best = entry end
@@ -58,9 +65,12 @@ function comparison:Evaluate(link)
     end
     if not best then return nil, "Equipment restriction or unavailable requirements" end
     return { delta = best.delta, slot = best.slot, empty = best.empty,
-        upgrade = best.upgrade, candidate = candidate, comparisons = comparisons }
+        upgrade = best.upgrade, candidate = candidate, comparisons = comparisons,
+        goal = eligible == true and restriction or nil }
 end
 
 function comparison:IsUpgrade(result)
-    return result ~= nil and (result.empty == true or result.delta > 0.01)
+    if result == nil then return false end
+    if result.upgrade ~= nil then return result.empty == true or result.upgrade == true end
+    return result.empty == true or result.delta > 0.01
 end
