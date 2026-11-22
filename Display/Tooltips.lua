@@ -45,6 +45,11 @@ function tooltips:Process(tooltip)
             addon.Diagnostics:Log("candidate-stat", stat .. "=" .. value .. " weight=" .. tostring(addon.Presets:Weight(stat)))
         end
     end
+    if result and result.belowQuality and addon.Comparison:BeatsEquipped(result) then
+        tooltip:AddLine(" ")
+        tooltip:AddLine("GearVerdict: ignored, item quality is below your setting", 0.62, 0.62, 0.62)
+        return
+    end
     if not addon.Comparison:IsUpgrade(result) then return end
     if addon.RingPlacement then addon.RingPlacement:Remember(link, result.slot) end
     tooltip:AddLine(" ")
@@ -52,7 +57,10 @@ function tooltips:Process(tooltip)
     local _, classFile = UnitClass("player")
     local classColor = RAID_CLASS_COLORS and RAID_CLASS_COLORS[classFile]
     local preset = addon.Presets:Get()
-    tooltip:AddLine(preset and preset.label or "Enhancement Shaman", classColor and classColor.r or 0.8,
+    -- A chosen hybrid build is named (e.g. "Protection: Fury-Prot"); its gear still uses the gearSpec weights.
+    local build = addon.Builds and addon.Builds:Chosen()
+    local label = build and not build.classic and addon.Builds:DisplayName(build) or (preset and preset.label) or "Enhancement Shaman"
+    tooltip:AddLine(label, classColor and classColor.r or 0.8,
         classColor and classColor.g or 0.8, classColor and classColor.b or 0.8)
     if result.goal then
         local gold = addon.UpgradeIndicators.goalColor
@@ -67,7 +75,7 @@ function tooltips:Process(tooltip)
             local color = quality and ITEM_QUALITY_COLORS and ITEM_QUALITY_COLORS[quality]
             local right = percentMode and entry.percent and string.format("%+.1f%%", entry.percent)
                 or string.format("%+.2f pts", entry.delta)
-            -- Won only by armor (heavier type or more Armor): the stat value is not a gain, so it is gold.
+            -- Won only by the Armor tie rule (equal stats, more Armor): the stat value is not a gain, so it is gold.
             local vr, vg, vb = 0.3, 1, 0.3
             if entry.armorReason or entry.weaponReason then vr, vg, vb = 1, 0.82, 0 end
             tooltip:AddDoubleLine("|cffffd100vs|r " .. (entry.previousName or ("Slot " .. entry.slot)), right,

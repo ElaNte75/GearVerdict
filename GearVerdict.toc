@@ -59,6 +59,8 @@ Display\BagnonAdapter.lua
 Display\QuestSellCoin.lua
 Display\QuestArrows.lua
 Display\DungeonJournalArrows.lua
+Display\MerchantArrows.lua
+Display\UpgradeToast.lua
 Display\TalentHint.lua
 UI\PanelWidgets.lua
 UI\ControlPanel.lua

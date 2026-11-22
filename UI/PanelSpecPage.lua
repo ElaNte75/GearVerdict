@@ -35,6 +35,8 @@ function page:Create(parent)
     if useBuilds then
         specLabel:SetText("Build")
         anchor = addon.BuildPicker:Create(frame, specLine, gap + 8)
+        -- The variant's talent points per tree ("3 / 31 / 17"), next to the "Variant" title above its drop-down.
+        addon.BuildPicker:CreatePoints(frame, addon.BuildPicker.variantLabel)
     end
     for _, spec in ipairs(useBuilds and {} or addon.SpecDetection:ClassSpecs()) do
         local supported = addon.Presets:IsSupported(spec.id)
@@ -87,7 +89,7 @@ function page:Update()
     local preset, reason = addon.Presets:Get()
     if preset then
         local build = addon.BuildPicker and addon.BuildPicker.frame and addon.Builds:Chosen()
-        self.status:SetText("Active: " .. (build and (build.name .. " (gear as " .. widgets:SpecText(addon.Presets:SelectedSpecID()) .. ")")
+        self.status:SetText("Active: " .. (build and (addon.Builds:DisplayName(build) .. " (gear as " .. widgets:SpecText(addon.Presets:SelectedSpecID()) .. ")")
             or widgets:SpecText(addon.Presets:SelectedSpecID())))
         self.status:SetTextColor(widgets:Color("good"))
     else

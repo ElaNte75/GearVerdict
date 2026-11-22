@@ -16,6 +16,7 @@ function addon:Refresh()
     if self.BagnonAdapter then self.BagnonAdapter:Refresh() end
     if self.QuestArrows then self.QuestArrows:Refresh() end
     if self.DungeonJournalArrows then self.DungeonJournalArrows:Refresh() end
+    if self.MerchantArrows then self.MerchantArrows:Refresh() end
 end
 
 -- Optional local test tools (a separate addon that is not part of GearVerdict). Without them these do nothing.

@@ -35,6 +35,18 @@ function presets:Register(class, preset)
     preset.class = class
     preset.label = preset.label or (name .. " " .. class:sub(1, 1) .. class:sub(2):lower())
     preset.caps = preset.caps or self.caps.none
+    -- Survival for damage specs (agreed with the user 2026-11-21): their simulated weights come from raid
+    -- fights where Stamina adds no damage, so it was 0. While leveling you get hit, and the Forever leveling
+    -- guide ranks Stamina third. Specs without a Stamina weight get 0.3 x their main stat's weight
+    -- (the same 0.3 Pawn's Forever weights use for Arms). This also gives Armor its value (Scoring).
+    if not preset.weights.ITEM_MOD_STAMINA_SHORT then
+        local main = 0
+        for _, key in ipairs({ "ITEM_MOD_STRENGTH_SHORT", "ITEM_MOD_AGILITY_SHORT", "ITEM_MOD_INTELLECT_SHORT",
+            "ITEM_MOD_SPELL_POWER_SHORT" }) do
+            main = math.max(main, preset.weights[key] or 0)
+        end
+        if main > 0 then preset.weights.ITEM_MOD_STAMINA_SHORT = math.floor(main * 0.3 * 100 + 0.5) / 100 end
+    end
     self.bySpec[preset.specID] = preset
     return preset
 end
@@ -85,7 +97,7 @@ end
 -- specialization chosen directly (classic builds set that choice themselves).
 function presets:SelectedSpecID()
     local build = addon.Builds and addon.Builds:Chosen()
-    if build and not build.classic then return build.gearSpec end
+    if build and not build.classic then return addon.Builds:SpecOf(build) end
     return self:ManualSpecID()
 end
 

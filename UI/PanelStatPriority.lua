@@ -31,6 +31,13 @@ function priority:Entries(specID)
             if value > top then top = value end
         end
     end
+    -- Armor counts too (Engine/Scoring.lua ArmorWeight, from the game's armor formula; changes with level/health/armor).
+    -- Its value is per point of Armor, so its bar is short: items carry many points of it.
+    local armor = addon.Scoring and addon.Scoring:ArmorWeight() or 0
+    if armor > 0 and specID == addon.Presets:SelectedSpecID() then
+        entries[#entries + 1] = { key = "RESISTANCE0_NAME", name = "Armor (per pt)", value = armor }
+        if armor > top then top = armor end
+    end
     table.sort(entries, function(a, b)
         if a.value ~= b.value then return a.value > b.value end
         return a.name < b.name
@@ -52,7 +59,7 @@ function priority:CapsText(preset)
         parts[#parts + 1] = string.format("Expertise %g%% (%d rating)", expertise.threshold / 10, expertise.threshold)
     end
     if #parts == 0 then return nil end
-    return "Caps: " .. table.concat(parts, ", ") .. "."
+    return "Caps (counted only at level 60 with caps turned on): " .. table.concat(parts, ", ") .. "."
 end
 
 priority.basisShort = {
@@ -94,10 +101,10 @@ priority.helpText = "Below the active specialization: its stats, most important 
 
 function priority:Create(page, anchor)
     self.box = CreateFrame("Frame", nil, page)
-    self.box:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -6)
+    self.box:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -10)
     self.box:SetPoint("RIGHT", page, "RIGHT", -8, 0)
     self.box:SetHeight(ROW_HEIGHT)
-    self.note = addon.PanelWidgets:Note(page, "", self.box, 6)
+    self.note = addon.PanelWidgets:Note(page, "", self.box, 10)
     self.rows = {}
 end
 

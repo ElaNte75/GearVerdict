@@ -1,9 +1,9 @@
 local addon = {}
-local where = { MinimapIcon = "UI", Builds = "Engine", TalentPlacer = "Engine", TalentBuilds = "Data", WarriorBuilds = "Data/TalentBuilds", PaladinBuilds = "Data/TalentBuilds", HunterBuilds = "Data/TalentBuilds", RogueBuilds = "Data/TalentBuilds", PriestBuilds = "Data/TalentBuilds", ShamanBuilds = "Data/TalentBuilds", MageBuilds = "Data/TalentBuilds", WarlockBuilds = "Data/TalentBuilds", DruidBuilds = "Data/TalentBuilds", BuildPicker = "UI", BagArrows = "Display", BagnonAdapter = "Display", Bootstrap = "Core", Comparison = "Engine", ControlPanel = "UI", Core = "Core", Eligibility = "Engine", ArmorPreference = "Engine", WeaponData = "Engine", WeaponComparison = "Engine", WeaponGuide = "Data", ItemData = "Engine", PanelInterfacePage = "UI", PanelFactsPage = "UI", PanelOptionsPage = "UI", PanelSpecPage = "UI", PanelStatPriority = "UI", PanelWeightsPage = "UI", PanelWidgets = "UI", Presets = "Data", QuestArrows = "Display", QuestSellCoin = "Display", DungeonJournalArrows = "Display", RingPlacement = "Display", Scoring = "Engine", SpecDetection = "Data", StatNormalization = "Engine", Tooltips = "Display", UpgradeIndicators = "Display", WeightString = "Data", WeightTransferDialog = "UI", Weights = "Data", TalentOrders = "Data", TalentOrdersWowhead = "Data", PanelLevelingPage = "UI", TalentAdvisor = "Engine", TalentHint = "Display", Warrior = "Data/Presets", Paladin = "Data/Presets", Hunter = "Data/Presets", Rogue = "Data/Presets", Priest = "Data/Presets", Shaman = "Data/Presets", Mage = "Data/Presets", Warlock = "Data/Presets", Druid = "Data/Presets" }
+local where = { MinimapIcon = "UI", Builds = "Engine", TalentPlacer = "Engine", TalentBuilds = "Data", WarriorBuilds = "Data/TalentBuilds", PaladinBuilds = "Data/TalentBuilds", HunterBuilds = "Data/TalentBuilds", RogueBuilds = "Data/TalentBuilds", PriestBuilds = "Data/TalentBuilds", ShamanBuilds = "Data/TalentBuilds", MageBuilds = "Data/TalentBuilds", WarlockBuilds = "Data/TalentBuilds", DruidBuilds = "Data/TalentBuilds", BuildPicker = "UI", BagArrows = "Display", BagnonAdapter = "Display", Bootstrap = "Core", Comparison = "Engine", ControlPanel = "UI", Core = "Core", Eligibility = "Engine", ArmorPreference = "Engine", WeaponData = "Engine", WeaponComparison = "Engine", WeaponGuide = "Data", ItemData = "Engine", PanelInterfacePage = "UI", PanelFactsPage = "UI", PanelOptionsPage = "UI", PanelSpecPage = "UI", PanelStatPriority = "UI", PanelWeightsPage = "UI", PanelWidgets = "UI", Presets = "Data", QuestArrows = "Display", QuestSellCoin = "Display", DungeonJournalArrows = "Display", MerchantArrows = "Display", UpgradeToast = "Display", RingPlacement = "Display", Scoring = "Engine", SpecDetection = "Data", StatNormalization = "Engine", Tooltips = "Display", UpgradeIndicators = "Display", WeightString = "Data", WeightTransferDialog = "UI", Weights = "Data", TalentOrders = "Data", TalentOrdersWowhead = "Data", PanelLevelingPage = "UI", TalentAdvisor = "Engine", TalentHint = "Display", Warrior = "Data/Presets", Paladin = "Data/Presets", Hunter = "Data/Presets", Rogue = "Data/Presets", Priest = "Data/Presets", Shaman = "Data/Presets", Mage = "Data/Presets", Warlock = "Data/Presets", Druid = "Data/Presets" }
 local function path(name) return where[name] .. "/" .. name .. ".lua" end
-local files = { "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentBuilds", "WarriorBuilds", "PaladinBuilds", "HunterBuilds", "RogueBuilds", "PriestBuilds", "ShamanBuilds", "MageBuilds", "WarlockBuilds", "DruidBuilds", "Builds", "TalentAdvisor", "TalentPlacer", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "PanelWidgets", "ControlPanel", "PanelStatPriority", "BuildPicker", "PanelSpecPage", "PanelOptionsPage", "PanelLevelingPage", "PanelWeightsPage", "PanelInterfacePage", "PanelFactsPage", "WeightTransferDialog", "MinimapIcon", "Core" }
+local files = { "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentBuilds", "WarriorBuilds", "PaladinBuilds", "HunterBuilds", "RogueBuilds", "PriestBuilds", "ShamanBuilds", "MageBuilds", "WarlockBuilds", "DruidBuilds", "Builds", "TalentAdvisor", "TalentPlacer", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "MerchantArrows", "UpgradeToast", "PanelWidgets", "ControlPanel", "PanelStatPriority", "BuildPicker", "PanelSpecPage", "PanelOptionsPage", "PanelLevelingPage", "PanelWeightsPage", "PanelInterfacePage", "PanelFactsPage", "WeightTransferDialog", "MinimapIcon", "Core" }
 for _, name in ipairs(files) do assert(loadfile(path(name))) end
-for _, name in ipairs({ "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentBuilds", "WarriorBuilds", "PaladinBuilds", "HunterBuilds", "RogueBuilds", "PriestBuilds", "ShamanBuilds", "MageBuilds", "WarlockBuilds", "DruidBuilds", "Builds", "TalentAdvisor", "TalentPlacer", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "PanelStatPriority" }) do
+for _, name in ipairs({ "Bootstrap", "SpecDetection", "Presets", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid", "WeaponGuide", "Weights", "WeightString", "TalentOrders", "TalentOrdersWowhead", "TalentBuilds", "WarriorBuilds", "PaladinBuilds", "HunterBuilds", "RogueBuilds", "PriestBuilds", "ShamanBuilds", "MageBuilds", "WarlockBuilds", "DruidBuilds", "Builds", "TalentAdvisor", "TalentPlacer", "TalentHint", "StatNormalization", "ItemData", "Scoring", "Eligibility", "ArmorPreference", "WeaponData", "Comparison", "WeaponComparison", "RingPlacement", "Tooltips", "UpgradeIndicators", "BagArrows", "BagnonAdapter", "QuestSellCoin", "QuestArrows", "DungeonJournalArrows", "MerchantArrows", "UpgradeToast", "PanelStatPriority" }) do
     assert(loadfile(path(name)))("GearVerdict", addon)
 end
 local tests = 0
@@ -78,6 +78,7 @@ C_TooltipInfo = { GetHyperlink = function()
 end }
 C_Item.GetItemStats = function() return { [intellect] = 5 } end
 local item = addon.ItemData:Get("item:123:99:1:2:3:4")
+check(item and item.quality == 2, "Item data keeps the item quality")
 check(item.stats[intellect] == 5, "Base stats read")
 check(GearVerdictDB.cache[item.key].stats[intellect] == 5, "Base stats cached")
 function GetInventoryItemLink(_, slot) if slot == 1 then return "item:123" end end
@@ -606,6 +607,26 @@ addon.Tooltips.seen[tooltip] = nil
 addon.Tooltips:Process(tooltip)
 check(lines[4] and lines[4]:find("+100.0%", 1, true), "Percent option shows percent in tooltip")
 GearVerdictDB.options = {}
+-- Item quality option: below the setting = no recommendation, gray note in the tooltip; default = all items.
+local cmp = addon.Comparison
+local function graded(quality) return { delta = 1, slot = 9, upgrade = true, candidate = { quality = quality, stats = {} } } end
+check(cmp:MinQuality() == 0 and not cmp:MarkQuality(graded(0)).belowQuality, "Quality default: gray items still judged")
+GearVerdictDB.options = { minQuality = 1 }
+local grayResult = cmp:MarkQuality(graded(0))
+check(grayResult.belowQuality and not cmp:IsUpgrade(grayResult) and cmp:BeatsEquipped(grayResult),
+    "White and better: gray item is better but not recommended")
+check(not cmp:MarkQuality(graded(1)).belowQuality and cmp:IsUpgrade(graded(1)), "White and better: white item recommended")
+GearVerdictDB.options = { minQuality = 2 }
+check(cmp:MarkQuality(graded(1)).belowQuality and not cmp:MarkQuality(graded(2)).belowQuality,
+    "Green and better: white ignored, green judged")
+addon.Comparison.Evaluate = function() return cmp:MarkQuality(graded(0)) end
+lines = {}
+addon.Tooltips.seen[tooltip] = nil
+addon.Tooltips:Process(tooltip)
+local noted = false
+for _, text in pairs(lines) do if tostring(text):find("ignored, item quality", 1, true) then noted = true end end
+check(noted and #lines <= 4, "Ignored item tooltip shows only the gray quality note")
+GearVerdictDB.options = {}
 addon.Comparison.Evaluate = originalEvaluate
 local equipped, equips, delayed = { [11] = "item:501", [12] = "item:502" }, {}, {}
 GetInventoryItemLink = function(_, slot) return equipped[slot] end
@@ -750,14 +771,14 @@ function UnitClass() return "Shaman", "SHAMAN" end
 P:SetManualSpecID(263)
 local SP = addon.PanelStatPriority
 local bars = SP:Entries(263)
-check(#bars == 10 and bars[1].name == "Expertise" and bars[1].share == 1 and bars[#bars].name == "Armor Pen."
+check(#bars == 11 and bars[1].name == "Expertise" and bars[1].share == 1 and bars[#bars].name == "Armor Pen."
     and math.abs(bars[2].share - 2.2 / 4.06) < 0.0001, "Priority bars: strongest first, length relative to the first")
 W:Set(263, "ITEM_MOD_AGILITY_SHORT", 5)
 W:Set(263, "ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT", 0)
 bars = SP:Entries(263)
-check(bars[1].name == "Agility" and bars[1].custom and #bars == 9, "Priority bars follow custom weights and hide zero stats")
+check(bars[1].name == "Agility" and bars[1].custom and #bars == 10, "Priority bars follow custom weights and hide zero stats")
 W:ResetAll(263)
-check(SP:CapsText(P.bySpec[263]):find("16%% %(160%) for spells") and SP:CapsText(P.bySpec[71]) == "Caps: Hit 8% (80 rating), Expertise 6.5% (65 rating)."
+check(SP:CapsText(P.bySpec[263]):find("16%% %(160%) for spells") and SP:CapsText(P.bySpec[71]) == "Caps (counted only at level 60 with caps turned on): Hit 8% (80 rating), Expertise 6.5% (65 rating)."
     and SP:CapsText(P.bySpec[257]) == nil, "Caps line fits the spec")
 -- Talent hint on level-up (data, steering, display)
 local TA, TH = addon.TalentAdvisor, addon.TalentHint
@@ -983,55 +1004,178 @@ GearVerdictDB.options.levelingGuide = nil
 C_ClassTalents, C_Traits, C_Spell = nil, nil, nil
 function UnitClass() return "Shaman", "SHAMAN" end
 
--- Heavier armor preference (Engine/ArmorPreference.lua)
+-- Two-step choice: specialization, then variant (Engine/Builds.lua)
+do
+    local B = addon.Builds
+    function UnitClass() return "Warrior", "WARRIOR" end
+    local specs = B:Specs()
+    check(#specs == 3 and specs[1].id == 71 and specs[3].id == 73, "Warrior: three specializations to choose from")
+    local prot = B:ForSpec(73)
+    check(prot[1].classic and #prot >= 5, "Protection list starts with Classic, then its guide builds")
+    local hasFuryProt, onlyProt = false, true
+    for _, build in ipairs(prot) do
+        if build.id == "fury-prot" then hasFuryProt = true end
+        if B:SpecOf(build) ~= 73 then onlyProt = false end
+    end
+    check(hasFuryProt and onlyProt, "Fury-Prot sits under Protection, and only Protection builds are listed")
+    check(B:VariantName(B:Find("fury-prot")) == "Fury-Prot" and B:VariantName(prot[1]) == "Classic (leveling guide)",
+        "Variant names drop the spec in front")
+    local dual = B:Find("dual-wield")
+    check(B:SpecOf(dual) == 72 and B:Moved(dual), "Dual Wield (0 Protection points) moves to Fury")
+    check(B:DisplayName(dual) == "Fury: Dual Wield (Protection page)", "Moved build says where the guide lists it")
+    local inFury = false
+    for _, build in ipairs(B:ForSpec(72)) do if build.id == "dual-wield" then inFury = true end end
+    check(inFury, "Dual Wield is listed under Fury")
+    local furyProt = B:Find("fury-prot")
+    local share, points, total = B:DefenseShare(furyProt)
+    check(points == 17 and total == 51 and math.abs(share - 17 / 51) < 1e-9, "Fury-Prot: 17 of 51 points in defense")
+    check(B:DefenseShare(dual) == 0 and math.abs(B:DefenseShare(B:Find("classic-72")) - 2 / 51) < 1e-9,
+        "Every Warrior build has a meter (Dual Wield: Offense 100%)")
+    check(B:DisplayName(furyProt) == "Protection: Fury-Prot" and not B:Moved(furyProt), "Fury-Prot stays Protection")
+    check(B:WeaponSetup(furyProt) == "One-hand weapon + shield", "Fury-Prot: one-hand + shield (Protection weapon guide)")
+    check(B:WeaponSetup(dual) == "Two one-hand weapons (dual wield)", "Dual Wield: two one-hand weapons")
+    local setup, detail = B:WeaponSetup(B:Find("classic-71"))
+    check(setup == "Two-handed weapon" and detail == nil, "Arms: two-handed weapon")
+    local cleave
+    for _, build in ipairs(B:List()) do if build.name == "Protection: PvE Dungeon (Cleave)" then cleave = build end end
+    setup, detail = B:WeaponSetup(cleave)
+    check(setup == "One-hand weapon + shield" and detail:find("Thrash Blade"), "Guide's weapon detail moves to the description")
+    B:ChooseSpec(72)
+    check(B:Chosen().id == "classic-72" and addon.Presets:SelectedSpecID() == 72, "Choosing Fury picks its Classic build")
+    B:Choose("fury-prot")
+    check(B:Chosen().id == "fury-prot" and addon.Presets:SelectedSpecID() == 73, "Fury-Prot judges gear as Protection")
+    B:ChooseSpec(nil)
+    check(B:Chosen() == nil and addon.Presets:SelectedSpecID() == nil, "None clears the choice")
+    addon.Presets:SetManualSpecID(71)
+    check(B:Chosen().id == "classic-71", "An old saved specialization still shows as its Classic build")
+    addon.Presets:SetManualSpecID(nil)
+    function UnitClass() return "Paladin", "PALADIN" end
+    local off
+    for _, build in ipairs(B:List()) do if build.name == "Protection: Offensive Off" then off = build end end
+    check(off and B:SpecOf(off) == 70, "Paladin Offensive Off (0 Protection points) moves to Retribution")
+    check(B:DefenseShare(B:Find("classic-65")) == nil, "Healers have no Defense/Offense meter")
+    function UnitClass() return "Mage", "MAGE" end
+    check(B:DefenseShare(B:Find("classic-63")) == 0, "Mage: pure damage (Offense 100%)")
+    function UnitClass() return "Druid", "DRUID" end
+    check(math.abs(B:DefenseShare(B:Find("classic-104")) - 32 / 51) < 1e-9 and B:DefenseShare(B:Find("classic-103")) == 0,
+        "Druid: bear counts Feral Combat as defense, cat is pure damage")
+    function UnitClass() return "Shaman", "SHAMAN" end
+    addon.Presets:SetManualSpecID(263)
+end
+-- Armor tie rule (Engine/ArmorPreference.lua): the score decides; equal stats -> more Armor wins.
 do
     local AP = addon.ArmorPreference
     local function piece(kind, armor, loc)
         return { classID = 4, subclassID = kind, equipLoc = loc or "INVTYPE_CHEST", stats = { RESISTANCE0_NAME = armor } }
     end
-    local ok, reason = AP:Judge(piece(3, 67), piece(2, 33), 0, 0)
-    check(ok and reason.kind == "heavier" and reason.name == "Mail", "Mail beats leather when both have no stats")
-    check(AP:Judge(piece(3, 67), piece(2, 33), -0.9, 10), "Heavier type wins when at most 10% weaker")
-    check(not AP:Judge(piece(3, 67), piece(2, 33), -1.1, 10), "Heavier type loses when more than 10% weaker")
-    ok, reason = AP:Judge(piece(4, 90), piece(3, 67), 2, 10)
-    check(ok and reason == nil, "Heavier and better by stats is a plain upgrade without a reason line")
-    check(not AP:Judge(piece(2, 33), piece(3, 67), 0.9, 10), "Lighter type needs more than 10% better")
-    check(AP:Judge(piece(2, 33), piece(3, 67), 1.1, 10), "Lighter type wins when clearly better")
-    check(not AP:Judge(piece(2, 33), piece(3, 67), 0, 0), "Lighter type never wins a tie")
-    ok, reason = AP:Judge(piece(2, 50), piece(2, 33), 0, 5)
-    check(ok and reason.kind == "armor" and reason.amount == 17, "Same type tie: more Armor wins")
-    check(not AP:Judge(piece(2, 20), piece(2, 33), 0, 5), "Same type tie: less Armor loses")
-    ok, reason = AP:Judge(piece(1, 10, "INVTYPE_CLOAK"), piece(1, 3, "INVTYPE_CLOAK"), 0, 0)
+    local ok, reason = AP:Judge(piece(3, 67), piece(2, 33), 0)
+    check(ok and reason.kind == "armor" and reason.amount == 34, "Equal stats: more Armor wins (mail vest over leather tunic)")
+    check(not AP:Judge(piece(3, 67), piece(2, 33), -0.5), "No heavier-type rule: weaker score loses")
+    check(AP:Judge(piece(2, 33), piece(3, 67), 0.5), "Lighter piece with a better score wins")
+    check(not AP:Judge(piece(2, 33), piece(3, 67), 0), "Equal stats: less Armor loses")
+    ok, reason = AP:Judge(piece(4, 90), piece(3, 67), 2)
+    check(ok and reason == nil, "Better score is a plain upgrade without a reason line")
+    ok, reason = AP:Judge(piece(1, 10, "INVTYPE_CLOAK"), piece(1, 3, "INVTYPE_CLOAK"), 0)
     check(ok and reason.kind == "armor" and reason.amount == 7, "Cloak tie: more Armor wins (Cadet vs Ragged Cloak)")
-    check(not AP:Judge(piece(1, 3, "INVTYPE_CLOAK"), piece(1, 10, "INVTYPE_CLOAK"), 0, 0), "Cloak tie: less Armor loses")
-    check(not AP:Judge(piece(1, 40, "INVTYPE_CLOAK"), piece(1, 10, "INVTYPE_CLOAK"), -0.5, 5), "Cloak: Armor never beats weaker stats")
-    ok, reason = AP:Judge(piece(1, 12, "INVTYPE_CLOAK"), piece(1, 3, "INVTYPE_CLOAK"), 0.8, 0)
-    check(ok and reason == nil, "Cloak with better stats is a plain upgrade (Thrice-Stitched Flesh)")
-    check(AP:Judge(piece(3, 67), nil, 0, 0), "Empty slot stays an upgrade")
-    check(AP:ReasonText({ kind = "heavier", name = "Mail" }) == "Heavier armor: Mail"
-        and AP:ReasonText({ kind = "armor", amount = 34 }) == "More armor: +34", "Reason texts")
+    check(AP:Judge(piece(3, 67), nil, 0), "Empty slot stays an upgrade")
+    check(AP:ReasonText({ kind = "armor", amount = 34 }) == "More armor: +34" and AP:ReasonText(nil) == nil, "Reason texts")
     check(addon.Comparison:IsUpgrade({ delta = -0.5, upgrade = true }), "IsUpgrade follows the armor decision")
     check(not addon.Comparison:IsUpgrade({ delta = 0.5, upgrade = false }), "IsUpgrade respects a lost armor decision")
-
-    -- Whole comparison: Warrior wearing a leather tunic, finds a mail vest, neither has stats.
+    check(addon.Presets.bySpec[72].weights.ITEM_MOD_STAMINA_SHORT == 0.3, "Fury gets Stamina 0.3 (0.3 x Strength 1)")
+    check(math.abs(addon.Presets.bySpec[259].weights.ITEM_MOD_STAMINA_SHORT - 0.615) <= 0.006, "Rogue gets Stamina 0.3 x Agility 2.05")
+    check(addon.Presets.bySpec[73].weights.ITEM_MOD_STAMINA_SHORT == 1, "Protection keeps its own Stamina 1")
+    check(addon.Presets.bySpec[105].weights.ITEM_MOD_STAMINA_SHORT == 0.05, "Healers keep their own Stamina")
+end
+-- Armor value from the game's armor formula (Engine/Scoring.lua ArmorWeight) + vendor arrows
+do
     local savedGet, savedLink, savedCaps = addon.ItemData.Get, GetInventoryItemLink, GearVerdictDB.capsEnabled
+    local savedHealth, savedArmor = UnitHealthMax, UnitArmor
     function UnitClass() return "Warrior", "WARRIOR" end
-    function UnitLevel() return 28 end
-    addon.Presets:SetManualSpecID(72)
+    function UnitLevel() return 15 end
+    function UnitHealthMax() return 400 end
+    function UnitArmor() return 350, 350 end
     GearVerdictDB.capsEnabled = false
     C_Item.IsEquippableItem = function() return true end
     C_Item.GetItemUniquenessByID = function() return false end
     C_TooltipInfo = { GetHyperlink = function() return { lines = { { leftText = "x", leftColor = { r = 1, g = 1, b = 1 } } } } end }
-    local tunic = piece(2, 33); tunic.key, tunic.name, tunic.required = "tunic", "Scavenger Tunic", 1
-    local vest = piece(3, 67); vest.key, vest.name, vest.required = "vest", "Rugged Mail Vest", 1
-    addon.ItemData.Get = function(_, link) return link == "tunic" and tunic or vest end
-    function GetInventoryItemLink(_, slot) if slot == 5 then return "tunic" end end
-    local verdict = addon.Comparison:Evaluate("vest")
-    check(addon.Comparison:IsUpgrade(verdict) and verdict.comparisons[1].armorReason.name == "Mail",
-        "Rugged Mail Vest is an upgrade over Scavenger Tunic for a Warrior")
-    addon.ItemData.Get = function(_, link) return link == "tunic" and vest or tunic end
-    check(not addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("tunic")), "Leather tunic is not shown over the mail vest")
+    local function boots(key, name, kind, armor, stats)
+        local item = { key = key, name = name, classID = 4, subclassID = kind, equipLoc = "INVTYPE_FEET", required = 1,
+            stats = { RESISTANCE0_NAME = armor } }
+        for stat, value in pairs(stats) do item.stats[stat] = value end
+        return item
+    end
+    local items = {
+        stable = boots("stable", "Stable Boots", 2, 51, { ITEM_MOD_STAMINA_SHORT = 4 }),
+        finscale = boots("finscale", "Finscale Soles", 3, 79, { ITEM_MOD_STRENGTH_SHORT = 1 }),
+        plate = boots("plate", "Plate Boots", 4, 200, {}),
+        light = boots("light", "Light Boots", 2, 51, { ITEM_MOD_STAMINA_SHORT = 1 }),
+        mail = boots("mail", "Mail Boots", 3, 79, {}),
+    }
+    local worn = "finscale"
+    addon.ItemData.Get = function(_, link) return items[link] end
+    function GetInventoryItemLink(_, slot) if slot == 8 then return worn end end
+
+    addon.Presets:SetManualSpecID(73)
+    local expected = 400 / (10 * (350 + 400 + 85 * 15))
+    check(math.abs(addon.Scoring:ArmorWeight() - expected) < 1e-9, "Protection: Armor weight follows the armor formula")
+    local verdict = addon.Comparison:Evaluate("stable")
+    check(addon.Comparison:IsUpgrade(verdict) and verdict.comparisons[1].armorReason == nil,
+        "Protection lvl 15: Stable Boots (+4 Stamina) still beat Finscale Soles (+1 Strength, +28 Armor)")
+    check(math.abs(verdict.delta - (4 - 0.1 - 28 * expected)) < 1e-6, "Protection: the lost Armor is taken off the score")
+    items.nomad = boots("nomad", "Nomad Tunic", 2, 70, { ITEM_MOD_STRENGTH_SHORT = 3, ITEM_MOD_AGILITY_SHORT = 3 })
+    items.copper = boots("copper", "Rough Copper Vest", 3, 108, { ITEM_MOD_STAMINA_SHORT = 1 })
+    worn = "nomad"
+    check(addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("copper")),
+        "Protection: Rough Copper Vest (+1 Sta, 108 armor) beats Nomad Tunic (+3 Str +3 Agi, 70 armor)")
+    worn = "plate"
+    check(not addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("light")),
+        "Protection: +1 Stamina does not beat 149 more Armor")
+    worn = "mail"
+    check(addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("stable")),
+        "Protection: lighter boots with real Stamina still win")
+    function UnitHealthMax() return 9000 end
+    function UnitArmor() return 10000, 10000 end
+    function UnitLevel() return 60 end
+    check(addon.Scoring:ArmorWeight() > 2.5 * expected, "Armor is worth about 3 times more at level 60")
+    function UnitLevel() return 15 end
+    function UnitHealthMax() return 400 end
+    function UnitArmor() return 350, 350 end
+
+    addon.Presets:SetManualSpecID(72)
+    check(math.abs(addon.Scoring:ArmorWeight() - 0.3 * expected) < 1e-9, "Fury: Armor weight = 0.3 x the formula")
+    worn = "stable"
+    verdict = addon.Comparison:Evaluate("finscale")
+    check(math.abs(verdict.delta - (1 - 1.2 + 28 * 0.3 * expected)) < 1e-6, "Fury: +1 Str and +28 Armor vs +4 Stamina")
+    check(not addon.Comparison:IsUpgrade(verdict), "Fury lvl 15: Stable Boots (+4 Sta) beat Finscale Soles (+1 Str)")
+    worn = "finscale"
+    check(addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("stable")), "Fury: Stable Boots shown over Finscale Soles (Pawn +4%)")
+    worn = "stable"
+    verdict = addon.Comparison:Evaluate("mail")
+    check(not addon.Comparison:IsUpgrade(verdict), "Fury: plain mail no longer beats leather with +4 Stamina")
+
+    -- Vendor arrows
+    local shown, savedSet = {}, addon.UpgradeIndicators.Set
+    addon.UpgradeIndicators.Set = function(_, button, visible) shown[button] = visible end
+    local function button() return { IsVisible = function() return true end } end
+    MerchantItem1ItemButton, MerchantItem2ItemButton, MerchantItem3ItemButton = button(), button(), button()
+    MERCHANT_ITEMS_PER_PAGE = 2
+    MerchantFrame = { page = 2, selectedTab = 1, IsShown = function() return true end }
+    function GetMerchantNumItems() return 3 end
+    local stock = { "x", "y", "stable" }
+    function GetMerchantItemLink(index) return stock[index] end
+    worn = "finscale"
+    addon.MerchantArrows:Refresh()
+    check(shown[MerchantItem1ItemButton] == true, "Vendor page 2: item 3 gets an arrow")
+    check(shown[MerchantItem2ItemButton] == false, "Vendor: empty slot past the last item has no arrow")
+    MerchantFrame.selectedTab = 2
+    addon.MerchantArrows:Refresh()
+    check(shown[MerchantItem1ItemButton] == false, "Vendor buyback tab: no arrows")
+    addon.UpgradeIndicators.Set = savedSet
+    MerchantFrame, MerchantItem1ItemButton, MerchantItem2ItemButton, MerchantItem3ItemButton = nil, nil, nil, nil
+    GetMerchantNumItems, GetMerchantItemLink, MERCHANT_ITEMS_PER_PAGE = nil, nil, nil
+
     addon.ItemData.Get, GetInventoryItemLink, GearVerdictDB.capsEnabled = savedGet, savedLink, savedCaps
+    UnitHealthMax, UnitArmor = savedHealth, savedArmor
     function UnitClass() return "Shaman", "SHAMAN" end
     function UnitLevel() return 60 end
     addon.Presets:SetManualSpecID(263)
@@ -1134,7 +1278,7 @@ do
     items.hsword.item.stats.ITEM_MOD_STAMINA_SHORT, items.hdagger.item.stats.ITEM_MOD_STAMINA_SHORT = 1, 1
     equippedLinks = { [16] = "copper", [17] = "woodshield" }; fresh()
     local swordPoints, daggerPoints = addon.Comparison:Evaluate("hsword").delta, addon.Comparison:Evaluate("hdagger").delta
-    check(near(swordPoints, 32 / 2 / 2.1 * 6.3 * 0.95 - 5.4 * 6.3 * 0.99 - 1) and swordPoints > daggerPoints,
+    check(near(swordPoints, 32 / 2 / 2.1 * 6.3 * 0.95 - 5.4 * 6.3 * 0.99 - 1 + 0.3) and swordPoints > daggerPoints,
         "Screenshot case: against Copper Shortsword the sword shows more points than the dagger")
     equippedLinks = { [16] = "hsword", [17] = "woodshield" }; fresh()
     check(not addon.Comparison:IsUpgrade(addon.Comparison:Evaluate("hdagger")),
@@ -1384,5 +1528,34 @@ do
     UnitClass, UnitLevel, C_Traits, C_ClassTalents, C_Spell = saved.class, saved.level, saved.traits, saved.talents, saved.spell
     ToggleTalentFrame, PlayerSpellsFrame = saved.toggle, saved.shown
     addon.Presets:SetManualSpecID(263)
+end
+-- Upgrade notice: only NEW upgrades in the bags, once per item, off switch respected.
+do
+    local T, cmp = addon.UpgradeToast, addon.Comparison
+    local saved = { push = T.Push, links = T.BagLinks, eval = cmp.Evaluate, options = GearVerdictDB.options }
+    local pushed, bag = {}, { ["item:1"] = 1 }
+    T.Push = function(_, link) pushed[#pushed + 1] = link end
+    T.BagLinks = function() local copy = {} for k, v in pairs(bag) do copy[k] = v end return copy end
+    cmp.Evaluate = function(_, link) return { delta = 1, slot = 9, upgrade = link ~= "item:3", candidate = { stats = {} } } end
+    GearVerdictDB.options = {}
+    T.known, T.told = nil, {}
+    T:Scan()
+    check(#pushed == 0, "Notice: first scan only remembers the bags")
+    bag["item:2"], bag["item:3"] = 1, 1
+    T:Scan()
+    check(#pushed == 1 and pushed[1] == "item:2", "Notice: a new upgrade gets a notice, a new non-upgrade does not")
+    bag["item:2"] = nil; T:Scan(); bag["item:2"] = 1; T:Scan()
+    check(#pushed == 1, "Notice: shown once per item")
+    GearVerdictDB.options = { upgradeToast = false }
+    bag["item:4"] = 1; T:Scan()
+    check(#pushed == 1 and not T:Enabled(), "Notice: switched off in Options")
+    GearVerdictDB.options = {}
+    check(T:Seconds() == 10, "Notice: shows 10 seconds by default")
+    GearVerdictDB.options = { toastSeconds = 90 }
+    check(T:Seconds() == 60, "Notice: at most 60 seconds")
+    GearVerdictDB.options = { toastSeconds = 3 }
+    check(T:Seconds() == 10, "Notice: at least 10 seconds")
+    T.Push, T.BagLinks, cmp.Evaluate, GearVerdictDB.options = saved.push, saved.links, saved.eval, saved.options
+    T.known, T.told = nil, {}
 end
 print("PASS: " .. tests .. " assertions; all addon files parse")

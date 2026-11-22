@@ -122,18 +122,18 @@ function page:Create(parent, panel)
     warning:SetHeight(56)
     local tint = warning:CreateTexture(nil, "BACKGROUND")
     tint:SetAllPoints()
-    tint:SetColorTexture(1, 0.82, 0, 0.08)
+    tint:SetColorTexture(0.949, 0.82, 0.42, 0.08)
     local bar = warning:CreateTexture(nil, "ARTWORK")
     bar:SetPoint("TOPLEFT")
     bar:SetPoint("BOTTOMLEFT")
     bar:SetWidth(2)
-    bar:SetColorTexture(1, 0.82, 0, 0.8)
+    bar:SetColorTexture(0.949, 0.82, 0.42, 0.6)
     local text = warning:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     text:SetPoint("TOPLEFT", 10, -7)
     text:SetPoint("RIGHT", -8, 0)
     text:SetJustifyH("LEFT")
     text:SetJustifyV("TOP")
-    text:SetTextColor(widgets:Color("warning"))
+    text:SetTextColor(widgets:Color("title"))
     text:SetText("Careful: these numbers decide every upgrade arrow and tooltip. If you are not sure what you "
         .. "are doing, leave them as they are. Weights from sites made for retail WoW (such as Raidbots) may not fit Forever.")
     -- the box grows with its text, so a bigger font or UI scale never pushes the text out of it
@@ -195,7 +195,11 @@ function page:Create(parent, panel)
 end
 
 function page:SetFootnote(preset)
-    self.footnote:SetText(addon.Presets:BasisText(preset) .. " Changed values are gold. Press Enter or click "
+    local armor = preset and addon.Scoring:ArmorWeight() or 0
+    local armorText = armor > 0
+        and string.format(" Armor: %.3f per point, worked out from your level, health and armor.", armor)
+        or " Armor: not scored (this specialization has no Stamina weight)."
+    self.footnote:SetText(addon.Presets:BasisText(preset) .. armorText .. " Changed values are gold. Press Enter or click "
         .. "elsewhere to save a value.")
 end
 

@@ -34,7 +34,8 @@ function comparison:Evaluate(link, levelsAhead)
     if addon.WeaponData:Handles(candidate.equipLoc) then
         local eligible, restriction = addon.Eligibility:Check(link, candidate, levelsAhead)
         if not eligible then return nil, restriction end
-        return addon.WeaponComparison:Evaluate(link, candidate, preset, eligible == true and restriction or nil)
+        local result, why = addon.WeaponComparison:Evaluate(link, candidate, preset, eligible == true and restriction or nil)
+        return self:MarkQuality(result), why
     end
     local targets = slots[candidate.equipLoc]
     if not targets then return nil, "Special slots are not evaluated" end
@@ -56,7 +57,7 @@ function comparison:Evaluate(link, levelsAhead)
             local entry = { slot = slot, delta = delta, empty = items[slot] == nil,
                 previousName = previous.name, previousLink = GetInventoryItemLink("player", slot),
                 percent = not GearVerdictDB.capsEnabled and oldScore > 0 and delta / oldScore * 100 or nil }
-            local upgrade, armorReason = addon.ArmorPreference:Judge(candidate, items[slot], delta, oldScore)
+            local upgrade, armorReason = addon.ArmorPreference:Judge(candidate, items[slot], delta)
             entry.upgrade, entry.armorReason = entry.empty or upgrade == true, armorReason
             comparisons[#comparisons + 1] = entry
             if not best or (entry.upgrade and not best.upgrade)
@@ -64,12 +65,32 @@ function comparison:Evaluate(link, levelsAhead)
         end
     end
     if not best then return nil, "Equipment restriction or unavailable requirements" end
-    return { delta = best.delta, slot = best.slot, empty = best.empty,
+    return self:MarkQuality({ delta = best.delta, slot = best.slot, empty = best.empty,
         upgrade = best.upgrade, candidate = candidate, comparisons = comparisons,
-        goal = eligible == true and restriction or nil }
+        goal = eligible == true and restriction or nil })
+end
+
+-- Options "Item quality": items below the chosen quality are never recommended (0 = all items, the default;
+-- 1 = white and better; 2 = green and better). Only the new item counts: what you wear is not affected.
+function comparison:MinQuality()
+    local options = GearVerdictDB and GearVerdictDB.options
+    return options and tonumber(options.minQuality) or 0
+end
+
+function comparison:MarkQuality(result)
+    if result and result.candidate and (result.candidate.quality or 99) < self:MinQuality() then
+        result.belowQuality = true
+    end
+    return result
 end
 
 function comparison:IsUpgrade(result)
+    if result == nil or result.belowQuality then return false end
+    return self:BeatsEquipped(result)
+end
+
+-- Better than what is worn, whatever the quality setting says.
+function comparison:BeatsEquipped(result)
     if result == nil then return false end
     if result.upgrade ~= nil then return result.empty == true or result.upgrade == true end
     return result.empty == true or result.delta > 0.01

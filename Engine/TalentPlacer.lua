@@ -132,8 +132,8 @@ function placer:OnPointsChanged()
         self.busy, self.last = false, GetTime()
         if not self:AutoEnabled() then return end
         local result = self:Run()
-        if result.placed > 0 and addon.BuildPicker and addon.BuildPicker.ShowPlaceResult then
-            addon.BuildPicker:ShowPlaceResult(result)
+        if result.placed > 0 and addon.PanelLevelingPage and addon.PanelLevelingPage.placeNote then
+            addon.PanelLevelingPage:ShowPlaceResult(result)
         end
     end)
 end

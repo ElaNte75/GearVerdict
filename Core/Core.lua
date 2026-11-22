@@ -21,6 +21,7 @@ frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 frame:RegisterEvent("PLAYER_LEVEL_UP")
 frame:RegisterEvent("ITEM_DATA_LOAD_RESULT")
+frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 frame:SetScript("OnEvent", function(_, event, arg, success)
     if event == "ADDON_LOADED" and arg == addon.name then
         GearVerdictDB = GearVerdictDB or {}
@@ -59,6 +60,12 @@ frame:SetScript("OnEvent", function(_, event, arg, success)
             end
             GearVerdictDB.confirmEnhancement = nil
             addon:Print("Loaded. /gv opens the control panel.")
+            -- Upgrade notice: remember what is already in the bags, so only new items count.
+            if addon.UpgradeToast then C_Timer.After(5, function() addon.UpgradeToast:Scan() end) end
+        end
+        if addon.UpgradeToast then
+            if event == "BAG_UPDATE_DELAYED" then addon.UpgradeToast:Scan() end
+            if event == "PLAYER_REGEN_ENABLED" then addon.UpgradeToast:Flush(); return end
         end
         if event ~= "ITEM_DATA_LOAD_RESULT" and addon.ControlPanel then addon.ControlPanel:Update() end
         refresh(event)

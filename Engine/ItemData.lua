@@ -36,7 +36,7 @@ function data:Get(link)
     if not normalized then return nil, reason end
     clean = normalized
     local item = { key = key, name = name, stats = clean, equipLoc = equipLoc,
-        classID = classID, subclassID = subclassID, required = required }
+        classID = classID, subclassID = subclassID, required = required, quality = quality }
     GearVerdictDB.cache[key] = { stats = clean, equipLoc = equipLoc, seen = time() }
     if not self.observed[key] then
         self.observed[key] = true

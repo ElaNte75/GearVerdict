@@ -6,7 +6,7 @@ addon.ControlPanel = panel
 -- Each page lives in its own module with :Create(parent, panel) returning its frame, and :Update().
 -- Window behavior (options): windowPosition, lockWindow, hideInCombat, reopenAfterCombat.
 
-local WIDTH, HEIGHT = 660, 552
+local WIDTH, HEIGHT = 660, 570
 local SIDEBAR, HEADER, FOOTER, PADDING = 172, 60, 48, 18
 local LOGO = "Interface\\AddOns\\GearVerdict\\Media\\icon.tga"
 local ICONS = "Interface\\Icons\\"

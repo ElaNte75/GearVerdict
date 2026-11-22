@@ -2,178 +2,247 @@ local _, addon = ...
 local picker = {}
 addon.BuildPicker = picker
 
--- The build list of the Specialization page (replaces the three specialization tick boxes, see Data/TalentBuilds.lua):
--- a drop-down with every build in the guide's order, then a bar of the build's talent points per tree, the trees in
--- words, the weapons (only when the guide names them), a short description of what the guide says and the source.
+-- The build choice of the Specialization page (replaces the three specialization tick boxes, see Data/TalentBuilds.lua),
+-- in two steps (2026-11-21): first the specialization (gear is always judged with its weights), then a variant of it
+-- (Classic = the leveling guide, or one of the guide page's builds). Below: the Defense/Offense meter (Protection
+-- builds), the weapon setup and a short description. (The talent-points bar was removed at the user's request.)
+-- Talent placement (Place talents / Auto) lives on the Leveling page.
 
-local ROW_HEIGHT = 20
-local BAR_WIDTH = 300
+local ROW_HEIGHT = 22
+local LABEL_WIDTH = 78
+local BUTTON_GAP = 10
+-- The two drop-downs share the page width equally (user request 2026-11-21).
+local function buttonWidth()
+    local width = addon.ControlPanel and addon.ControlPanel.contentWidth or 452
+    return math.floor((width - 8 - BUTTON_GAP) / 2)
+end
 
--- Talent points per tree as one bar of three parts (class color, lighter for the second and third tree).
-function picker:BuildTreeBar(frame, anchor, gap)
+-- Defense <-> Offense meter (user request 2026-11-21) for every build except healers: the share of the build's talent
+-- points in the defensive tree against the others, from the guide's own points (Builds:DefenseShare). Pure damage
+-- builds show "Offense 100%". Its row is always reserved, so nothing below moves; for healers it stays empty.
+function picker:BuildMeter(frame, anchor, gap)
     local widgets = addon.PanelWidgets
-    local label = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    label:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -gap)
-    label:SetText("Talent points")
-    widgets:PaintText(label, "note")
-    local bar = CreateFrame("Frame", nil, frame)
-    bar:SetSize(BAR_WIDTH, 10)
-    bar:SetPoint("LEFT", label, "RIGHT", 8, 0)
+    -- Exactly as wide as the two drop-downs; the labels keep a fixed width, so "Offense 100%" stays inside.
+    local total = 2 * buttonWidth() + BUTTON_GAP
+    self.barWidth = total - 2 * (LABEL_WIDTH + 6)
+    local row = CreateFrame("Frame", nil, frame)
+    row:SetSize(total, 14)
+    row:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -gap)
+    local left = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    left:SetPoint("LEFT", 0, 0)
+    left:SetWidth(LABEL_WIDTH)
+    left:SetJustifyH("LEFT")
+    widgets:PaintText(left, "note")
+    local bar = CreateFrame("Frame", nil, row)
+    bar:SetSize(self.barWidth, 6)
+    bar:SetPoint("LEFT", row, "LEFT", LABEL_WIDTH + 6, 0)
     local track = bar:CreateTexture(nil, "ARTWORK")
     track:SetAllPoints()
     widgets:Fill(track, "sectionLine")
-    self.parts = {}
-    for index = 1, 3 do
-        local part = bar:CreateTexture(nil, "ARTWORK", nil, 1)
-        part:SetHeight(10)
-        self.parts[index] = part
-    end
-    self.bar = bar
-    return label
+    -- The marker slides between Defense (left) and Offense (right), in the class color like the talent bar.
+    local marker = bar:CreateTexture(nil, "ARTWORK", nil, 2)
+    marker:SetSize(8, 14)
+    local right = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    right:SetPoint("RIGHT", row, "RIGHT", 0, 0)
+    right:SetWidth(LABEL_WIDTH)
+    right:SetJustifyH("RIGHT")
+    widgets:PaintText(right, "note")
+    self.meter = { row = row, left = left, right = right, bar = bar, marker = marker }
+    widgets:Tooltip(row, "Defense and offense", function()
+        local share, points, total, tree = addon.Builds:DefenseShare(addon.Builds:Chosen())
+        if not share then return nil end
+        if not tree or points == 0 then
+            return "A pure damage build: none of its " .. total .. " talent points are in a defensive tree."
+        end
+        return points .. " of " .. total .. " talent points are in the " .. tree .. " tree (defense); the other "
+            .. (total - points) .. " are in the damage trees (offense). Counted from the guide's build."
+    end)
+    return row
 end
 
-function picker:ShowTrees(build)
+-- "3 / 31 / 17" (the variant's talent points per tree) next to the "Variant" title, with the tree names
+-- in its tooltip.
+function picker:CreatePoints(frame, title)
+    local widgets = addon.PanelWidgets
+    local holder = CreateFrame("Frame", nil, frame)
+    holder:SetPoint("LEFT", title, "RIGHT", 10, 0)
+    holder:SetSize(90, 14)
+    self.points = holder:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    self.points:SetPoint("LEFT", 0, 0)
+    widgets:PaintText(self.points, "note")
+    widgets:Tooltip(holder, "Talent points", function()
+        local build = addon.Builds:Chosen()
+        return build and build.trees and addon.Builds:TreesText(build) or nil
+    end)
+end
+
+function picker:ShowPoints(build)
+    if not self.points then return end
     local trees = build and build.trees
-    local total = trees and (trees[1] + trees[2] + trees[3]) or 0
+    self.points:SetText(trees and (trees[1] .. " / " .. trees[2] .. " / " .. trees[3]) or "")
+end
+
+function picker:ShowMeter(build)
+    local meter = self.meter
+    local share = build and addon.Builds:DefenseShare(build)
+    meter.left:SetShown(share ~= nil)
+    meter.right:SetShown(share ~= nil)
+    meter.bar:SetShown(share ~= nil)
+    if not share then return end
+    local defense = math.floor(share * 100 + 0.5)
+    meter.left:SetText(("Defense %d%%"):format(defense))
+    meter.right:SetText(("Offense %d%%"):format(100 - defense))
     local r, g, b = addon.PanelWidgets:ClassColor()
-    local shades = { 1, 0.6, 0.35 }
-    local x = 0
-    for index, part in ipairs(self.parts) do
-        local width = total > 0 and BAR_WIDTH * trees[index] / total or 0
-        part:ClearAllPoints()
-        part:SetPoint("TOPLEFT", self.bar, "TOPLEFT", x, 0)
-        part:SetWidth(math.max(width, 0.01))
-        part:SetColorTexture(r, g, b, shades[index])
-        part:SetShown(width > 0)
-        x = x + width
-    end
+    meter.marker:SetColorTexture(r, g, b, 1)
+    meter.marker:ClearAllPoints()
+    meter.marker:SetPoint("CENTER", meter.bar, "LEFT", self.barWidth * (1 - share), 0)
 end
 
 function picker:ShowBuild(build)
     if not self.frame then return end
-    self:ShowTrees(build)
+    self:ShowMeter(build)
+    self:ShowPoints(build)
     if not build then
-        self.trees:SetText("")
         self.weapons:SetText("")
-        self.source:SetText("")
-        self.description:SetText("Choose a build above to get gear recommendations and talent hints.")
+        self.description:SetText("Choose a specialization above to get gear recommendations and talent hints.")
         return
     end
-    -- Weapons only when the guide names them for this build.
-    self.weapons:SetText(build.weapons and ("Weapons: " .. build.weapons) or "")
-    local text = addon.Builds:TreesText(build)
-    if not build.classic then
-        text = text .. "  |  gear as " .. (addon.SpecDetection:SpecName(build.gearSpec) or "?")
-    end
-    self.trees:SetText(text)
+    -- Weapons: only what to hold, in plain words; the guide's details (speed, named weapons) go in the description.
+    local setup, detail = addon.Builds:WeaponSetup(build)
+    self.weapons:SetText("Weapons: " .. setup)
     local description = build.description or ""
+    if detail then description = description .. " Weapon: " .. detail .. "." end
     local keys = addon.Builds:KeyNames(build, 5)
-    if #keys > 0 then description = description .. " Key talents (named by the guide): " .. table.concat(keys, ", ") .. "." end
-    self.description:SetText(description)
+    if #keys > 0 then description = description .. " Key talents: " .. table.concat(keys, ", ") .. "." end
     if build.classic then
-        self.source:SetText("Talent order: from the " .. (addon.TalentAdvisor:GuideName() or "chosen") .. " leveling guide")
-    else
-        self.source:SetText("Source: " .. (build.source or "Wowhead"))
+        description = description .. (description ~= "" and " " or "") .. "Talents follow the "
+            .. (addon.TalentAdvisor:GuideName() or "chosen") .. " leveling guide."
     end
-end
-
-function picker:ShowPlaceResult(result)
-    local widgets = addon.PanelWidgets
-    local text = result.text or ""
-    if result.placed and result.placed > 0 and result.opened == false then text = text .. " Press Y to open the talents." end
-    self.placeNote:SetText(text)
-    self.placeNote:SetTextColor(widgets:Color(result.status == "ok" and "good" or (result.placed or 0) > 0 and "warning" or "bad"))
-end
-
-function picker:Place()
-    self:ShowPlaceResult(addon.TalentPlacer:Run())
-end
-
-function picker:ToggleAuto()
-    local options = GearVerdictDB.options
-    options.autoPlaceTalents = not options.autoPlaceTalents or nil
-    self:Update()
+    self.description:SetText(description)
 end
 
 function picker:Select(id)
     addon.Builds:Choose(id)
-    self.popup:Hide()
+    self:Changed()
+end
+
+function picker:SelectSpec(specID)
+    addon.Builds:ChooseSpec(specID)
+    self:Changed()
+end
+
+function picker:Changed()
+    self.specPopup:Hide()
+    self.variantPopup:Hide()
     if addon.PanelSpecPage then addon.PanelSpecPage:Update() end
+    if addon.PanelLevelingPage then addon.PanelLevelingPage:Update() end
     addon:Refresh()
 end
 
-function picker:BuildPopup(frame)
+-- A drop-down list under `button`; rows are filled on every open (Fill), so the variant list follows the spec.
+function picker:Popup(frame, button, width)
     local widgets = addon.PanelWidgets
-    -- In the guide's order: classic builds first, then each specialization's Wowhead builds as the page lists them.
-    local builds = {}
-    for index, build in ipairs(addon.Builds:List() or {}) do builds[index] = { build = build } end
     local popup = CreateFrame("Frame", nil, frame)
     popup:SetFrameStrata("DIALOG")
-    popup:SetSize(256, ROW_HEIGHT * (#builds + 1) + 6)
-    popup:SetPoint("TOPLEFT", self.button, "BOTTOMLEFT", 0, -2)
+    popup:SetPoint("TOPLEFT", button, "BOTTOMLEFT", 0, -2)
     popup:EnableMouse(true)
     local bg = popup:CreateTexture(nil, "BACKGROUND")
     bg:SetAllPoints()
     widgets:Fill(bg, "contentBg")
     widgets:Border(popup, 0)
     popup.rows = {}
-    local function row(index, text, id)
-        local button = widgets:Button(popup, text, 250, function() self:Select(id) end)
-        button:SetPoint("TOPLEFT", 3, -3 - (index - 1) * ROW_HEIGHT)
-        button:SetHeight(ROW_HEIGHT - 1)
-        button:HookScript("OnEnter", function() self:ShowBuild(id and addon.Builds:Find(id) or nil) end)
-        button:HookScript("OnLeave", function() self:ShowBuild(addon.Builds:Chosen()) end)
-        popup.rows[#popup.rows + 1] = button
+    -- entries: { text, onClick, build (shown in the details while the mouse is over the row) }
+    function popup.Fill(_, entries)
+        for index, entry in ipairs(entries) do
+            local row = popup.rows[index]
+            if not row then
+                row = widgets:Button(popup, "", width - 6, function(self) self.entry.onClick() end)
+                row:SetPoint("TOPLEFT", 3, -3 - (index - 1) * ROW_HEIGHT)
+                row:SetHeight(ROW_HEIGHT - 1)
+                row:HookScript("OnEnter", function(self)
+                    if self.entry.build ~= nil then picker:ShowBuild(self.entry.build or nil) end
+                end)
+                row:HookScript("OnLeave", function() picker:ShowBuild(addon.Builds:Chosen()) end)
+                popup.rows[index] = row
+            end
+            row.entry = entry
+            row:SetText(entry.text)
+            row:Show()
+        end
+        for index = #entries + 1, #popup.rows do popup.rows[index]:Hide() end
+        popup:SetSize(width, ROW_HEIGHT * #entries + 6)
     end
-    for index, entry in ipairs(builds) do row(index, entry.build.name, entry.build.id) end
-    row(#builds + 1, "None (no recommendations)", nil)
     popup:Hide()
     return popup
+end
+
+function picker:OpenSpecs()
+    local entries = {}
+    for _, spec in ipairs(addon.Builds:Specs()) do
+        local id = spec.id
+        entries[#entries + 1] = { text = spec.name, onClick = function() self:SelectSpec(id) end }
+    end
+    entries[#entries + 1] = { text = "None (no recommendations)", onClick = function() self:SelectSpec(nil) end, build = false }
+    self.variantPopup:Hide()
+    self.specPopup:Fill(entries)
+    self.specPopup:SetShown(not self.specPopup:IsShown())
+end
+
+function picker:OpenVariants()
+    local spec = addon.Builds:SpecOf(addon.Builds:Chosen())
+    if not spec then return end
+    local entries = {}
+    for _, build in ipairs(addon.Builds:ForSpec(spec)) do
+        local id = build.id
+        entries[#entries + 1] = { text = addon.Builds:VariantName(build), onClick = function() self:Select(id) end, build = build }
+    end
+    self.specPopup:Hide()
+    self.variantPopup:Fill(entries)
+    self.variantPopup:SetShown(not self.variantPopup:IsShown())
 end
 
 -- Creates the picker under `anchor`; returns the last region so the page can continue below it.
 function picker:Create(frame, anchor, gap)
     local widgets = addon.PanelWidgets
     self.frame = frame
-    self.button = widgets:Button(frame, "", 230, function() self.popup:SetShown(not self.popup:IsShown()) end)
-    self.button:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -gap)
-    self.popup = self:BuildPopup(frame)
-    -- Talent placement (Engine/TalentPlacer.lua): never presses Apply, it only fills the talent window.
-    self.place = widgets:Button(frame, "Place talents", 100, function() self:Place() end)
-    self.place:SetPoint("LEFT", self.button, "RIGHT", 8, 0)
-    widgets:Tooltip(self.place, "Place talents", "Puts your unspent talent points into the talent window, in the "
-        .. "order of this build, and opens it. It never presses Apply: you check the points and apply them yourself "
-        .. "(Reset in the talent window undoes them).")
-    self.auto = widgets:Button(frame, "", 90, function() self:ToggleAuto() end)
-    self.auto:SetPoint("LEFT", self.place, "RIGHT", 8, 0)
-    widgets:Tooltip(self.auto, "Auto placement", "When on, each new talent point is placed for you and the talent "
-        .. "window opens. It still never presses Apply. Works while the leveling helper is on (Leveling page).")
-    self.placeNote = widgets:Note(frame, "", self.button, 9)
-    self.placeNote:SetWordWrap(false)
-    local barLabel = self:BuildTreeBar(frame, self.placeNote, 12)
-    self.trees = widgets:Note(frame, "", barLabel, 10)
-    self.trees:SetWordWrap(false)
-    self.weapons = widgets:Note(frame, "", self.trees, 8)
+    self.specLabel = widgets:Note(frame, "Specialization", anchor, gap)
+    local width = buttonWidth()
+    self.specButton = widgets:Button(frame, "", width, function() self:OpenSpecs() end)
+    self.specButton:SetPoint("TOPLEFT", self.specLabel, "BOTTOMLEFT", 0, -4)
+    self.specButton:SetHeight(28)
+    self.variantButton = widgets:Button(frame, "", width, function() self:OpenVariants() end)
+    self.variantButton:SetPoint("LEFT", self.specButton, "RIGHT", BUTTON_GAP, 0)
+    self.variantButton:SetHeight(28)
+    self.variantLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    self.variantLabel:SetPoint("BOTTOMLEFT", self.variantButton, "TOPLEFT", 0, 4)
+    self.variantLabel:SetText("Variant")
+    widgets:PaintText(self.variantLabel, "note")
+    self.specPopup = self:Popup(frame, self.specButton, width)
+    self.variantPopup = self:Popup(frame, self.variantButton, width)
+    widgets:Tooltip(self.specButton, "Specialization", "The role you play. Gear is always compared with the stat "
+        .. "weights of this specialization.")
+    widgets:Tooltip(self.variantButton, "Variant", "Which build of this specialization you follow: Classic (the "
+        .. "leveling guide's talent order) or one of the guide page's builds. The level-up hint follows its talents.")
+    local meter = self:BuildMeter(frame, self.specButton, 14)
+    self.weapons = widgets:Note(frame, "", meter, 10)
     self.weapons:SetWordWrap(false)
-    -- The most important line: larger, in the theme's title color (gold in the gold theme).
-    self.weapons:SetFontObject(GameFontNormalLarge)
+    -- Normal size (the large font pushed everything below it down); gold when the guide names weapons.
+    self.weapons:SetFontObject(GameFontNormal)
     widgets:PaintText(self.weapons, "title")
     self.description = widgets:Note(frame, "", self.weapons, 10)
     self.description:SetWordWrap(true)
-    self.description:SetHeight(50)
-    self.source = widgets:Note(frame, "", self.description, 2)
-    self.source:SetWordWrap(false)
-    widgets:Tooltip(self.button, "Build", "Pick the talent build you play. Gear is compared for the specialization "
-        .. "the build is based on, and the level-up hint follows the build's own talent order.")
-    return self.source
+    self.description:SetHeight(62)
+    return self.description
 end
 
 function picker:Update()
     if not self.frame then return end
     local build = addon.Builds:Chosen()
-    self.button:SetText(build and build.name or "Choose a build")
-    self.auto:SetText("Auto: " .. (GearVerdictDB.options.autoPlaceTalents and "on" or "off"))
-    self.place:SetEnabled(build ~= nil)
-    self.popup:Hide()
+    local spec = addon.Builds:SpecOf(build)
+    self.specButton:SetText(spec and (addon.SpecDetection:SpecName(spec) or "?") or "Choose")
+    self.variantButton:SetText(build and addon.Builds:VariantName(build) or "-")
+    self.variantButton:SetEnabled(build ~= nil)
+    self.specPopup:Hide()
+    self.variantPopup:Hide()
     self:ShowBuild(build)
 end

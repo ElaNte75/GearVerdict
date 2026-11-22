@@ -3,7 +3,8 @@ local page = {}
 addon.PanelLevelingPage = page
 
 -- Leveling page: one master switch for everything that helps while leveling (off = all of it stays silent),
--- which site's talent order to follow, and a preview of the level-up talent hint. Future leveling helpers go here.
+-- which site's talent order to follow, a preview of the level-up talent hint, and talent placement (Place talents /
+-- Auto, moved here from the Specialization page 2026-11-21). Future leveling helpers go here.
 
 local function options() return GearVerdictDB.options end
 
@@ -71,7 +72,41 @@ function page:Create(parent)
         function(value) return value .. " s" end)
     self.seconds:SetPoint("LEFT", timeLabel, "RIGHT", 14, 0)
     widgets:Tooltip(self.seconds, "Message stays", "How long the level-up message stays on screen: 10 seconds to 1 minute.")
+
+    -- Talent placement (Engine/TalentPlacer.lua): never presses Apply, it only fills the talent window.
+    local placeLine, placeLabel = widgets:Section(frame, "Talent placement", timeLabel, widgets.GAP_SECTION)
+    widgets:Help(frame, placeLabel, "Talent placement",
+        "Puts your unspent talent points into the talent window in the order of the build chosen on the "
+        .. "Specialization page. It never presses Apply: you check the points and apply them yourself.")
+    self.place = widgets:Button(frame, "Place talents", 110, function() self:Place() end)
+    self.place:SetPoint("TOPLEFT", placeLine, "BOTTOMLEFT", 2, -(widgets.GAP_AFTER_LINE + 2))
+    widgets:Tooltip(self.place, "Place talents", "Puts your unspent talent points into the talent window, in the "
+        .. "order of your build, and opens it. It never presses Apply: you check the points and apply them yourself "
+        .. "(Reset in the talent window undoes them).")
+    self.auto = widgets:Button(frame, "", 90, function() self:ToggleAuto() end)
+    self.auto:SetPoint("LEFT", self.place, "RIGHT", 8, 0)
+    widgets:Tooltip(self.auto, "Auto placement", "When on, each new talent point is placed for you and the talent "
+        .. "window opens. It still never presses Apply. Works while the leveling helper is on.")
+    self.placeNote = widgets:Note(frame, "", self.place, 9)
+    self.placeNote:SetWordWrap(false)
     return frame
+end
+
+function page:ShowPlaceResult(result)
+    local widgets = addon.PanelWidgets
+    local text = result.text or ""
+    if result.placed and result.placed > 0 and result.opened == false then text = text .. " Press Y to open the talents." end
+    self.placeNote:SetText(text)
+    self.placeNote:SetTextColor(widgets:Color(result.status == "ok" and "good" or (result.placed or 0) > 0 and "warning" or "bad"))
+end
+
+function page:Place()
+    self:ShowPlaceResult(addon.TalentPlacer:Run())
+end
+
+function page:ToggleAuto()
+    options().autoPlaceTalents = not options().autoPlaceTalents or nil
+    self:Update()
 end
 
 function page:Update()
@@ -85,6 +120,10 @@ function page:Update()
         widgets:UpdateCheck(check)
     end
     self.seconds:Refresh()
+    if self.place then
+        self.auto:SetText("Auto: " .. (options().autoPlaceTalents and "on" or "off"))
+        self.place:SetEnabled(addon.Builds ~= nil and addon.Builds:Chosen() ~= nil)
+    end
     local specID = addon.Presets and addon.Presets:SelectedSpecID()
     local build = addon.Builds and addon.Builds:Chosen()
     if build and build.order and specID and addon.Presets:IsSupported(specID) then

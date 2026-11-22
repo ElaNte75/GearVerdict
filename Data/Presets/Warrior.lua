@@ -44,8 +44,9 @@ presets:Register("WARRIOR", {
     specID = 73,
     basis = "guide",
     source = "Guide survival order (NeverFF, StillSixty); MythicSim tank pages score threat only, not survival",
-    revision = "2026-11-15",
+    revision = "2026-11-21",
     caps = presets.caps.melee,
+    -- Strength 0.3 -> 0.1 (2026-11-21): it gives threat, not survival; Agility keeps 0.3 (dodge + armor).
     weights = {
         ITEM_MOD_STAMINA_SHORT = 1,
         ITEM_MOD_DEFENSE_SKILL_RATING_SHORT = 0.9,
@@ -55,7 +56,7 @@ presets:Register("WARRIOR", {
         ITEM_MOD_BLOCK_VALUE_SHORT = 0.4,
         ITEM_MOD_EXPERTISE_RATING_SHORT = 0.5,
         ITEM_MOD_HIT_RATING_SHORT = 0.4,
-        ITEM_MOD_STRENGTH_SHORT = 0.3,
+        ITEM_MOD_STRENGTH_SHORT = 0.1,
         ITEM_MOD_AGILITY_SHORT = 0.3,
     },
 })
