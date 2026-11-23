@@ -47,20 +47,66 @@ function toast:BagLinks()
     return links
 end
 
+-- An item link carries the player's level, so the same item gets a "new" link after every level-up.
+-- The key is the link with that level field blanked: the same item keeps the same key across levels.
+function toast:Key(link)
+    local head, payload, tail = link:match("^(.-item:)([^|]*)(.*)$")
+    if not payload then return link end
+    local parts, start = {}, 1
+    while true do
+        local stop = payload:find(":", start, true)
+        if not stop then parts[#parts + 1] = payload:sub(start); break end
+        parts[#parts + 1] = payload:sub(start, stop - 1)
+        start = stop + 1
+    end
+    if #parts >= 9 then parts[9] = "" end
+    return head .. table.concat(parts, ":") .. tail
+end
+
+-- Bag contents by key: counts and one current link per key.
+function toast:Keyed(links)
+    local counts, current = {}, {}
+    for link, count in pairs(links) do
+        local key = self:Key(link)
+        counts[key] = (counts[key] or 0) + count
+        current[key] = link
+    end
+    return counts, current
+end
+
 -- Called after every bag change: an item that was not in the bags before and is an upgrade gets a notice.
 -- The first scan (login) only remembers what is already there.
-function toast:Scan()
-    local links = self:BagLinks()
+-- all = true (after a level-up): every item in the bags is checked again, because a new level can turn
+-- items already carried into upgrades (level requirement met). Still once per item.
+function toast:Scan(all)
+    local counts, current = self:Keyed(self:BagLinks())
     local before = self.known
-    self.known = links
+    self.known = counts
+    self:Dismiss(counts)
     if not before or not self:Enabled() then return end
-    for link, count in pairs(links) do
-        if count > (before[link] or 0) and not self.told[link] then
+    for key, count in pairs(counts) do
+        if (all or count > (before[key] or 0)) and not self.told[key] then
+            local link = current[key]
             local result = addon.Comparison:Evaluate(link)
             if addon.Comparison:IsUpgrade(result) then
-                self.told[link] = true
+                self.told[key] = true
                 self:Push(link, result)
             end
+        end
+    end
+end
+
+-- Safety catch: once the item has left the bags (equipped, sold, destroyed) its notice closes at once,
+-- and a waiting one is dropped. The example notice of a worn item and the Move notice stay.
+-- counts: bag contents by Key(link).
+function toast:Dismiss(counts)
+    for index = #self.queue, 1, -1 do
+        if not counts[self:Key(self.queue[index].link)] then table.remove(self.queue, index) end
+    end
+    for _, frame in ipairs(self.frames) do
+        if frame:IsShown() and frame.link and not frame.sample and not counts[self:Key(frame.link)]
+            and not (self.moving and frame == self.frames[1]) then
+            self:Close(frame)
         end
     end
 end
@@ -111,7 +157,7 @@ end
 function toast:Show(frame, item)
     local name, _, quality, _, _, _, _, _, _, icon = C_Item.GetItemInfo(item.link)
     local color = quality and ITEM_QUALITY_COLORS and ITEM_QUALITY_COLORS[quality]
-    frame.link = item.link
+    frame.link, frame.sample = item.link, item.sample
     frame.icon:SetTexture(icon)
     frame.name:SetText(name or item.link)
     frame.name:SetTextColor(color and color.r or 1, color and color.g or 1, color and color.b or 1)

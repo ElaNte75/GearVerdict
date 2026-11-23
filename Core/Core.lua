@@ -65,6 +65,8 @@ frame:SetScript("OnEvent", function(_, event, arg, success)
         end
         if addon.UpgradeToast then
             if event == "BAG_UPDATE_DELAYED" then addon.UpgradeToast:Scan() end
+            -- New level: items already in the bags may now be upgrades (short wait so the game has the new level).
+            if event == "PLAYER_LEVEL_UP" then C_Timer.After(2, function() addon.UpgradeToast:Scan(true) end) end
             if event == "PLAYER_REGEN_ENABLED" then addon.UpgradeToast:Flush(); return end
         end
         if event ~= "ITEM_DATA_LOAD_RESULT" and addon.ControlPanel then addon.ControlPanel:Update() end

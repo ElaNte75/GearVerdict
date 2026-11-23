@@ -1555,7 +1555,36 @@ do
     check(T:Seconds() == 60, "Notice: at most 60 seconds")
     GearVerdictDB.options = { toastSeconds = 3 }
     check(T:Seconds() == 10, "Notice: at least 10 seconds")
+    -- Level-up: the link's level field changes; the same item is not "new", but a level-up re-checks the bags.
+    local at8 = "|cff1eff00|Hitem:2575::::::::8:::::|h[Shirt]|h|r"
+    local at9 = "|cff1eff00|Hitem:2575::::::::9:::::|h[Shirt]|h|r"
+    check(T:Key(at8) == T:Key(at9) and T:Key("item:1") == "item:1", "Notice: same item, same key at any level")
+    pushed, bag = {}, { [at8] = 1 }
+    local usable = false
+    cmp.Evaluate = function(_, link) return { delta = 1, slot = 9, upgrade = usable, candidate = { stats = {} } } end
+    T.known, T.told = nil, {}
+    T:Scan()
+    bag = { [at9] = 1 }; T:Scan()
+    check(#pushed == 0, "Notice: a level-changed link alone is not a new item")
+    usable = true
+    T:Scan(true)
+    check(#pushed == 1 and pushed[1] == at9, "Notice: after a level-up a carried item that became an upgrade gets a notice")
+    T:Scan(true)
+    check(#pushed == 1, "Notice: level-up notice still once per item")
     T.Push, T.BagLinks, cmp.Evaluate, GearVerdictDB.options = saved.push, saved.links, saved.eval, saved.options
     T.known, T.told = nil, {}
+    -- Safety catch: a notice closes as soon as its item leaves the bags (e.g. equipped).
+    local savedFrames, savedQueue, savedClose = T.frames, T.queue, T.Close
+    local closed = {}
+    local function fake(link, sample)
+        return { link = link, sample = sample, IsShown = function() return true end }
+    end
+    T.frames = { fake("item:5"), fake("item:6"), fake("item:7", true) }
+    T.queue = { { link = "item:8" }, { link = "item:6" } }
+    T.Close = function(_, frame) closed[#closed + 1] = frame.link end
+    T:Dismiss({ ["item:6"] = 1 })
+    check(#closed == 1 and closed[1] == "item:5", "Notice: closes when its item is equipped, others stay")
+    check(#T.queue == 1 and T.queue[1].link == "item:6", "Notice: a waiting notice for an equipped item is dropped")
+    T.frames, T.queue, T.Close = savedFrames, savedQueue, savedClose
 end
 print("PASS: " .. tests .. " assertions; all addon files parse")
